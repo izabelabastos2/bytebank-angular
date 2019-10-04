@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Vale.Geographic.Application.Base;
 using Vale.Geographic.Application.Dto;
 using Vale.Geographic.Domain.Base.Interfaces;
@@ -10,10 +11,10 @@ namespace Vale.Geographic.Application.Services
     {
         IPersonSampleService personSampleService { get; set; }
 
-        void Delete(int id);
-        PersonSampleDto GetById(int id);
+        void Delete(Guid id);
+        PersonSampleDto GetById(Guid id);
         PersonSampleDto Insert(PersonSampleDto obj);
-        PersonSampleDto Update(int id, PersonSampleDto obj);
+        PersonSampleDto Update(Guid id, PersonSampleDto obj);
         IEnumerable<PersonSampleDto> Get(bool? active, IFilterParameters request, out int total);
         IEnumerable<PersonSampleDto> GetAll(IFilterParameters parameters, out int total);
     }

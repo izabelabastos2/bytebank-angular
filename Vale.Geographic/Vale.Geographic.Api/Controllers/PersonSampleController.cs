@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -48,7 +49,7 @@ namespace Vale.Geographic.Api.Controllers
         [ProducesResponseType(typeof(Error), 400)]
         [ProducesResponseType(typeof(Error), 500)]
         // [ClaimRequirement(RoleEnum.GestorDeEstoque)]
-        public IActionResult Delete(int id)
+        public IActionResult Delete(Guid id)
         {
             PersonSampleAppService.Delete(id);
             return NoContent();
@@ -132,7 +133,7 @@ namespace Vale.Geographic.Api.Controllers
         [ProducesResponseType(typeof(PersonSampleDto), 200)]
         [ProducesResponseType(typeof(Error), 400)]
         [ProducesResponseType(typeof(Error), 500)]
-        public IActionResult GetById(int id)
+        public IActionResult GetById(Guid id)
         {
             return Ok(PersonSampleAppService.GetById(id));
         }
@@ -187,7 +188,7 @@ namespace Vale.Geographic.Api.Controllers
         [ProducesResponseType(typeof(PersonSampleDto), 200)]
         [ProducesResponseType(typeof(Error), 400)]
         [ProducesResponseType(typeof(Error), 500)]
-        public IActionResult Put(int id, [FromBody] PersonSampleDto value)
+        public IActionResult Put(Guid id, [FromBody] PersonSampleDto value)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);

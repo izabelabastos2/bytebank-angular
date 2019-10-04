@@ -28,7 +28,7 @@ namespace Vale.Geographic.Application.Core.Services
         public IPersonSampleService personSampleService { get; set; }
 
 
-        public void Delete(int id)
+        public void Delete(Guid id)
         {
             try
             {
@@ -45,7 +45,7 @@ namespace Vale.Geographic.Application.Core.Services
         }
 
 
-        public PersonSampleDto GetById(int id)
+        public PersonSampleDto GetById(Guid id)
         {
             return Mapper.Map<PersonSampleDto>(personSampleService.GetById(id));
         }
@@ -86,7 +86,7 @@ namespace Vale.Geographic.Application.Core.Services
             }
         }
 
-        public PersonSampleDto Update(int id, PersonSampleDto obj)
+        public PersonSampleDto Update(Guid id, PersonSampleDto obj)
         {
             try
             {

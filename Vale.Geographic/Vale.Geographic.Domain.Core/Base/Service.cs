@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using FluentValidation;
 using Vale.Geographic.Domain.Base.Interfaces;
@@ -38,7 +39,7 @@ namespace Vale.Geographic.Domain.Core.Base
             return Repository.GetAll();
         }
 
-        public virtual TEntity GetById(long id)
+        public virtual TEntity GetById(Guid id)
         {
             return Repository.GetById(id);
         }

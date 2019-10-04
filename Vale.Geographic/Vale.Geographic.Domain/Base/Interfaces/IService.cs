@@ -9,7 +9,7 @@ namespace Vale.Geographic.Domain.Base.Interfaces
 
         IEnumerable<TEntity> GetAll();
 
-        TEntity GetById(long id);
+        TEntity GetById(Guid id);
 
         TEntity Insert(TEntity obj);
 
