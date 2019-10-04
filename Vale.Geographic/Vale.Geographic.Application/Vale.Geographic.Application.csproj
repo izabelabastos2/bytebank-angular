@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="AutoMapper\" />
+    <Folder Include="Base\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="8.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Vale.Geographic.Domain\Vale.Geographic.Domain.csproj" />
+    <ProjectReference Include="..\Vale.Geographic.Infra.Data\Vale.Geographic.Infra.Data.csproj" />
+  </ItemGroup>
+
+</Project>
