@@ -5,6 +5,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="GeoJSON.Net" Version="1.2.14" />
+    <PackageReference Include="NetTopologySuite.IO.GeoJSON" Version="1.15.4" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Vale.Geographic.Application\Vale.Geographic.Application.csproj" />
   </ItemGroup>
 

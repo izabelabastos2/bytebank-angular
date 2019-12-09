@@ -28,7 +28,7 @@ namespace Vale.Geographic.Api
 {
     public class Startup
     {
-        private static ImmutableArray<string> authenticatedEnvironments = new ImmutableArray<string>() { "production", "qa" };
+        public static readonly List<string> AuthenticatedEnvironments = new List<string>() { "production", "qa" };
 
         private readonly SimpleInjectorBootStrapper Injector = new SimpleInjectorBootStrapper();
 
@@ -37,7 +37,7 @@ namespace Vale.Geographic.Api
             Configuration = configuration;
         }
 
-        public static ImmutableArray<string> AuthenticatedEnvironments { get => authenticatedEnvironments; }
+       // public static ImmutableArray<string> AuthenticatedEnvironments { get => authenticatedEnvironments; }
 
         public IConfiguration Configuration { get; }
 

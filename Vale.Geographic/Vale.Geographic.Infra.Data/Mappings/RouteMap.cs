@@ -21,6 +21,12 @@ namespace Vale.Geographic.Infra.Data.Mappings
             builder.Property(p => p.Description).HasColumnType("varchar(255)").HasMaxLength(255);
             builder.Property(p => p.Location).HasColumnType("geography");
             builder.Property(p => p.Length).IsRequired().HasColumnType("decimal(5,2)");
+
+
+            builder.HasOne<Area>(p => p.Area)
+                .WithMany()
+                .HasForeignKey(x => x.AreaId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

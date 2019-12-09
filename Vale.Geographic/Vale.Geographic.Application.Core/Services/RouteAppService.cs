@@ -3,6 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using GeoJSON.Net.Geometry;
+using NetTopologySuite;
+using NetTopologySuite.Geometries;
+using NetTopologySuite.IO;
+using Newtonsoft.Json;
 using Vale.Geographic.Application.Base;
 using Vale.Geographic.Application.Dto;
 using Vale.Geographic.Application.Services;
@@ -75,6 +80,14 @@ namespace Vale.Geographic.Application.Core.Services
             {
                 UoW.BeginTransaction();
                 var Thing = routeService.Insert(Mapper.Map<Route>(obj));
+
+                Route route = Mapper.Map<Route>(obj);
+
+                var json = JsonConvert.SerializeObject(obj.Location);
+                var geometryFactory = NtsGeometryServices.Instance.CreateGeometryFactory(srid: 4326);
+                route.Location = (Geometry) geometryFactory.CreateGeometry(new GeoJsonReader().Read<Geometry>(json));
+                route = routeService.Insert(route);
+
                 UoW.Commit();
 
                 return Mapper.Map<RouteDto>(Thing);

@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using NetTopologySuite;
+using NetTopologySuite.Geometries;
+using NetTopologySuite.IO;
+using Newtonsoft.Json;
 using Vale.Geographic.Application.Base;
 using Vale.Geographic.Application.Dto;
 using Vale.Geographic.Application.Services;
@@ -63,9 +67,9 @@ namespace Vale.Geographic.Application.Core.Services
 
         }
 
-        public IEnumerable<PointOfInterestDto> Get(bool? active, IFilterParameters request, out int total)
+        public IEnumerable<PointOfInterestDto> Get(bool? active, Guid categoryId, IFilterParameters request, out int total)
         {
-            return Mapper.Map<IEnumerable<PointOfInterestDto>>(_pointOfInterestRepository.Get(active, request.sort,
+            return Mapper.Map<IEnumerable<PointOfInterestDto>>(_pointOfInterestRepository.Get(active, categoryId, request.sort,
                 request.page, request.per_page, out total));
         }
 
@@ -74,10 +78,17 @@ namespace Vale.Geographic.Application.Core.Services
             try
             {
                 UoW.BeginTransaction();
-                var PointOfInterest = pointOfInterestService.Insert(Mapper.Map<Domain.Entities.PointOfInterest>(obj));
+
+                PointOfInterest pointOfInterest = Mapper.Map<PointOfInterest>(obj);
+
+                var json = JsonConvert.SerializeObject(obj.Location);
+                var geometryFactory = NtsGeometryServices.Instance.CreateGeometryFactory(srid: 4326);
+                pointOfInterest.Location = (Geometry) geometryFactory.CreateGeometry(new GeoJsonReader().Read<Geometry>(json));
+                pointOfInterest = pointOfInterestService.Insert(pointOfInterest);
+
                 UoW.Commit();
 
-                return Mapper.Map<PointOfInterestDto>(PointOfInterest);
+                return Mapper.Map<PointOfInterestDto>(pointOfInterest);
             }
             catch (Exception ex)
             {

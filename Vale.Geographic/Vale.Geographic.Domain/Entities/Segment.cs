@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Vale.Geographic.Domain.Base;
 using NetTopologySuite.Geometries;
+using Dapper.Contrib.Extensions;
 
 namespace Vale.Geographic.Domain.Entities
 {
@@ -22,8 +23,16 @@ namespace Vale.Geographic.Domain.Entities
         
         [Required]
         public virtual Geometry Location { get; set; }
-        
+
         [Required]
         public virtual Guid RouteId { get; set; }
+
+        [Write(false)]
+        public Route Route { get; set; }
+
+        public Guid AreaId { get; set; }
+
+        [Write(false)]
+        public Area Area { get; set; }
     }
 }
