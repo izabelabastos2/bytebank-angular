@@ -3,6 +3,7 @@ using Vale.Geographic.Domain.Entities;
 using NetTopologySuite.Geometries;
 using GeoJSON.Net.Feature;
 using AutoMapper;
+using GeoAPI.Geometries;
 
 namespace Vale.Geographic.Application.AutoMapper
 {
@@ -10,10 +11,6 @@ namespace Vale.Geographic.Application.AutoMapper
     {
         public DataTransferToDomainMappingProfile()
         {
-            CreateMap<GeoJSON.Net.Geometry.MultiPolygon, Geometry>();
-            CreateMap<GeoJSON.Net.Geometry.LineString, Geometry>();
-            CreateMap<GeoJSON.Net.Geometry.Point, Geometry>();
-
             CreateMap<Feature, Area>()
            .ForMember(dest => dest.Name, opt => opt.MapFrom(x => x.Properties["Name"]))
            .ForMember(dest => dest.Description, opt => opt.MapFrom(x => x.Properties["description"]))
@@ -26,10 +23,18 @@ namespace Vale.Geographic.Application.AutoMapper
            .ForMember(x => x.Category, opt => opt.Ignore())
            .ForMember(x => x.CategoryId, opt => opt.Ignore());
 
-            CreateMap<AreaDto, Area>();
-            CreateMap<PointOfInterestDto, PointOfInterest>();
-            CreateMap<RouteDto, Route>();
-            CreateMap<SegmentDto, Segment>();
+            CreateMap<AreaDto, Area>()
+              .ForMember(x => x.Location, opt => opt.Ignore());
+
+            CreateMap<PointOfInterestDto, PointOfInterest>()
+              .ForMember(x => x.Location, opt => opt.Ignore());
+
+            CreateMap<RouteDto, Route>()
+              .ForMember(x => x.Location, opt => opt.Ignore());
+
+            CreateMap<SegmentDto, Segment>()
+              .ForMember(x => x.Location, opt => opt.Ignore());
+
             CreateMap<CategoryDto, Category>();
         }
     }

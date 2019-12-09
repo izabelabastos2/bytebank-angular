@@ -19,6 +19,8 @@ namespace Vale.Geographic.Infra.Data.Context
             modelBuilder.ApplyConfiguration(new PointOfInterestMap());
             modelBuilder.ApplyConfiguration(new RouteMap());
             modelBuilder.ApplyConfiguration(new SegmentMap());
+            modelBuilder.ApplyConfiguration(new CategoryMap());
+
 
             base.OnModelCreating(modelBuilder);
         }

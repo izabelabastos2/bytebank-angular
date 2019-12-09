@@ -17,7 +17,6 @@ namespace Vale.Geographic.Domain.Entities
         public string Description { get; set; }
 
         [Required]
-        [Column(TypeName = "geography")]
         public virtual IGeometry Location { get; set; }   
 
         public Guid? CategoryId { get; set; }
