@@ -1,9 +1,10 @@
-using System;
-using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using Vale.Geographic.Domain.Base;
-using NetTopologySuite.Geometries;
-using System.ComponentModel.DataAnnotations.Schema;
+using Dapper.Contrib.Extensions;
+using GeoAPI.Geometries;
+using System;
+//using NetTopologySuite.Geometries;
 
 namespace Vale.Geographic.Domain.Entities
 {
@@ -16,17 +17,16 @@ namespace Vale.Geographic.Domain.Entities
         public string Description { get; set; }
 
         [Required]
-        public virtual Geometry Location { get; set; }
-        
+        [Column(TypeName = "geography")]
+        public virtual IGeometry Location { get; set; }   
+
+        public Guid? CategoryId { get; set; }
+
+        [Write(false)]
+        public Category Category { get; set; }
+
+        [Write(false)]
         public virtual Area Parent{ get; set; }
-
-        public virtual List<Area> SubAreas { get; set; }
-
-        public virtual List<PointOfInterest> PointsOfInterest { get; set; }
-
-        public virtual List<Route> Routes { get; set; }
-
-        public virtual List<Segment> Segments { get; set; }
 
     }
 }

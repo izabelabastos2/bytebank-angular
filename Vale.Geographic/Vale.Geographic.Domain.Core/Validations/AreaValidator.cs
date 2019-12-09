@@ -17,11 +17,11 @@ namespace Vale.Geographic.Domain.Core.Validations
 
             RuleSet("Insert", () =>
             {
-                ValidateName();
-                ValidateDescription();
+               // ValidateName();
+               // ValidateDescription();
                 ValidateCreatedAt();
                 ValidateLastUpdatedAt();
-                ValidateStatus();
+              //  ValidateStatus();
             });
 
             RuleSet("Update", () =>

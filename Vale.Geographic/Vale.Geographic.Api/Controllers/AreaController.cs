@@ -1,18 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Net;
-using System.Threading.Tasks;
+﻿using Vale.Geographic.Application.Services;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Vale.Geographic.Api.Filters;
 using Vale.Geographic.Application.Base;
 using Vale.Geographic.Application.Dto;
-using Vale.Geographic.Application.Services;
+using Vale.Geographic.Api.Filters;
+using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc;
+using GeoJSON.Net.Geometry;
+using System;
 
 namespace Vale.Geographic.Api.Controllers
 {
     /// <summary>
-    /// Controller to PersonSample
+    /// Controller to Area
     /// </summary>
     [Route("api/Area")]
     [Authorize]
@@ -20,7 +19,7 @@ namespace Vale.Geographic.Api.Controllers
     {
         private IAreaAppService AreaAppService { get; }
         /// <summary>
-        /// Constructor to PersonSample Controller 
+        /// Constructor to Area Controller 
         /// </summary>
         /// <param name="areaAppService">app service</param>
         public AreaController(IAreaAppService areaAppService)
@@ -30,7 +29,7 @@ namespace Vale.Geographic.Api.Controllers
 
 
         /// <summary>
-        ///     Delete a person by Id
+        ///     Delete a Area by Id
         /// </summary>
         /// <remarks>
         ///     Faça aqui uma decrição mais detalhada do que esse metodo irá fazer. O incentivo ao avanço tecnológico, assim
@@ -39,10 +38,10 @@ namespace Vale.Geographic.Api.Controllers
         ///     Assim mesmo, o aumento do diálogo entre os diferentes setores produtivos exige a precisão e a definição do impacto
         ///     na agilidade decisória.
         /// </remarks>
-        /// <param name="id">Person Id</param>
+        /// <param name="id">Area Id</param>
         /// <returns>No content</returns>
-        /// <response code="204">Person deleted!</response>
-        /// <response code="400">Person has missing/invalid values</response>
+        /// <response code="204">Area deleted!</response>
+        /// <response code="400">Area has missing/invalid values</response>
         /// <response code="500">Oops! Can't list your area right now</response>
         [HttpDelete("{id:int}")]
         [ProducesResponseType(typeof(void), 204)]
@@ -56,7 +55,7 @@ namespace Vale.Geographic.Api.Controllers
         }
 
         /// <summary>
-        ///     Filter persons
+        ///     Filter Areas
         /// </summary>
         /// <remarks>
         ///     Faça aqui uma decrição mais detalhada do que esse metodo irá fazer. No entanto, não podemos esquecer que o
@@ -68,29 +67,27 @@ namespace Vale.Geographic.Api.Controllers
         /// </remarks>
         /// <param name="active">Retrive all perssons are active or not</param>
         /// <param name="request">Filter parameters</param>
-        /// <returns>Persons list have been solicited</returns>
-        /// <response code="200">Person list!</response>
-        /// <response code="400">Person has missing/invalid values</response>
+        /// <returns>Areas list have been solicited</returns>
+        /// <response code="200">Area list!</response>
+        /// <response code="400">Area has missing/invalid values</response>
         /// <response code="500">Oops! Can't list your area right now</response>
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<AreaDto>), 200)]
         [ProducesResponseType(typeof(Error), 400)]
         [ProducesResponseType(typeof(Error), 500)]
-        public IActionResult Get([FromQuery] bool? active, [FromQuery] FilterDto request)
+        public IActionResult Get([FromQuery] bool? active, Guid categoryId, Point location, [FromQuery] FilterDto request)
         {
             var total = 0;
 
-            var result = AreaAppService.Get(active, request, out total);
+            var result = AreaAppService.Get(active, categoryId, location, request, out total);
             Response.Headers.Add("X-Total-Count", total.ToString());
 
             return Ok(result);
         }
 
 
-
-
         /// <summary>
-        /// Get all person with paging, filtering and sorting.
+        /// Get all Area with paging, filtering and sorting.
         /// </summary>
         /// <remarks>List can be filtered, sorted and paged based on parameters passed. If no paging is required, pass 'needPaging=false'.
         ///  Filter argument can be used as {Key}:=:{Value}. Ex. FirstName:=:Vijay,LastName:=:Patel or FirstName:like:vij
@@ -115,7 +112,7 @@ namespace Vale.Geographic.Api.Controllers
         }
 
         /// <summary>
-        ///     Get person by Id
+        ///     Get Area by Id
         /// </summary>
         /// <remarks>
         ///     Faça aqui uma decrição mais detalhada do que esse metodo irá fazer. Caros amigos, a estrutura atual da
@@ -124,10 +121,10 @@ namespace Vale.Geographic.Api.Controllers
         ///     de pensamento. Acima de tudo, é fundamental ressaltar que o surgimento do comércio virtual auxilia a preparação e a
         ///     composição dos índices pretendidos.
         /// </remarks>
-        /// <param name="id">Person Id</param>
-        /// <returns>Person that has been solicited</returns>
-        /// <response code="200">Person!</response>
-        /// <response code="400">Person has missing/invalid values</response>
+        /// <param name="id">Area Id</param>
+        /// <returns>Area that has been solicited</returns>
+        /// <response code="200">Area!</response>
+        /// <response code="400">Area has missing/invalid values</response>
         /// <response code="500">Oops! Can't list your area right now</response>
         [HttpGet("{id:int}")]
         [ProducesResponseType(typeof(AreaDto), 200)]
@@ -139,7 +136,7 @@ namespace Vale.Geographic.Api.Controllers
         }
 
         /// <summary>
-        ///     Create a new person
+        ///     Create a new Area
         /// </summary>
         /// <remarks>
         ///     Faça aqui uma decrição mais detalhada do que esse metodo irá fazer. Nunca é demais lembrar o peso e o
@@ -149,10 +146,10 @@ namespace Vale.Geographic.Api.Controllers
         ///     obstante, a constante divulgação das informações desafia a capacidade de equalização da gestão inovadora da qual
         ///     fazemos parte.
         /// </remarks>
-        /// <param name="value">Person data</param>
-        /// <returns>Person who has been created</returns>
-        /// <response code="201">Person created!</response>
-        /// <response code="400">Person has missing/invalid values</response>
+        /// <param name="value">Area data</param>
+        /// <returns>Area who has been created</returns>
+        /// <response code="201">Area created!</response>
+        /// <response code="400">Area has missing/invalid values</response>
         /// <response code="500">Oops! Can't list your area right now</response>
         [HttpPost]
         [ProducesResponseType(typeof(AreaDto), 201)]
@@ -168,8 +165,21 @@ namespace Vale.Geographic.Api.Controllers
         }
 
 
+        [HttpPost("featureColletion")]
+        [ProducesResponseType(typeof(AreaDto), 201)]
+        [ProducesResponseType(typeof(Error), 400)]
+        [ProducesResponseType(typeof(Error), 500)]
+        public IActionResult PostFeatureCollection([FromBody] GeoJsonDto obj)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var response = AreaAppService.Insert(obj);
+            return Created("", response);
+        }
+
         /// <summary>
-        ///     Update a person
+        ///     Update a Area
         /// </summary>
         /// <remarks>
         ///     Faça aqui uma decrição mais detalhada do que esse metodo irá fazer. É claro que a necessidade de renovação
@@ -178,11 +188,11 @@ namespace Vale.Geographic.Api.Controllers
         ///     soluções ortodoxas. Percebemos, cada vez mais, que o comprometimento entre as equipes estimula a padronização do
         ///     sistema de formação de quadros que corresponde às necessidades.
         /// </remarks>
-        /// <param name="id">Person Id</param>
-        /// <param name="value">Person data</param>
-        /// <returns>Person who has been updated</returns>
-        /// <response code="200">Person updated!</response>
-        /// <response code="400">Person has missing/invalid values</response>
+        /// <param name="id">Area Id</param>
+        /// <param name="value">Area data</param>
+        /// <returns>Area who has been updated</returns>
+        /// <response code="200">Area updated!</response>
+        /// <response code="400">Area has missing/invalid values</response>
         /// <response code="500">Oops! Can't list your area right now</response>
         [HttpPut("{id:int}")]
         [ProducesResponseType(typeof(AreaDto), 200)]
