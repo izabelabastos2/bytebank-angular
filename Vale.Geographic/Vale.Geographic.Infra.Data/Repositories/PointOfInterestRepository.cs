@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
 using Dapper;
 using Vale.Geographic.Domain.Base.Interfaces;
 using Vale.Geographic.Domain.Entities;
@@ -14,33 +16,48 @@ namespace Vale.Geographic.Infra.Data.Repositories
         }
 
 
-        public IEnumerable<PointOfInterest> Get(bool? active, string sort, int page, int per_page, out int total)
+        public IEnumerable<PointOfInterest> Get(bool? active, Guid categoryId, string sort, int page, int per_page, out int total)
         {
-            var sql = @"SELECT [Id],
-                    P.[Active],
-                    P.[FirstName],
-                    P.[LastName],
-                    P.[DateBirth],
-                    P.[Type],
-                    COUNT(1) OVER () as Total
-                FROM PersonSamples P
-                WHERE (@Active IS NULL OR  P.Active = @Active) ";
+            var param = new DynamicParameters();
+            StringBuilder sqlQuery = new StringBuilder();
 
-            sql += string.Format(@"
-                ORDER BY P.{0}
-                OFFSET ({1}-1)*{2} ROWS FETCH NEXT {2} ROWS ONLY", sort, page, per_page);
+            sqlQuery.AppendLine(@"SELECT  P.[Id],
+		                                  P.[CreatedAt],
+		                                  P.[LastUpdatedAt],
+		                                  P.[Status],
+		                                  P.[Name],
+		                                  P.[Description],
+		                                  P.[Location],
+		                                  P.[CategoryId],		                                 
+		                                  C.[Id],
+		                                  C.[CreatedAt],
+		                                  C.[LastUpdatedAt],
+		                                  C.[Status],
+		                                  C.[TypeEntitie],
+		                                  C.[Description],
+		                                  COUNT(1) OVER () as Total
+                                   FROM dbo.PointOfInterest P
+                                   INNER JOIN dbo.Area A ON P.AreaId = A.Id
+                                   LEFT JOIN dbo.Categorys C ON P.CategoryId = C.Id AND C.[TypeEntitie] = 1
+                                   WHERE 0 = 0 ");
+
+            if (!categoryId.Equals(Guid.Empty))
+            {
+                sqlQuery.AppendLine(@" AND P.CategoryId <> NULL 
+                                       AND C.Id = @CategoryId");
+                param.Add("CategoryId", categoryId);
+            }
 
             var count = 0;
 
-            var result = Connection.Query<PointOfInterest, int, PointOfInterest>(sql,
-                (p, t) =>
-                {
-                    count = t;
-                    return p;
-                },
-                splitOn: "Total",
-                param: new { Active = active });
+            var result = this.Connection.Query<PointOfInterest, Category, int, PointOfInterest>(sqlQuery.ToString(),
+           (p, c, t) => { p.Category = c; count = t; return p; },
+           param: param,
+           transaction: this.Uow.Transaction,
+           splitOn: "Id, Id, Total");
+
             total = count;
+
             return result;
         }
     }

@@ -15,7 +15,7 @@ namespace Vale.Geographic.Application.Services
         PointOfInterestDto GetById(Guid id);
         PointOfInterestDto Insert(PointOfInterestDto obj);
         PointOfInterestDto Update(Guid id, PointOfInterestDto obj);
-        IEnumerable<PointOfInterestDto> Get(bool? active, IFilterParameters request, out int total);
+        IEnumerable<PointOfInterestDto> Get(bool? active, Guid categoryId, IFilterParameters request, out int total);
         IEnumerable<PointOfInterestDto> GetAll(IFilterParameters parameters, out int total);
     }
 }

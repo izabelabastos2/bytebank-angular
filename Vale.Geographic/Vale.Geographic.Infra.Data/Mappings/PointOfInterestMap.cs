@@ -20,6 +20,17 @@ namespace Vale.Geographic.Infra.Data.Mappings
             builder.Property(p => p.Name).IsRequired().HasColumnType("varchar(255)").HasMaxLength(255);
             builder.Property(p => p.Description).HasColumnType("varchar(255)").HasMaxLength(255);
             builder.Property(p => p.Location).HasColumnType("geography");
+
+
+            builder.HasOne<Category>(p => p.Category)
+                .WithMany()
+                .HasForeignKey(x => x.CategoryId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasOne<Area>(p => p.Area)
+                .WithMany()
+                .HasForeignKey(x => x.AreaId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

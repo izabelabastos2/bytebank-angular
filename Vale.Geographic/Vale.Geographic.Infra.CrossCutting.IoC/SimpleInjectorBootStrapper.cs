@@ -68,9 +68,9 @@ namespace Vale.Geographic.Infra.CrossCutting.IoC
             container.Register<DbContext, DatabaseContext>(Lifestyle.Scoped);
             container.Register<IUnitOfWork, UnitOfWork>(Lifestyle.Scoped);
 
-            //container.Register<IPersonSampleAppService, PersonSampleAppService>(Lifestyle.Scoped);
-            //container.Register<IPersonSampleService, PersonSampleService>(Lifestyle.Scoped);
-            //container.Register<IPersonSampleRepository, PersonSampleRepository>(Lifestyle.Scoped);
+            container.Register<IPersonSampleAppService, PersonSampleAppService>(Lifestyle.Scoped);
+            container.Register<IPersonSampleService, PersonSampleService>(Lifestyle.Scoped);
+            container.Register<IPersonSampleRepository, PersonSampleRepository>(Lifestyle.Scoped);
 
             container.Register<IAreaAppService, AreaAppService>(Lifestyle.Scoped);
             container.Register<IAreaService, AreaService>(Lifestyle.Scoped);
@@ -88,6 +88,10 @@ namespace Vale.Geographic.Infra.CrossCutting.IoC
             container.Register<ISegmentService, SegmentService>(Lifestyle.Scoped);
             container.Register<ISegmentRepository, SegmentRepository>(Lifestyle.Scoped);
 
+            container.Register<ICategoryAppService, CategoryAppService>(Lifestyle.Scoped);
+            container.Register<ICategoryService, CategoryService>(Lifestyle.Scoped);
+            container.Register<ICategoryRepository, CategoryRepository>(Lifestyle.Scoped);
+
 
             container.RegisterSingleton(() => GetMapper(container));
         }
@@ -97,7 +101,7 @@ namespace Vale.Geographic.Infra.CrossCutting.IoC
             var connectionString = configuration.GetConnectionString("DefaultConnection");
 
             services.AddDbContext<DatabaseContext>(
-                options => { options.UseSqlServer(connectionString); });
+                options => { options.UseSqlServer(connectionString, x => x.UseNetTopologySuite()); });
         }
 
         public void SetDefaultScopedLifestyle(ScopedLifestyle scope = null)
