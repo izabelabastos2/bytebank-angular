@@ -1,12 +1,12 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using Dapper.Contrib.Extensions;
+using System;
 
 namespace Vale.Geographic.Domain.Base
 {
     public class Entity
     {
-        [Key]
+        [ExplicitKey]
         public Guid Id { get; set; }
 
         [Required]
