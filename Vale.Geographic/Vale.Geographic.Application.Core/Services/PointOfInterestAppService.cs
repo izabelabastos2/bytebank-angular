@@ -83,6 +83,7 @@ namespace Vale.Geographic.Application.Core.Services
 
                 var json = JsonConvert.SerializeObject(obj.Location);
                 var geometryFactory = NtsGeometryServices.Instance.CreateGeometryFactory(srid: 4326);
+
                 pointOfInterest.Location = (Geometry) geometryFactory.CreateGeometry(new GeoJsonReader().Read<Geometry>(json));
                 pointOfInterest = pointOfInterestService.Insert(pointOfInterest);
 

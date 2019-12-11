@@ -10,7 +10,7 @@ namespace Vale.Geographic.Domain.Base.Interfaces
     {
         void Delete(Guid id);
         void Delete(TEntity obj);
-        Task<bool> DeleteAsync(TEntity obj);
+        void DeleteAsync(TEntity obj);
         void DeleteRange(ICollection<TEntity> t);
 
         TEntity GetById(Guid id);

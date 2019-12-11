@@ -82,7 +82,8 @@ namespace Vale.Geographic.Application.Core.Services
 
                 var json = JsonConvert.SerializeObject(obj.Location);
                 var geometryFactory = NtsGeometryServices.Instance.CreateGeometryFactory(srid: 4326);
-                area.Location = geometryFactory.CreateGeometry(new GeoJsonReader().Read<Geometry>(json));
+                
+                area.Location = (Geometry)geometryFactory.CreateGeometry(new GeoJsonReader().Read<Geometry>(json));
 
                 area = areaService.Insert(area);                
 
@@ -108,7 +109,6 @@ namespace Vale.Geographic.Application.Core.Services
                 foreach (var feature in obj.FeatureCollection.Features)
                 {
                     var area = Mapper.Map<Area>(feature);
-
                     area.CategoryId = obj.CategoryId;
 
                     var json = JsonConvert.SerializeObject(feature.Geometry);

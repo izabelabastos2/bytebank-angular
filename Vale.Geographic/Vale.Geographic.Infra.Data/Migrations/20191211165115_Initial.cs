@@ -1,16 +1,28 @@
 ﻿using System;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using NetTopologySuite.Geometries;
 
 namespace Vale.Geographic.Infra.Data.Migrations
 {
-    public partial class InitialCreate : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "PersonSamples");
+            migrationBuilder.CreateTable(
+                name: "Categorys",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime", nullable: false),
+                    LastUpdatedAt = table.Column<DateTime>(type: "datetime", nullable: false),
+                    Status = table.Column<bool>(type: "bit", nullable: false),
+                    TypeEntitie = table.Column<int>(nullable: false),
+                    Description = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Categorys", x => x.Id);
+                });
 
             migrationBuilder.CreateTable(
                 name: "Area",
@@ -23,11 +35,18 @@ namespace Vale.Geographic.Infra.Data.Migrations
                     Name = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: false),
                     Description = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: true),
                     Location = table.Column<Geometry>(type: "geography", nullable: false),
+                    CategoryId = table.Column<Guid>(nullable: true),
                     ParentId = table.Column<Guid>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Area", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Area_Categorys_CategoryId",
+                        column: x => x.CategoryId,
+                        principalTable: "Categorys",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Area_Area_ParentId",
                         column: x => x.ParentId,
@@ -46,8 +65,9 @@ namespace Vale.Geographic.Infra.Data.Migrations
                     Status = table.Column<bool>(type: "bit", nullable: false),
                     Name = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: false),
                     Description = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: true),
-                    Location = table.Column<Point>(type: "geography", nullable: false),
-                    AreaId = table.Column<Guid>(nullable: true)
+                    Location = table.Column<Geometry>(type: "geography", nullable: false),
+                    AreaId = table.Column<Guid>(nullable: false),
+                    CategoryId = table.Column<Guid>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -56,6 +76,12 @@ namespace Vale.Geographic.Infra.Data.Migrations
                         name: "FK_PointOfInterest_Area_AreaId",
                         column: x => x.AreaId,
                         principalTable: "Area",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_PointOfInterest_Categorys_CategoryId",
+                        column: x => x.CategoryId,
+                        principalTable: "Categorys",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -72,7 +98,7 @@ namespace Vale.Geographic.Infra.Data.Migrations
                     Description = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: true),
                     Length = table.Column<decimal>(type: "decimal(5,2)", nullable: false),
                     Location = table.Column<Geometry>(type: "geography", nullable: false),
-                    AreaId = table.Column<Guid>(nullable: true)
+                    AreaId = table.Column<Guid>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -98,7 +124,7 @@ namespace Vale.Geographic.Infra.Data.Migrations
                     Length = table.Column<decimal>(type: "decimal(5,2)", nullable: false),
                     Location = table.Column<Geometry>(type: "geography", nullable: false),
                     RouteId = table.Column<Guid>(nullable: false),
-                    AreaId = table.Column<Guid>(nullable: true)
+                    AreaId = table.Column<Guid>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -114,8 +140,13 @@ namespace Vale.Geographic.Infra.Data.Migrations
                         column: x => x.RouteId,
                         principalTable: "Route",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Area_CategoryId",
+                table: "Area",
+                column: "CategoryId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Area_ParentId",
@@ -126,6 +157,11 @@ namespace Vale.Geographic.Infra.Data.Migrations
                 name: "IX_PointOfInterest_AreaId",
                 table: "PointOfInterest",
                 column: "AreaId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PointOfInterest_CategoryId",
+                table: "PointOfInterest",
+                column: "CategoryId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Route_AreaId",
@@ -157,22 +193,8 @@ namespace Vale.Geographic.Infra.Data.Migrations
             migrationBuilder.DropTable(
                 name: "Area");
 
-            migrationBuilder.CreateTable(
-                name: "PersonSamples",
-                columns: table => new
-                {
-                    Id = table.Column<long>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Active = table.Column<bool>(nullable: false),
-                    DateBirth = table.Column<DateTime>(nullable: false),
-                    FirstName = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false),
-                    LastName = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false),
-                    Type = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PersonSamples", x => x.Id);
-                });
+            migrationBuilder.DropTable(
+                name: "Categorys");
         }
     }
 }

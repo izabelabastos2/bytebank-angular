@@ -28,59 +28,65 @@ namespace Vale.Geographic.Infra.Data.Base
         {
             var obj = Activator.CreateInstance<TEntity>();
             obj.Id = id;
-            Connection.Delete(obj, Uow.Transaction);
+            this.Uow.Context.Set<TEntity>().Remove(obj);
+            this.Uow.Context.SaveChanges();
         }
         public virtual void Delete(TEntity obj)
         {
-            Connection.Delete(obj, Uow.Transaction);
+            this.Uow.Context.Set<TEntity>().Remove(obj);
+            this.Uow.Context.SaveChanges();
         }
-        public virtual async Task<bool> DeleteAsync(TEntity obj)
+        public virtual async void DeleteAsync(TEntity obj)
         {
-            return await Connection.DeleteAsync(obj, Uow.Transaction);
+            this.Uow.Context.Set<TEntity>().Remove(obj);
+            await this.Uow.Context.SaveChangesAsync();
+
         }
         public virtual void DeleteRange(ICollection<TEntity> t)
         {
             this.Uow.Context.Set<TEntity>().RemoveRange(t);
+            this.Uow.Context.SaveChanges();
         }
-
 
         public virtual TEntity GetById(Guid id)
         {
-            return Connection.Get<TEntity>(id, Uow.Transaction);
+            return this.Uow.Context.Set<TEntity>().FirstOrDefault(o => o.Id == id);
         }
         public virtual async Task<TEntity> GetByIdAsync(Guid id)
         {
-            return await Connection.GetAsync<TEntity>(id, Uow.Transaction);
+            return await this.Uow.Context.Set<TEntity>().FirstOrDefaultAsync(o => o.Id == id);
         }
 
         public virtual TEntity Insert(TEntity obj)
         {
-            obj.Id = Guid.NewGuid();
-            Connection.Insert(obj, Uow.Transaction);
+            this.Uow.Context.Set<TEntity>().Add(obj);
+            this.Uow.Context.SaveChanges();
             return obj;
         }
         public virtual async Task<TEntity> InsertAsync(TEntity obj)
         {
-            obj.Id = Guid.NewGuid();
-            await Connection.InsertAsync(obj, Uow.Transaction);
+            this.Uow.Context.Set<TEntity>().Add(obj);
+            await this.Uow.Context.SaveChangesAsync();
             return obj;
         }
 
         public virtual TEntity Update(TEntity obj)
         {
-            Connection.Update(obj, Uow.Transaction);
-            return obj;
-        }
-        public virtual async Task<TEntity> UpdateAsync(TEntity obj)
-        {
-            await Connection.UpdateAsync(obj, Uow.Transaction);
+            this.Uow.Context.Set<TEntity>().Update(obj);
+            this.Uow.Context.SaveChanges();
             return obj;
         }
 
+        public virtual async Task<TEntity> UpdateAsync(TEntity obj)
+        {
+            this.Uow.Context.Set<TEntity>().Update(obj);
+            await this.Uow.Context.SaveChangesAsync();
+            return obj;
+        }
 
         public virtual IEnumerable<TEntity> GetAll()
         {
-            return Connection.GetAll<TEntity>(Uow.Transaction);
+            return Connection.GetAll<TEntity>((IDbTransaction)Uow.Transaction);
         }
         public virtual IQueryable<TEntity> GetAll(Expression<Func<TEntity, bool>> match, params string[] includeProperties)
         {
