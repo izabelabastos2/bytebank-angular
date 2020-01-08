@@ -2,6 +2,7 @@
 using System.Data;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Vale.Geographic.Domain.Base.Interfaces
 {
@@ -9,7 +10,7 @@ namespace Vale.Geographic.Domain.Base.Interfaces
     {
         IDbConnection Connection { get; }
         Guid Id { get; }
-        IDbTransaction Transaction { get; }
+        IDbContextTransaction Transaction { get; }
 
         DbContext Context { get; set; }
 

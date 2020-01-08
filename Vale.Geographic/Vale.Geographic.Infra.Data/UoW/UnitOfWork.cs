@@ -15,8 +15,8 @@ namespace Vale.Geographic.Infra.Data.UoW
 
         public Guid Id { get; set; }
 
-        public IDbTransaction Transaction { get; set; }
-        public IDbContextTransaction ContextTransaction { get; set; }
+        //public IDbTransaction Transaction { get; set; }
+        public IDbContextTransaction Transaction { get; set; }
         public bool ValidateEntity { get; set; }
 
         public UnitOfWork(IDbConnection connection, DbContext context)
@@ -29,17 +29,8 @@ namespace Vale.Geographic.Infra.Data.UoW
 
         public void BeginTransaction()
         {
-            if (Connection.State == ConnectionState.Open)
-            {
-                Transaction = Connection.BeginTransaction();
-            }
-            else
-            {
-                Connection.Open();
-                Transaction = Connection.BeginTransaction();
-            }
+           this.Transaction = Context.Database.BeginTransaction();           
         }
-
 
         public void Commit()
         {
