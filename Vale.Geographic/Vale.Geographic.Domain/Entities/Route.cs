@@ -1,16 +1,14 @@
-
-using System;
 using System.ComponentModel.DataAnnotations;
 using Vale.Geographic.Domain.Base;
-using NetTopologySuite.Geometries;
 using Dapper.Contrib.Extensions;
+using GeoAPI.Geometries;
+using System;
+using System.Collections.Generic;
 
 namespace Vale.Geographic.Domain.Entities
 {
     public class Route : Entity
     {
-        public Route() { }
-
         [Required]
         public string Name { get; set; }
         
@@ -20,15 +18,14 @@ namespace Vale.Geographic.Domain.Entities
         public double Length { get; set; }
         
         [Required]
-        public virtual Geometry Location { get; set; }
+        public virtual IGeometry Location { get; set; }
 
-        //public virtual List<Segment> Segments { get; set; }
-
-        public Guid AreaId { get; set; }
+        [Required]
+        public virtual Guid AreaId { get; set; }
 
         [Write(false)]
-        public Area Area { get; set; }
+        public virtual Area Area { get; set; }
 
-
+        public Route() { }
     }
 }
