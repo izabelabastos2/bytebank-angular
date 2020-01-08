@@ -1,6 +1,7 @@
 ﻿using Vale.Geographic.Domain.Repositories.Interfaces;
 using Vale.Geographic.Domain.Base.Interfaces;
 using Vale.Geographic.Application.Services;
+using Vale.Geographic.Domain.Enumerable;
 using Vale.Geographic.Application.Base;
 using Vale.Geographic.Application.Dto;
 using Vale.Geographic.Domain.Entities;
@@ -15,14 +16,14 @@ namespace Vale.Geographic.Application.Core.Services
 {
     public class CategoryAppService : AppService, ICategoryAppService
     {
-        private readonly ICategoryRepository CategoryRepository;
-        public ICategoryService CategoryService { get; set; }
+        private readonly ICategoryRepository categoryRepository;
+        public ICategoryService categoryService { get; set; }
 
         public CategoryAppService(IUnitOfWork uoW, IMapper mapper, ICategoryService categoryService,
             ICategoryRepository categoryRepository) : base(uoW, mapper)
         {
-            this.CategoryRepository = categoryRepository;
-            this.CategoryService = categoryService;
+            this.categoryRepository = categoryRepository;
+            this.categoryService = categoryService;
         }
 
         public void Delete(Guid id)
@@ -30,8 +31,13 @@ namespace Vale.Geographic.Application.Core.Services
             try
             {
                 UoW.BeginTransaction();
-                Category category = CategoryService.GetById(id);
-                CategoryService.Delete(Mapper.Map<Category>(category));
+                Category category = categoryService.GetById(id);
+
+                if (category == null)
+                    throw new ArgumentNullException();
+
+
+                categoryService.Delete(Mapper.Map<Category>(category));
                 UoW.Commit();
             }
             catch (Exception ex)
@@ -43,7 +49,14 @@ namespace Vale.Geographic.Application.Core.Services
 
         public CategoryDto GetById(Guid id)
         {
-            return Mapper.Map<CategoryDto>(CategoryService.GetById(id));
+            return Mapper.Map<CategoryDto>(categoryService.GetById(id));
+        }
+
+        public IEnumerable<CategoryDto> Get(Guid? id, bool? active, TypeEntitieEnum? TypeEntitie, IFilterParameters parameters, out int total)
+        {
+            IEnumerable<Category> categorys = categoryRepository.Get(id, out total, active, TypeEntitie, parameters);
+
+            return Mapper.Map<IEnumerable<CategoryDto>>(categorys);
         }
 
         public CategoryDto Insert(CategoryDto request)
@@ -52,7 +65,7 @@ namespace Vale.Geographic.Application.Core.Services
             {
                 UoW.BeginTransaction();
                 Category category = Mapper.Map<Category>(request);
-                category = CategoryService.Insert(category);
+                category = categoryService.Insert(category);
                 UoW.Commit();
 
                 return Mapper.Map<CategoryDto>(category);
@@ -70,9 +83,20 @@ namespace Vale.Geographic.Application.Core.Services
             try
             {
                 UoW.BeginTransaction();
+
+                var total = 0;
+
+                //var categoryOriginal = categoryRepository.GetById(id);
+                var categoryOriginal = categoryRepository.RecoverById(id);
+
+                if (categoryOriginal == null)
+                    throw new ArgumentNullException();
+
                 Category category = Mapper.Map<Category>(request);
                 category.Id = id;
-                category = CategoryService.Update(category);
+                category.CreatedAt = categoryOriginal.CreatedAt;
+
+                category = categoryService.Update(category);
                 UoW.Commit();
 
                 return Mapper.Map<CategoryDto>(category);
@@ -86,12 +110,13 @@ namespace Vale.Geographic.Application.Core.Services
 
         public IEnumerable<CategoryDto> GetAll(IFilterParameters parameters, out int total)
         {
-            IEnumerable<Category> category = CategoryRepository
+            IEnumerable<Category> category = categoryRepository
              .GetAll(x => true, parameters, new string[] { "Id" })
              .ApplyPagination(parameters, out total)
              .ToList();
 
             return Mapper.Map<IEnumerable<CategoryDto>>(category);
         }
+
     }
 }

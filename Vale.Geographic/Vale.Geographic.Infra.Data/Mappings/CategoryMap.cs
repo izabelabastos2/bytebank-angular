@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Microsoft.EntityFrameworkCore;
 using Vale.Geographic.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace Vale.Geographic.Infra.Data.Mappings
 {
@@ -15,8 +15,9 @@ namespace Vale.Geographic.Infra.Data.Mappings
             builder.Property(p => p.LastUpdatedAt).IsRequired().HasColumnType("datetime");
             builder.Property(p => p.Status).IsRequired().HasColumnType("bit");
 
-            builder.Property(p => p.Description).HasColumnType("varchar(255)").HasMaxLength(255);
+            builder.Property(p => p.Name).HasColumnType("varchar(255)").HasMaxLength(255);
             builder.Property(p => p.TypeEntitie).IsRequired();
+
         }
     }
 }

@@ -1,6 +1,6 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using Vale.Geographic.Domain.Enumerable;
+using System;
 
 namespace Vale.Geographic.Application.Dto
 {
@@ -8,16 +8,17 @@ namespace Vale.Geographic.Application.Dto
     {
         public Guid? Id { get; set; }
 
-        public DateTime CreatedAt { get; set; }
+        public DateTime? CreatedAt { get; set; }
 
-        public DateTime LastUpdatedAt { get; set; }
+        public DateTime? LastUpdatedAt { get; set; }
 
+        [Required]
         public bool Status { get; set; }
 
         [Required]
         public TypeEntitieEnum TypeEntitie { get; set; }
 
         [Required] 
-        public string Description { get; set; }
+        public string Name { get; set; }
     }
 }
