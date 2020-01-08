@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Net;
-using System.Threading.Tasks;
+﻿using Vale.Geographic.Application.Services;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Vale.Geographic.Api.Filters;
 using Vale.Geographic.Application.Base;
 using Vale.Geographic.Application.Dto;
-using Vale.Geographic.Application.Services;
+using Vale.Geographic.Api.Filters;
+using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc;
+using System;
 
 namespace Vale.Geographic.Api.Controllers
 {
@@ -44,14 +42,26 @@ namespace Vale.Geographic.Api.Controllers
         /// <response code="204">Segment deleted!</response>
         /// <response code="400">Segment has missing/invalid values</response>
         /// <response code="500">Oops! Can't list your area right now</response>
-        [HttpDelete("{id:int}")]
+        [HttpDelete("{id:GUID}")]
         [ProducesResponseType(typeof(void), 204)]
         [ProducesResponseType(typeof(Error), 400)]
         [ProducesResponseType(typeof(Error), 500)]
-        // [ClaimRequirement(RoleEnum.GestorDeEstoque)]
         public IActionResult Delete(Guid id)
         {
-            SegmentAppService.Delete(id);
+            try
+            {
+                SegmentAppService.Delete(id);
+            }
+            catch (ArgumentNullException)
+            {
+
+                return NotFound();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
             return NoContent();
         }
 
@@ -67,6 +77,9 @@ namespace Vale.Geographic.Api.Controllers
         ///     processo de gerenciamento do orçamento setorial.
         /// </remarks>
         /// <param name="active">Retrive all perssons are active or not</param>
+        /// <param name="id"></param>
+        /// <param name="areaId"></param>
+        /// <param name="routeId"></param>
         /// <param name="request">Filter parameters</param>
         /// <returns>Segments list have been solicited</returns>
         /// <response code="200">Segment list!</response>
@@ -76,19 +89,17 @@ namespace Vale.Geographic.Api.Controllers
         [ProducesResponseType(typeof(IEnumerable<SegmentDto>), 200)]
         [ProducesResponseType(typeof(Error), 400)]
         [ProducesResponseType(typeof(Error), 500)]
-        public IActionResult Get([FromQuery] bool? active, [FromQuery] FilterDto request)
+        public IActionResult Get([FromQuery] bool? active, Guid? id, Guid? areaId, Guid? routeId, FilterDto request)
         {
             var total = 0;
 
-            var result = SegmentAppService.Get(active, request, out total);
+            var result = SegmentAppService.Get(active, id, areaId, routeId, request, out total);
             Response.Headers.Add("X-Total-Count", total.ToString());
 
             return Ok(result);
         }
 
-
-
-
+               
         /// <summary>
         /// Get all Segment with paging, filtering and sorting.
         /// </summary>
@@ -129,7 +140,7 @@ namespace Vale.Geographic.Api.Controllers
         /// <response code="200">Segment!</response>
         /// <response code="400">Segment has missing/invalid values</response>
         /// <response code="500">Oops! Can't list your area right now</response>
-        [HttpGet("{id:int}")]
+        [HttpGet("{id:GUID}")]
         [ProducesResponseType(typeof(SegmentDto), 200)]
         [ProducesResponseType(typeof(Error), 400)]
         [ProducesResponseType(typeof(Error), 500)]
@@ -184,7 +195,7 @@ namespace Vale.Geographic.Api.Controllers
         /// <response code="200">Segment updated!</response>
         /// <response code="400">Segment has missing/invalid values</response>
         /// <response code="500">Oops! Can't list your area right now</response>
-        [HttpPut("{id:int}")]
+        [HttpPut("{id:GUID}")]
         [ProducesResponseType(typeof(SegmentDto), 200)]
         [ProducesResponseType(typeof(Error), 400)]
         [ProducesResponseType(typeof(Error), 500)]
@@ -193,7 +204,19 @@ namespace Vale.Geographic.Api.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            return Ok(SegmentAppService.Update(id, value));
+            try
+            {
+                return Ok(SegmentAppService.Update(id, value));
+            }
+            catch (ArgumentNullException)
+            {
+                return NotFound();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
         }
     }
 }

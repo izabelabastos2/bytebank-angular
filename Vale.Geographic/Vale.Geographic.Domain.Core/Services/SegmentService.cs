@@ -3,27 +3,41 @@ using FluentValidation;
 using Vale.Geographic.Domain.Base;
 using Vale.Geographic.Domain.Base.Interfaces;
 using Vale.Geographic.Domain.Core.Base;
+using Vale.Geographic.Domain.Repositories.Interfaces;
 using Vale.Geographic.Domain.Core.Validations;
 using Vale.Geographic.Domain.Entities;
-using Vale.Geographic.Domain.Repositories.Interfaces;
 using Vale.Geographic.Domain.Services;
 
 namespace Vale.Geographic.Domain.Core.Services
 {
     public class SegmentService : Service<Segment>, ISegmentService
     {
-        public SegmentService(IUnitOfWork context, ISegmentRepository rep) : base(context, rep)
+        public SegmentService(IUnitOfWork context, ISegmentRepository rep, IRouteRepository routeRepository, IAreaRepository areaRepository) : base(context, rep)
         {
-            Validator = new SegmentValidator();
+            Validator = new SegmentValidator(rep, routeRepository, areaRepository);
         }
-
 
         public override Segment Insert(Segment obj)
         {
+            obj.CreatedAt = DateTime.UtcNow;
+            obj.LastUpdatedAt = DateTime.UtcNow;
+            obj.Status = true;
+
             if (Context.ValidateEntity)
                 Validator.ValidateAndThrow(obj, "Insert");
 
             return Repository.Insert(obj);
         }
+
+        public override Segment Update(Segment obj)
+        {
+            obj.LastUpdatedAt = DateTime.UtcNow;
+
+            if (Context.ValidateEntity)
+                Validator.ValidateAndThrow(obj, "Update");
+
+            return Repository.Update(obj);
+        }
+
     }
 }

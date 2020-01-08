@@ -1,11 +1,18 @@
-﻿using FluentValidation;
+﻿using Vale.Geographic.Domain.Repositories.Interfaces;
 using Vale.Geographic.Domain.Entities;
+using GeoAPI.Geometries;
+using FluentValidation;
+using System;
 
 namespace Vale.Geographic.Domain.Core.Validations
 {
     public class SegmentValidator : AbstractValidator<Segment>
     {
-        public SegmentValidator()
+        private readonly ISegmentRepository segmentRepository;
+        private readonly IRouteRepository routeRepository;
+        private readonly IAreaRepository areaRepository;
+
+        public SegmentValidator(ISegmentRepository segmentRepository, IRouteRepository routeRepository, IAreaRepository areaRepository)
         {
             ValidateId();
             ValidateName();
@@ -13,6 +20,9 @@ namespace Vale.Geographic.Domain.Core.Validations
             ValidateCreatedAt();
             ValidateLastUpdatedAt();
             ValidateStatus();
+            ValidateLocation();
+            ValidateRouteId();
+            ValidateAreaId();
 
 
             RuleSet("Insert", () =>
@@ -22,6 +32,10 @@ namespace Vale.Geographic.Domain.Core.Validations
                 ValidateCreatedAt();
                 ValidateLastUpdatedAt();
                 ValidateStatus();
+                ValidateLocation();
+                ValidateRouteId();
+                ValidateAreaId();
+
             });
 
             RuleSet("Update", () =>
@@ -32,47 +46,90 @@ namespace Vale.Geographic.Domain.Core.Validations
                 ValidateCreatedAt();
                 ValidateLastUpdatedAt();
                 ValidateStatus();
+                ValidateLocation();
+                ValidateRouteId();
+                ValidateAreaId();
             });
 
+            this.segmentRepository = segmentRepository;
+            this.routeRepository = routeRepository;
+            this.areaRepository = areaRepository;
         }
 
         #region Validações de campos
 
         private void ValidateId()
         {
-            RuleFor(o => o.Id).NotEmpty().WithMessage(Resources.Validations.PersonSampleIdRequired);
+            RuleFor(o => o.Id)
+              .NotEmpty().WithMessage(Resources.Validations.SegmentIdRequired)
+              .Must(ExistingSegment).WithMessage(Resources.Validations.SegmentNotFound);
         }
 
         private void ValidateName()
         {
             RuleFor(o => o.Name)
-                .NotEmpty().WithMessage(Resources.Validations.PersonSampleFirstNameRequired)
-                .Length(1, 50).WithMessage(Resources.Validations.PersonSampleFirstNameLength);
+                .NotEmpty().WithMessage(Resources.Validations.SegmentNameRequired)
+                .Length(1, 150).WithMessage(Resources.Validations.SegmentNameLength);
         }
 
         private void ValidateDescription()
         {
             RuleFor(o => o.Description)
-                .NotEmpty().WithMessage(Resources.Validations.PersonSampleLastNameRequired)
-                .Length(1, 50).WithMessage(Resources.Validations.PersonSampleLastNameLength);
+                .Length(1, 255).When(x => !string.IsNullOrWhiteSpace(x.Description)).WithMessage(Resources.Validations.SegmentDescriptionLength);
         }
 
         private void ValidateCreatedAt()
         {
             RuleFor(o => o.CreatedAt)
-                .NotEmpty().WithMessage(Resources.Validations.PersonSampleDateBirthRequired);
+                .NotEmpty().WithMessage(Resources.Validations.SegmentCreatedAtRequired);
         }
 
         private void ValidateLastUpdatedAt()
         {
             RuleFor(o => o.LastUpdatedAt)
-                .NotEmpty().WithMessage(Resources.Validations.PersonSampleDateBirthRequired);
+                .NotEmpty().WithMessage(Resources.Validations.SegmentLastUpdatedAtRequired);
         }
 
         private void ValidateStatus()
         {
             RuleFor(o => o.Status)
-                .NotEmpty().WithMessage(Resources.Validations.PersonSampleTypeRequired);
+                .NotNull().WithMessage(Resources.Validations.SegmentStatusRequired);
+        }
+        
+        private void ValidateLocation()
+        {
+            RuleFor(o => o.Location)
+                .NotEmpty().WithMessage(Resources.Validations.SegmentLocationRequired);
+        }
+
+        private void ValidateAreaId()
+        {
+            RuleFor(o => o.AreaId)
+                .NotEmpty().WithMessage(Resources.Validations.SegmentAreaIdRequired)
+                .Must(ExistingArea).WithMessage(Resources.Validations.AreaNotFound);
+        }
+
+        private void ValidateRouteId()
+        {
+            RuleFor(o => o.RouteId)
+                .NotEmpty().WithMessage(Resources.Validations.SegmentRouteIdRequired)
+                .Must(ExistingRoute).WithMessage(Resources.Validations.RouteNotFound);
+        }
+
+        private bool ExistingArea(Guid areaId)
+        {
+            return areaRepository.GetById(areaId) != null ? true : false;
+        }
+
+        private bool ExistingRoute(Guid Id)
+        {
+            return routeRepository.GetById(Id) != null ? true : false;
+        }
+
+        private bool ExistingSegment(Guid Id)
+        {
+         //   return segmentRepository.GetById(Id) != null ? true : false;
+            return segmentRepository.RecoverById(Id) != null ? true : false;
         }
 
         #endregion Validações de campos
