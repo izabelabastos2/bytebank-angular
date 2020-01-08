@@ -1,11 +1,19 @@
-﻿using FluentValidation;
+﻿using Vale.Geographic.Domain.Repositories.Interfaces;
+using Vale.Geographic.Domain.Enumerable;
 using Vale.Geographic.Domain.Entities;
+using GeoAPI.Geometries;
+using FluentValidation;
+using System.Linq;
+using System;
 
 namespace Vale.Geographic.Domain.Core.Validations
 {
     public class AreaValidator : AbstractValidator<Area>
     {
-        public AreaValidator()
+        private readonly ICategoryRepository categoryRepository;
+        private readonly IAreaRepository areaRepository;
+
+        public AreaValidator(IAreaRepository areaRepository, ICategoryRepository categoryRepository)
         {
             ValidateId();
             ValidateName();
@@ -13,15 +21,25 @@ namespace Vale.Geographic.Domain.Core.Validations
             ValidateCreatedAt();
             ValidateLastUpdatedAt();
             ValidateStatus();
+            ValidateLocation();
+            ValidateParentId();
+            ValidateCategoryId();
+            ValidateCategory();
+            ValidateAreaDuplicate();
 
 
             RuleSet("Insert", () =>
             {
-               // ValidateName();
-               // ValidateDescription();
+                ValidateName();
+                ValidateDescription();
                 ValidateCreatedAt();
                 ValidateLastUpdatedAt();
-              //  ValidateStatus();
+                ValidateStatus();
+                ValidateLocation();
+                ValidateParentId();
+                ValidateCategoryId();
+                ValidateCategory();
+                ValidateAreaDuplicate();
             });
 
             RuleSet("Update", () =>
@@ -32,47 +50,107 @@ namespace Vale.Geographic.Domain.Core.Validations
                 ValidateCreatedAt();
                 ValidateLastUpdatedAt();
                 ValidateStatus();
+                ValidateLocation();
+                ValidateParentId();
+                ValidateCategoryId();
+                ValidateCategory();
             });
 
+            this.areaRepository = areaRepository;
+            this.categoryRepository = categoryRepository;
         }
 
         #region Validações de campos
 
         private void ValidateId()
         {
-            RuleFor(o => o.Id).NotEmpty().WithMessage(Resources.Validations.PersonSampleIdRequired);
+            RuleFor(o => o.Id)
+                .NotEmpty().WithMessage(Resources.Validations.AreaIdRequired)
+                .Must(ExistingArea).WithMessage(Resources.Validations.AreaNotFound);            
         }
 
         private void ValidateName()
         {
             RuleFor(o => o.Name)
-                .NotEmpty().WithMessage(Resources.Validations.PersonSampleFirstNameRequired)
-                .Length(1, 50).WithMessage(Resources.Validations.PersonSampleFirstNameLength);
+                .NotEmpty().WithMessage(Resources.Validations.AreaNameRequired)
+                .Length(1, 150).WithMessage(Resources.Validations.AreaNameLength);
         }
 
         private void ValidateDescription()
         {
             RuleFor(o => o.Description)
-                .NotEmpty().WithMessage(Resources.Validations.PersonSampleLastNameRequired)
-                .Length(1, 50).WithMessage(Resources.Validations.PersonSampleLastNameLength);
+               .Length(1, 255).When(x => !string.IsNullOrWhiteSpace(x.Description)).WithMessage(Resources.Validations.AreaDescriptionLength);
         }
 
         private void ValidateCreatedAt()
         {
             RuleFor(o => o.CreatedAt)
-                .NotEmpty().WithMessage(Resources.Validations.PersonSampleDateBirthRequired);
+                .NotEmpty().WithMessage(Resources.Validations.AreaCreatedAtRequired);
         }
 
         private void ValidateLastUpdatedAt()
         {
             RuleFor(o => o.LastUpdatedAt)
-                .NotEmpty().WithMessage(Resources.Validations.PersonSampleDateBirthRequired);
+                .NotEmpty().WithMessage(Resources.Validations.AreaLastUpdatedAtRequired);
         }
 
         private void ValidateStatus()
         {
             RuleFor(o => o.Status)
-                .NotEmpty().WithMessage(Resources.Validations.PersonSampleTypeRequired);
+                .NotNull().WithMessage(Resources.Validations.AreaStatusRequired);
+        }
+
+        private void ValidateLocation()
+        {
+            RuleFor(o => o.Location)
+                .NotEmpty().WithMessage(Resources.Validations.AreaLocationRequired)
+                .Must(x => !x.OgcGeometryType.Equals(OgcGeometryType.Point)).WithMessage(Resources.Validations.AreaLocationInvalid);
+        }
+
+        private void ValidateParentId()
+        {
+            RuleFor(o => o.ParentId.Value)
+               .Must(ExistingArea).When(x => x.ParentId != null).WithMessage(Resources.Validations.AreaNotFound);
+        }
+
+        private void ValidateCategoryId()
+        {
+            RuleFor(o => o.CategoryId)           
+                .Must(ExistingCategory).When(x => x.CategoryId != null).WithMessage(Resources.Validations.CategoryNotFound);
+        }
+
+        private void ValidateCategory()
+        {
+            RuleFor(o => o.Category)
+                .Must(x => x.TypeEntitie.Equals(TypeEntitieEnum.Area)).When(x => x.Category != null).WithMessage(Resources.Validations.AreaCategoryInvalid); 
+        }
+
+        private void ValidateParent()
+        {
+            RuleFor(o => o.Parent)
+               .Must(x => ExistingArea(x.Id)).When(x => x.ParentId != null).WithMessage(Resources.Validations.AreaNotFound);
+        }
+
+        private void ValidateAreaDuplicate()
+        {
+            RuleFor(x => x).Must(x => NotExistingArea(x)).WithMessage(Resources.Validations.AreaExisting);
+        }
+
+        private bool ExistingArea(Guid areaId)
+        {
+            //return areaRepository.GetById(areaId) != null ? true : false;
+            return areaRepository.RecoverById(areaId) != null ? true : false;
+        }
+
+        private bool NotExistingArea(Area area)
+        {
+            return areaRepository.Get(area.Id, out int total, area.Location).Count() == 0;
+        }
+
+        private bool ExistingCategory(Guid? categoryId)
+        {
+            return categoryRepository.GetById(categoryId.Value) != null ? true : false;
+            //return categoryRepository.Get(categoryId.Value, out int total, true) != null ? true : false;
         }
 
         #endregion Validações de campos

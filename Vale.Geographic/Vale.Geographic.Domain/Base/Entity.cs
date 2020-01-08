@@ -10,10 +10,10 @@ namespace Vale.Geographic.Domain.Base
         public Guid Id { get; set; }
 
         [Required]
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime CreatedAt { get; set; }
 
         [Required]
-        public DateTime LastUpdatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime LastUpdatedAt { get; set; }
 
         [Required]
         public bool Status { get; set; }

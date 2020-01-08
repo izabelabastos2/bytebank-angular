@@ -2,7 +2,6 @@
 using Vale.Geographic.Application.Dto;
 using Vale.Geographic.Domain.Services;
 using System.Collections.Generic;
-using GeoJSON.Net.Geometry;
 using System;
 
 namespace Vale.Geographic.Application.Services
@@ -15,8 +14,8 @@ namespace Vale.Geographic.Application.Services
         AreaDto GetById(Guid id);
         AreaDto Insert(AreaDto obj);
         AreaDto Update(Guid id, AreaDto obj);
-        IEnumerable<AreaDto> Get(bool? active, Guid categoryId, Point location, IFilterParameters request, out int total);
+        IEnumerable<AreaDto> Get(bool? active, Guid? id, Guid? categoryId, Guid? parentId, double? longitude, double? latitude, double? altitude, IFilterParameters request, out int total);
         IEnumerable<AreaDto> GetAll(IFilterParameters parameters, out int total);
-        IEnumerable<AreaDto> Insert(GeoJsonDto GeoJson);
+        IEnumerable<AreaDto> Insert(CollectionAreaDto obj);
     }
 }

@@ -8,7 +8,9 @@ using Vale.Geographic.Domain.Services;
 using Vale.Geographic.Infra.Data.Base;
 using NetTopologySuite.Geometries;
 using System.Collections.Generic;
+using GeoJSON.Net.Geometry;
 using NetTopologySuite.IO;
+using GeoAPI.Geometries;
 using NetTopologySuite;
 using Newtonsoft.Json;
 using System.Linq;
@@ -19,25 +21,28 @@ namespace Vale.Geographic.Application.Core.Services
 {
     public class AreaAppService : AppService, IAreaAppService
     {
-        private readonly IAreaRepository _areaRepository;
+        private readonly IAreaRepository areaRepository;
 
         public AreaAppService(IUnitOfWork uoW, IMapper mapper, IAreaService areaService,
             IAreaRepository areaRepository) : base(uoW, mapper)
         {
             this.areaService = areaService;
-            this._areaRepository = areaRepository;
+            this.areaRepository = areaRepository;
         }
 
         public IAreaService areaService { get; set; }
-
 
         public void Delete(Guid id)
         {
             try
             {
                 UoW.BeginTransaction();
-                var obj = areaService.GetById(id);
-                areaService.Delete(Mapper.Map<Area>(obj));
+                Area area = areaService.GetById(id);
+
+                if (area == null)
+                    throw new ArgumentNullException();
+
+                areaService.Delete(Mapper.Map<Area>(area));
                 UoW.Commit();
             }
             catch (Exception ex)
@@ -47,7 +52,6 @@ namespace Vale.Geographic.Application.Core.Services
             }
         }
 
-
         public AreaDto GetById(Guid id)
         {
             return Mapper.Map<AreaDto>(areaService.GetById(id));
@@ -55,10 +59,9 @@ namespace Vale.Geographic.Application.Core.Services
 
         public IEnumerable<AreaDto> GetAll(IFilterParameters parameters, out int total)
         {
-
-            var query = _areaRepository
+            IEnumerable<Area> query = areaRepository
                 .GetAll(x => true, parameters,
-                    new string[] { "FirstName", "LastName", "Type" })
+                    new string[] { "CategoryId", "Status", "ParentId" })
                 .ApplyPagination(parameters, out total)
                 .ToList();
 
@@ -66,10 +69,22 @@ namespace Vale.Geographic.Application.Core.Services
 
         }
 
-        public IEnumerable<AreaDto> Get(bool? active, Guid categoryId, GeoJSON.Net.Geometry.Point location, IFilterParameters request, out int total)
+        public IEnumerable<AreaDto> Get(bool? active, Guid? id, Guid? categoryId, Guid? parentId, double? longitude, double? latitude, double? altitude, IFilterParameters request, out int total)
         {
-            return Mapper.Map<IEnumerable<AreaDto>>(_areaRepository.Get(active, categoryId, request.sort,
-                request.page, request.per_page, out total));
+            IGeometry point = null;
+
+            if (longitude.HasValue && latitude.HasValue)
+            {
+                var coordenate = new GeoJSON.Net.Geometry.Point(new Position(latitude.Value, longitude.Value, altitude));
+                var json = JsonConvert.SerializeObject(coordenate);
+                var geometryFactory = NtsGeometryServices.Instance.CreateGeometryFactory(srid: 4326);
+
+                point = (Geometry)geometryFactory.CreateGeometry(new GeoJsonReader().Read<Geometry>(json));
+            }
+
+            IEnumerable<Area> areas = areaRepository.Get(id, out total, null, point, active, categoryId, parentId, request);
+
+            return Mapper.Map<IEnumerable<AreaDto>>(areas);
         }
 
         public AreaDto Insert(AreaDto obj)
@@ -80,12 +95,11 @@ namespace Vale.Geographic.Application.Core.Services
 
                 Area area = Mapper.Map<Area>(obj);
 
-                var json = JsonConvert.SerializeObject(obj.Location);
-                var geometryFactory = NtsGeometryServices.Instance.CreateGeometryFactory(srid: 4326);
-                
+                var json = JsonConvert.SerializeObject(obj.Geojson.Geometry);
+                var geometryFactory = NtsGeometryServices.Instance.CreateGeometryFactory(srid: 4326);                
                 area.Location = (Geometry)geometryFactory.CreateGeometry(new GeoJsonReader().Read<Geometry>(json));
 
-                area = areaService.Insert(area);                
+                area = areaService.Insert(area);               
 
                 UoW.Commit();
 
@@ -98,7 +112,7 @@ namespace Vale.Geographic.Application.Core.Services
             }
         }
 
-        public IEnumerable<AreaDto> Insert(GeoJsonDto obj)
+        public IEnumerable<AreaDto> Insert(CollectionAreaDto obj)
         {
             try
             {
@@ -106,16 +120,17 @@ namespace Vale.Geographic.Application.Core.Services
 
                 List<Area> areas = new List<Area>();
 
-                foreach (var feature in obj.FeatureCollection.Features)
+                foreach (var feature in obj.Geojson.Features)
                 {
-                    var area = Mapper.Map<Area>(feature);
+                    Area area = Mapper.Map<Area>(feature);
                     area.CategoryId = obj.CategoryId;
+                    area.ParentId = obj.ParentId;
 
                     var json = JsonConvert.SerializeObject(feature.Geometry);
                     var geometryFactory = NtsGeometryServices.Instance.CreateGeometryFactory(srid: 4326);
-                    area.Location = (Geometry) geometryFactory.CreateGeometry(new GeoJsonReader().Read<Geometry>(json));                    
-
-                    areas.Add(areaService.Insert(area));
+                    area.Location = (Geometry) geometryFactory.CreateGeometry(new GeoJsonReader().Read<Geometry>(json)).Normalized().Reverse();
+                           
+                    areas.Add(areaService.Insert(area));                                  
                 }
 
                 UoW.Commit();
@@ -135,12 +150,25 @@ namespace Vale.Geographic.Application.Core.Services
             {
                 UoW.BeginTransaction();
 
-                var Area = Mapper.Map<Area>(obj);
-                Area.Id = id;
-                Area = areaService.Update(Area);
+                //var areaOriginal = areaService.GetById(id);
+                var areaOriginal = areaRepository.RecoverById(id);
+
+                if (areaOriginal == null)
+                    throw new ArgumentNullException();
+
+                Area area = Mapper.Map<Area>(obj);
+                area.Id = id;
+                area.CreatedAt = areaOriginal.CreatedAt;
+
+                var json = JsonConvert.SerializeObject(obj.Geojson.Geometry);
+                var geometryFactory = NtsGeometryServices.Instance.CreateGeometryFactory(srid: 4326);
+                area.Location = (Geometry)geometryFactory.CreateGeometry(new GeoJsonReader().Read<Geometry>(json));
+
+                area = areaService.Update(area);
 
                 UoW.Commit();
-                return Mapper.Map<AreaDto>(Area);
+
+                return Mapper.Map<AreaDto>(area);
             }
             catch (Exception ex)
             {

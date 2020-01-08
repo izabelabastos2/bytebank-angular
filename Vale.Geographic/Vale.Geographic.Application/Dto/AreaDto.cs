@@ -1,8 +1,6 @@
-using GeoAPI.Geometries;
-using GeoJSON.Net.Feature;
-using GeoJSON.Net.Geometry;
-using System;
 using System.ComponentModel.DataAnnotations;
+using GeoJSON.Net.Feature;
+using System;
 
 namespace Vale.Geographic.Application.Dto
 {
@@ -10,29 +8,29 @@ namespace Vale.Geographic.Application.Dto
     {
         public Guid? Id { get; set; }
 
-        public DateTime CreatedAt { get; set; }
+        public DateTime? CreatedAt { get; set; }
 
-        public DateTime LastUpdatedAt { get; set; }
+        public DateTime? LastUpdatedAt { get; set; }
 
+        [Required]
         public bool Status { get; set; }
 
+        [Required]
         public string Name { get; set; }
 
         public string Description { get; set; }
 
-      //  [Required]
-        //public virtual IGeometry Location { get; set; }
-
-       // [Required]
-       // public virtual Feature GeoJson { get; set; }
-
-        public virtual MultiPolygon Location { get; set; }
+        [Required]
+        public Feature Geojson { get; set; }
 
         public Guid? CategoryId { get; set; }
 
         public CategoryDto Category { get; set; }
 
-        public virtual AreaDto Parent { get; set; }
+        public Guid? ParentId { get; set; }
+
+        public AreaDto Parent { get; set; }
+
     }
 }
 
