@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Net;
-using System.Threading.Tasks;
+﻿using Vale.Geographic.Application.Services;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Vale.Geographic.Api.Filters;
 using Vale.Geographic.Application.Base;
 using Vale.Geographic.Application.Dto;
-using Vale.Geographic.Application.Services;
+using Vale.Geographic.Api.Filters;
+using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc;
+using System;
 
 namespace Vale.Geographic.Api.Controllers
 {
@@ -44,14 +42,27 @@ namespace Vale.Geographic.Api.Controllers
         /// <response code="204">PointOfInterest deleted!</response>
         /// <response code="400">PointOfInterest has missing/invalid values</response>
         /// <response code="500">Oops! Can't list your area right now</response>
-        [HttpDelete("{id:int}")]
+        [HttpDelete("{id:GUID}")]
         [ProducesResponseType(typeof(void), 204)]
         [ProducesResponseType(typeof(Error), 400)]
         [ProducesResponseType(typeof(Error), 500)]
-        // [ClaimRequirement(RoleEnum.GestorDeEstoque)]
         public IActionResult Delete(Guid id)
         {
-            PointOfInterestAppService.Delete(id);
+            try
+            {
+                PointOfInterestAppService.Delete(id);
+
+            }
+            catch (ArgumentNullException)
+            {
+
+                return NotFound();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
             return NoContent();
         }
 
@@ -66,8 +77,13 @@ namespace Vale.Geographic.Api.Controllers
         ///     metodologias que nos auxiliam a lidar com o início da atividade geral de formação de atitudes faz parte de um
         ///     processo de gerenciamento do orçamento setorial.
         /// </remarks>
-        /// <param name="active">Retrive all perssons are active or not</param>
+        /// <param name="active">Retrive all points are active or not</param>
+        /// <param name="categoryId"></param>
+        /// <param name="areaId"></param>
         /// <param name="request">Filter parameters</param>
+        /// <param name="longitude"></param>
+        /// <param name="latitude"></param>
+        /// <param name="altitude"></param>
         /// <returns>PointOfInterests list have been solicited</returns>
         /// <response code="200">PointOfInterest list!</response>
         /// <response code="400">PointOfInterest has missing/invalid values</response>
@@ -76,16 +92,15 @@ namespace Vale.Geographic.Api.Controllers
         [ProducesResponseType(typeof(IEnumerable<PointOfInterestDto>), 200)]
         [ProducesResponseType(typeof(Error), 400)]
         [ProducesResponseType(typeof(Error), 500)]
-        public IActionResult Get([FromQuery] bool? active, Guid categoryId, [FromQuery] FilterDto request)
+        public IActionResult Get([FromQuery] bool? active, Guid? Id, Guid? categoryId, Guid? areaId, FilterDto request, double? longitude, double? latitude, double? altitude)
         {
             var total = 0;
 
-            var result = PointOfInterestAppService.Get(active, categoryId, request, out total);
+            var result = PointOfInterestAppService.Get(active, Id, categoryId, areaId, longitude, latitude, altitude, request, out total);
             Response.Headers.Add("X-Total-Count", total.ToString());
 
             return Ok(result);
         }
-
 
 
         /// <summary>
@@ -128,7 +143,7 @@ namespace Vale.Geographic.Api.Controllers
         /// <response code="200">PointOfInterest!</response>
         /// <response code="400">PointOfInterest has missing/invalid values</response>
         /// <response code="500">Oops! Can't list your area right now</response>
-        [HttpGet("{id:int}")]
+        [HttpGet("{id:GUID}")]
         [ProducesResponseType(typeof(PointOfInterestDto), 200)]
         [ProducesResponseType(typeof(Error), 400)]
         [ProducesResponseType(typeof(Error), 500)]
@@ -167,6 +182,19 @@ namespace Vale.Geographic.Api.Controllers
         }
 
 
+        [HttpPost("LargeScale")]
+        [ProducesResponseType(typeof(CollectionPointOfInterestDto), 201)]
+        [ProducesResponseType(typeof(Error), 400)]
+        [ProducesResponseType(typeof(Error), 500)]
+        public IActionResult PostLargeScale([FromBody] CollectionPointOfInterestDto obj)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var response = PointOfInterestAppService.Insert(obj);
+            return Created("", response);
+        }
+
         /// <summary>
         ///     Update a PointOfInterest
         /// </summary>
@@ -183,7 +211,7 @@ namespace Vale.Geographic.Api.Controllers
         /// <response code="200">PointOfInterest updated!</response>
         /// <response code="400">PointOfInterest has missing/invalid values</response>
         /// <response code="500">Oops! Can't list your area right now</response>
-        [HttpPut("{id:int}")]
+        [HttpPut("{id:GUID}")]
         [ProducesResponseType(typeof(PointOfInterestDto), 200)]
         [ProducesResponseType(typeof(Error), 400)]
         [ProducesResponseType(typeof(Error), 500)]
@@ -192,7 +220,19 @@ namespace Vale.Geographic.Api.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            return Ok(PointOfInterestAppService.Update(id, value));
+            try
+            {
+                return Ok(PointOfInterestAppService.Update(id, value));
+            }
+            catch (ArgumentNullException)
+            {
+                return NotFound();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
         }
     }
 }

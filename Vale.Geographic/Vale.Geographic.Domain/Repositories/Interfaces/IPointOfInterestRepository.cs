@@ -1,12 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using Vale.Geographic.Domain.Base.Interfaces;
+﻿using Vale.Geographic.Domain.Base.Interfaces;
 using Vale.Geographic.Domain.Entities;
+using System.Collections.Generic;
+using GeoAPI.Geometries;
+using System;
 
 namespace Vale.Geographic.Domain.Repositories.Interfaces
 {
     public interface IPointOfInterestRepository : IRepository<PointOfInterest>
     {
-        IEnumerable<PointOfInterest> Get(bool? active, Guid categoryId, string sort, int page, int per_page, out int total);
+        IEnumerable<PointOfInterest> Get(Guid? Id, out int total, IGeometry location = null, IGeometry point = null, bool? active = null, Guid? categoryId = null, Guid? areaId = null, IFilterParameters parameters = null);
+        PointOfInterest RecoverById(Guid Id);
     }
 }
