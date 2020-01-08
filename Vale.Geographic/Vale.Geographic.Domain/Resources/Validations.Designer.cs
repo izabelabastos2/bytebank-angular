@@ -8,12 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Vale.Geographic.Domain.Resources
-{
+namespace Vale.Geographic.Domain.Resources {
     using System;
-    using System.Diagnostics.CodeAnalysis;
-
-
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -24,138 +22,617 @@ namespace Vale.Geographic.Domain.Resources
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [ExcludeFromCodeCoverage]
-    public class Validations
-    {
-
+    public class Validations {
+        
         private static global::System.Resources.ResourceManager resourceMan;
-
+        
         private static global::System.Globalization.CultureInfo resourceCulture;
-
+        
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal Validations()
-        {
+        internal Validations() {
         }
-
+        
         /// <summary>
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static global::System.Resources.ResourceManager ResourceManager
-        {
-            get
-            {
-                if (object.ReferenceEquals(resourceMan, null))
-                {
+        public static global::System.Resources.ResourceManager ResourceManager {
+            get {
+                if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Vale.Geographic.Domain.Resources.Validations", typeof(Validations).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
             }
         }
-
+        
         /// <summary>
         ///   Overrides the current thread's CurrentUICulture property for all
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static global::System.Globalization.CultureInfo Culture
-        {
-            get
-            {
+        public static global::System.Globalization.CultureInfo Culture {
+            get {
                 return resourceCulture;
             }
-            set
-            {
+            set {
                 resourceCulture = value;
             }
         }
-
+        
         /// <summary>
-        ///   Looks up a localized string similar to Por favor, informe a data de nascimento da pessoa..
+        ///   Looks up a localized string similar to Por favor, informe uma categoria válida..
         /// </summary>
-        public static string PersonSampleAgeRequired
-        {
-            get
-            {
+        public static string AreaCategoryInvalid {
+            get {
+                return ResourceManager.GetString("AreaCategoryInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Por favor, informe a data de criação da area..
+        /// </summary>
+        public static string AreaCreatedAtRequired {
+            get {
+                return ResourceManager.GetString("AreaCreatedAtRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A descrição da area não pode ter mais do que 255 caracteres..
+        /// </summary>
+        public static string AreaDescriptionLength {
+            get {
+                return ResourceManager.GetString("AreaDescriptionLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Area existente..
+        /// </summary>
+        public static string AreaExisting {
+            get {
+                return ResourceManager.GetString("AreaExisting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Por favor, informe o ID da area.
+        /// </summary>
+        public static string AreaIdRequired {
+            get {
+                return ResourceManager.GetString("AreaIdRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Por favor, informe a ultima data de atualização da area..
+        /// </summary>
+        public static string AreaLastUpdatedAtRequired {
+            get {
+                return ResourceManager.GetString("AreaLastUpdatedAtRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Por favor, informe uma localização válida..
+        /// </summary>
+        public static string AreaLocationInvalid {
+            get {
+                return ResourceManager.GetString("AreaLocationInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Por favor, informe a localização da area..
+        /// </summary>
+        public static string AreaLocationRequired {
+            get {
+                return ResourceManager.GetString("AreaLocationRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to O nome da area não pode ter mais do que 255 caracteres..
+        /// </summary>
+        public static string AreaNameLength {
+            get {
+                return ResourceManager.GetString("AreaNameLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Por favor, informe o nome da area..
+        /// </summary>
+        public static string AreaNameRequired {
+            get {
+                return ResourceManager.GetString("AreaNameRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Area não encontrada..
+        /// </summary>
+        public static string AreaNotFound {
+            get {
+                return ResourceManager.GetString("AreaNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Por favor, informe o status da area..
+        /// </summary>
+        public static string AreaStatusRequired {
+            get {
+                return ResourceManager.GetString("AreaStatusRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Por favor, informe a data de criação da categoria..
+        /// </summary>
+        public static string CategoryCreatedAtRequired {
+            get {
+                return ResourceManager.GetString("CategoryCreatedAtRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Por favor, informe o ID da categoria..
+        /// </summary>
+        public static string CategoryIdRequired {
+            get {
+                return ResourceManager.GetString("CategoryIdRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Por favor, informe a última data de atualização da categoria.
+        /// </summary>
+        public static string CategoryLastUpdatedAtRequired {
+            get {
+                return ResourceManager.GetString("CategoryLastUpdatedAtRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A nome da categoria não pode ter mais do que 255 caracteres..
+        /// </summary>
+        public static string CategoryNameLength {
+            get {
+                return ResourceManager.GetString("CategoryNameLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Por favor, informe a nome da categoria..
+        /// </summary>
+        public static string CategoryNameRequired {
+            get {
+                return ResourceManager.GetString("CategoryNameRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Categoria não encontrada..
+        /// </summary>
+        public static string CategoryNotFound {
+            get {
+                return ResourceManager.GetString("CategoryNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Por favor, informe o status da categoria..
+        /// </summary>
+        public static string CategoryStatusRequired {
+            get {
+                return ResourceManager.GetString("CategoryStatusRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Por favor, informe o tipo de categoria..
+        /// </summary>
+        public static string CategoryTypeRequired {
+            get {
+                return ResourceManager.GetString("CategoryTypeRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Por favor, informe idade da pessoa..
+        /// </summary>
+        public static string PersonSampleAgeRequired {
+            get {
                 return ResourceManager.GetString("PersonSampleAgeRequired", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Por favor, informe a data de nascimento da pessoa..
         /// </summary>
-        public static string PersonSampleDateBirthRequired
-        {
-            get
-            {
+        public static string PersonSampleDateBirthRequired {
+            get {
                 return ResourceManager.GetString("PersonSampleDateBirthRequired", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to O nome não pode ter mais do que 50 caracters..
         /// </summary>
-        public static string PersonSampleFirstNameLength
-        {
-            get
-            {
+        public static string PersonSampleFirstNameLength {
+            get {
                 return ResourceManager.GetString("PersonSampleFirstNameLength", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Por favor, informe o primeiro nome da pessoa..
         /// </summary>
-        public static string PersonSampleFirstNameRequired
-        {
-            get
-            {
+        public static string PersonSampleFirstNameRequired {
+            get {
                 return ResourceManager.GetString("PersonSampleFirstNameRequired", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Por favor, informe o ID da pessoa..
         /// </summary>
-        public static string PersonSampleIdRequired
-        {
-            get
-            {
+        public static string PersonSampleIdRequired {
+            get {
                 return ResourceManager.GetString("PersonSampleIdRequired", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to O sobrenome não pode ter mais do que 50 caracters..
         /// </summary>
-        public static string PersonSampleLastNameLength
-        {
-            get
-            {
+        public static string PersonSampleLastNameLength {
+            get {
                 return ResourceManager.GetString("PersonSampleLastNameLength", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Por favor, informe o último nome da pessoa..
         /// </summary>
-        public static string PersonSampleLastNameRequired
-        {
-            get
-            {
+        public static string PersonSampleLastNameRequired {
+            get {
                 return ResourceManager.GetString("PersonSampleLastNameRequired", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Por favor, informe o tipo de pessoa..
         /// </summary>
-        public static string PersonSampleTypeRequired
-        {
-            get
-            {
+        public static string PersonSampleTypeRequired {
+            get {
                 return ResourceManager.GetString("PersonSampleTypeRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Por favor, informe o ID da area do ponto de interesse..
+        /// </summary>
+        public static string PointOfInterestAreaIdRequired {
+            get {
+                return ResourceManager.GetString("PointOfInterestAreaIdRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Por favor, informe uma categoria válida..
+        /// </summary>
+        public static string PointOfInterestCategoryInvalid {
+            get {
+                return ResourceManager.GetString("PointOfInterestCategoryInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Por favor, informe a data de criação do ponto de interesse..
+        /// </summary>
+        public static string PointOfInterestCreatedAtRequired {
+            get {
+                return ResourceManager.GetString("PointOfInterestCreatedAtRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A descrição do ponto de interesse não pode ter mais do que 255 caracteres..
+        /// </summary>
+        public static string PointOfInterestDescriptionLength {
+            get {
+                return ResourceManager.GetString("PointOfInterestDescriptionLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ponto de interesse existente..
+        /// </summary>
+        public static string PointOfInterestExisting {
+            get {
+                return ResourceManager.GetString("PointOfInterestExisting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Por favor, informe o ID do ponto de interesse..
+        /// </summary>
+        public static string PointOfInterestIdRequired {
+            get {
+                return ResourceManager.GetString("PointOfInterestIdRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Por favor, informe a ultima data de atualizaçãodo ponto de interesse..
+        /// </summary>
+        public static string PointOfInterestLastUpdatedAtRequired {
+            get {
+                return ResourceManager.GetString("PointOfInterestLastUpdatedAtRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Por favor, informe uma localização válida..
+        /// </summary>
+        public static string PointOfInterestLocationInvalid {
+            get {
+                return ResourceManager.GetString("PointOfInterestLocationInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Por favor, informe a localização do ponto de interesse..
+        /// </summary>
+        public static string PointOfInterestLocationRequired {
+            get {
+                return ResourceManager.GetString("PointOfInterestLocationRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to O nome do ponto de interesse não pode ter mais do que 255 caracteres..
+        /// </summary>
+        public static string PointOfInterestNameLength {
+            get {
+                return ResourceManager.GetString("PointOfInterestNameLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Por favor, informe o nome do ponto de interesse..
+        /// </summary>
+        public static string PointOfInterestNameRequired {
+            get {
+                return ResourceManager.GetString("PointOfInterestNameRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ponto de Interesse não encontrado..
+        /// </summary>
+        public static string PointOfInterestNotFound {
+            get {
+                return ResourceManager.GetString("PointOfInterestNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Por favor, informe o status do ponto de interesse..
+        /// </summary>
+        public static string PointOfInterestStatusRequired {
+            get {
+                return ResourceManager.GetString("PointOfInterestStatusRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Por favor, informe o ID da area da rota..
+        /// </summary>
+        public static string RouteAreaIdRequired {
+            get {
+                return ResourceManager.GetString("RouteAreaIdRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Por favor, informe a data de criação da rota..
+        /// </summary>
+        public static string RouteCreatedAtRequired {
+            get {
+                return ResourceManager.GetString("RouteCreatedAtRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A descrição da rota não pode ter mais do que 255 caracteres..
+        /// </summary>
+        public static string RouteDescriptionLength {
+            get {
+                return ResourceManager.GetString("RouteDescriptionLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Por favor, informe o ID da rota..
+        /// </summary>
+        public static string RouteIdRequired {
+            get {
+                return ResourceManager.GetString("RouteIdRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Por favor, informe a ultima data de atualização da rota..
+        /// </summary>
+        public static string RouteLastUpdatedAtRequired {
+            get {
+                return ResourceManager.GetString("RouteLastUpdatedAtRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Por favor, informe uma localização válida..
+        /// </summary>
+        public static string RouteLocationInvalid {
+            get {
+                return ResourceManager.GetString("RouteLocationInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Por favor, informe a localização da rota..
+        /// </summary>
+        public static string RouteLocationRequired {
+            get {
+                return ResourceManager.GetString("RouteLocationRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to O nome do ponto de interesse não pode ter mais do que 255 caracteres..
+        /// </summary>
+        public static string RouteNameLength {
+            get {
+                return ResourceManager.GetString("RouteNameLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Por favor, informe o nome do ponto de interesse..
+        /// </summary>
+        public static string RouteNameRequired {
+            get {
+                return ResourceManager.GetString("RouteNameRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rota não encontrada..
+        /// </summary>
+        public static string RouteNotFound {
+            get {
+                return ResourceManager.GetString("RouteNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Por favor, informe o status da rota.
+        /// </summary>
+        public static string RouteStatusRequired {
+            get {
+                return ResourceManager.GetString("RouteStatusRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Por favor, informe o ID da area do segmento..
+        /// </summary>
+        public static string SegmentAreaIdRequired {
+            get {
+                return ResourceManager.GetString("SegmentAreaIdRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Por favor, informe a data de criação do segmento..
+        /// </summary>
+        public static string SegmentCreatedAtRequired {
+            get {
+                return ResourceManager.GetString("SegmentCreatedAtRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A descrição do segmento não pode ter mais do que 255 caracteres..
+        /// </summary>
+        public static string SegmentDescriptionLength {
+            get {
+                return ResourceManager.GetString("SegmentDescriptionLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Por favor, informe o ID do segmento..
+        /// </summary>
+        public static string SegmentIdRequired {
+            get {
+                return ResourceManager.GetString("SegmentIdRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Por favor, informe a ultima data de atualização do segmento..
+        /// </summary>
+        public static string SegmentLastUpdatedAtRequired {
+            get {
+                return ResourceManager.GetString("SegmentLastUpdatedAtRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Por favor, informe uma localização válida..
+        /// </summary>
+        public static string SegmentLocationInvalid {
+            get {
+                return ResourceManager.GetString("SegmentLocationInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Por favor, informe a localizaçãodo segmento..
+        /// </summary>
+        public static string SegmentLocationRequired {
+            get {
+                return ResourceManager.GetString("SegmentLocationRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to O nome do segmento não pode ter mais do que 150 caracteres..
+        /// </summary>
+        public static string SegmentNameLength {
+            get {
+                return ResourceManager.GetString("SegmentNameLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Por favor, informe o nome do segmento..
+        /// </summary>
+        public static string SegmentNameRequired {
+            get {
+                return ResourceManager.GetString("SegmentNameRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Segmento não encontrado..
+        /// </summary>
+        public static string SegmentNotFound {
+            get {
+                return ResourceManager.GetString("SegmentNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Por favor, informe o ID da rota do segmento..
+        /// </summary>
+        public static string SegmentRouteIdRequired {
+            get {
+                return ResourceManager.GetString("SegmentRouteIdRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Por favor, informe o status do segmento..
+        /// </summary>
+        public static string SegmentStatusRequired {
+            get {
+                return ResourceManager.GetString("SegmentStatusRequired", resourceCulture);
             }
         }
     }

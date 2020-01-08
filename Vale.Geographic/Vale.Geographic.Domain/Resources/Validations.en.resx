@@ -141,4 +141,172 @@
   <data name="PersonSampleTypeRequired" xml:space="preserve">
     <value>Please inform the person type.</value>
   </data>
+  <data name="AreaIdRequired" xml:space="preserve">
+    <value>Please inform the area ID.</value>
+  </data>
+  <data name="AreaNameLength" xml:space="preserve">
+    <value>The area name can not be longer than 150 characters.</value>
+  </data>
+  <data name="AreaNameRequired" xml:space="preserve">
+    <value>Please inform the area last name.</value>
+  </data>
+  <data name="AreaStatusRequired" xml:space="preserve">
+    <value>Please inform the area status.</value>
+  </data>
+  <data name="CategoryNameLength" xml:space="preserve">
+    <value>The category name cannot be longer than 150 characters.</value>
+  </data>
+  <data name="CategoryNameRequired" xml:space="preserve">
+    <value>Please enter the name of the category.</value>
+  </data>
+  <data name="CategoryIdRequired" xml:space="preserve">
+    <value>Please enter the category ID.</value>
+  </data>
+  <data name="CategoryTypeRequired" xml:space="preserve">
+    <value>Please enter the type of category.</value>
+  </data>
+  <data name="AreaDescriptionLength" xml:space="preserve">
+    <value>The area description cannot be longer than 255 characters.</value>
+  </data>
+  <data name="AreaCreatedAtRequired" xml:space="preserve">
+    <value>Please inform the creation date of the area.</value>
+  </data>
+  <data name="AreaLastUpdatedAtRequired" xml:space="preserve">
+    <value>Please inform the latest area update date.</value>
+  </data>
+  <data name="AreaLocationRequired" xml:space="preserve">
+    <value>Please inform the area location.</value>
+  </data>
+  <data name="AreaNotFound" xml:space="preserve">
+    <value>Area parente not found.</value>
+  </data>
+  <data name="AreaLocationInvalid" xml:space="preserve">
+    <value>Please inform the area location valid.</value>
+  </data>
+  <data name="CategoryNotFound" xml:space="preserve">
+    <value>Category not found.</value>
+  </data>
+  <data name="CategoryCreatedAtRequired" xml:space="preserve">
+    <value>Please inform the creation date of the category.</value>
+  </data>
+  <data name="CategoryLastUpdatedAtRequired" xml:space="preserve">
+    <value>Please inform the latest category update date.</value>
+  </data>
+  <data name="CategoryStatusRequired" xml:space="preserve">
+    <value>Please inform the category status.</value>
+  </data>
+  <data name="PointOfInterestCreatedAtRequired" xml:space="preserve">
+    <value>Please inform the creation date of the point of interest.</value>
+  </data>
+  <data name="PointOfInterestDescriptionLength" xml:space="preserve">
+    <value>The point of interest description cannot be longer than 255 characters.</value>
+  </data>
+  <data name="PointOfInterestIdRequired" xml:space="preserve">
+    <value>Please inform the point of interest ID.</value>
+  </data>
+  <data name="PointOfInterestLastUpdatedAtRequired" xml:space="preserve">
+    <value>Please inform the latest point of interest update date.</value>
+  </data>
+  <data name="PointOfInterestLocationInvalid" xml:space="preserve">
+    <value>Please inform the point of interest location valid.</value>
+  </data>
+  <data name="PointOfInterestLocationRequired" xml:space="preserve">
+    <value>Please inform the point of interest location.</value>
+  </data>
+  <data name="PointOfInterestNameLength" xml:space="preserve">
+    <value>The point of interest name can not be longer than 150 characters.</value>
+  </data>
+  <data name="PointOfInterestNameRequired" xml:space="preserve">
+    <value>Please inform the point of interest last name.</value>
+  </data>
+  <data name="PointOfInterestNotFound" xml:space="preserve">
+    <value>Point of interest not found.</value>
+  </data>
+  <data name="PointOfInterestStatusRequired" xml:space="preserve">
+    <value>Please inform the point of interest status.</value>
+  </data>
+  <data name="PointOfInterestAreaIdRequired" xml:space="preserve">
+    <value>Please inform the area ID the point of interest.</value>
+  </data>
+  <data name="RouteAreaIdRequired" xml:space="preserve">
+    <value>Please inform the area ID the route.</value>
+  </data>
+  <data name="RouteCreatedAtRequired" xml:space="preserve">
+    <value>Please inform the creation date of the route.</value>
+  </data>
+  <data name="RouteDescriptionLength" xml:space="preserve">
+    <value>The route description cannot be longer than 255 characters.</value>
+  </data>
+  <data name="RouteIdRequired" xml:space="preserve">
+    <value>Please inform the route ID.</value>
+  </data>
+  <data name="RouteLastUpdatedAtRequired" xml:space="preserve">
+    <value>Please inform the latest route update date.</value>
+  </data>
+  <data name="RouteLocationInvalid" xml:space="preserve">
+    <value>Please inform the route location valid.</value>
+  </data>
+  <data name="RouteLocationRequired" xml:space="preserve">
+    <value>Please inform the route location.</value>
+  </data>
+  <data name="RouteNameLength" xml:space="preserve">
+    <value>The route name can not be longer than 150 characters.</value>
+  </data>
+  <data name="RouteNameRequired" xml:space="preserve">
+    <value>Please inform the route last name.</value>
+  </data>
+  <data name="RouteNotFound" xml:space="preserve">
+    <value>Route not found.</value>
+  </data>
+  <data name="RouteStatusRequired" xml:space="preserve">
+    <value>Please inform the route status.</value>
+  </data>
+  <data name="SegmentAreaIdRequired" xml:space="preserve">
+    <value>Please inform the area ID the segment.</value>
+  </data>
+  <data name="SegmentCreatedAtRequired" xml:space="preserve">
+    <value>Please inform the creation date of the segment.</value>
+  </data>
+  <data name="SegmentDescriptionLength" xml:space="preserve">
+    <value>The segment description cannot be longer than 255 characters.</value>
+  </data>
+  <data name="SegmentIdRequired" xml:space="preserve">
+    <value>Please inform the segment ID.</value>
+  </data>
+  <data name="SegmentLastUpdatedAtRequired" xml:space="preserve">
+    <value>Please inform the latest segment update date.</value>
+  </data>
+  <data name="SegmentLocationInvalid" xml:space="preserve">
+    <value>Please inform the segment location valid.</value>
+  </data>
+  <data name="SegmentLocationRequired" xml:space="preserve">
+    <value>Please inform the segment location.</value>
+  </data>
+  <data name="SegmentNameLength" xml:space="preserve">
+    <value>The segment name can not be longer than 150 characters.</value>
+  </data>
+  <data name="SegmentNameRequired" xml:space="preserve">
+    <value>Please inform the segment last name.</value>
+  </data>
+  <data name="SegmentNotFound" xml:space="preserve">
+    <value>Segment  not found.</value>
+  </data>
+  <data name="SegmentRouteIdRequired" xml:space="preserve">
+    <value>Please inform the route ID the segment.</value>
+  </data>
+  <data name="SegmentStatusRequired" xml:space="preserve">
+    <value>Please inform the segment status.</value>
+  </data>
+  <data name="AreaExisting" xml:space="preserve">
+    <value>Area Existing</value>
+  </data>
+  <data name="AreaCategoryInvalid" xml:space="preserve">
+    <value>Please inform the area category valid.</value>
+  </data>
+  <data name="PointOfInterestCategoryInvalid" xml:space="preserve">
+    <value>Please inform the point of interest category valid.</value>
+  </data>
+  <data name="PointOfInterestExisting" xml:space="preserve">
+    <value>Point Of Interest Existing</value>
+  </data>
 </root>

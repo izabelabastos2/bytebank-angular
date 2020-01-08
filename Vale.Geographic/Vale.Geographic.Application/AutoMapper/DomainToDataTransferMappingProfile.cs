@@ -1,5 +1,8 @@
-﻿using Vale.Geographic.Application.Dto;
+﻿using GeoJSON.Net.Contrib.MsSqlSpatial;
+using Vale.Geographic.Application.Dto;
 using Vale.Geographic.Domain.Entities;
+using GeoJSON.Net.Feature;
+using GeoAPI.Geometries;
 using AutoMapper;
 
 namespace Vale.Geographic.Application.AutoMapper
@@ -8,20 +11,22 @@ namespace Vale.Geographic.Application.AutoMapper
     {
         public DomainToViewModelMappingProfile()
         {
-            CreateMap<PersonSample, PersonSampleDto>();
+            CreateMap<IGeometry, Feature>().ConvertUsing(x => new Feature(WktConvert.GeoJSONGeometry(x.ToString(), 4326), null, null));
+                       
+            CreateMap<Category, CategoryDto>();
 
             CreateMap<Area, AreaDto>()
-               .ForMember(x => x.Location, opt => opt.Ignore());
+              .ForMember(dest => dest.Geojson, opt => opt.MapFrom(x => x.Location));
 
             CreateMap<PointOfInterest, PointOfInterestDto>()
-             .ForMember(x => x.Location, opt => opt.Ignore());
+              .ForMember(dest => dest.Geojson, opt => opt.MapFrom(x => x.Location))
+              .ForMember(dest => dest.Area, opt => opt.Ignore());            
 
             CreateMap<Route, RouteDto>()
-              .ForMember(x => x.Location, opt => opt.Ignore());
+              .ForMember(dest => dest.Geojson, opt => opt.MapFrom(x => x.Location));
 
             CreateMap<Segment, SegmentDto>()
-              .ForMember(x => x.Location, opt => opt.Ignore());
-
+              .ForMember(dest => dest.Geojson, opt => opt.MapFrom(x => x.Location));
         }
     }
 }
