@@ -32,25 +32,35 @@ namespace Vale.Geographic.Infra.Data.Repositories
             var param = new DynamicParameters();
             StringBuilder sqlQuery = new StringBuilder();
 
-            sqlQuery.AppendLine(@"SELECT AREA.[Id],
-		                                 AREA.[CreatedAt],
-		                                 AREA.[LastUpdatedAt],
-		                                 AREA.[Status],
-		                                 AREA.[Name],
-		                                 AREA.[Description],
-		                                 AREA.[CategoryId],	
-	                                     AREA.[ParentId],
-		                                 AREA.[Location].ToString() as Location,		
-		                                 CAT.[Id],
-		                                 CAT.[CreatedAt],
-		                                 CAT.[LastUpdatedAt],
-		                                 CAT.[Status],
-		                                 CAT.[TypeEntitie],
-		                                 CAT.[Name],
-		                                 COUNT(1) OVER () as Total
-                                FROM dbo.Area AREA
-                                LEFT JOIN dbo.Categorys CAT ON AREA.CategoryId = CAT.Id AND CAT.[TypeEntitie] = 2
-                                WHERE 0 = 0 ");
+            sqlQuery.AppendLine(@"SELECT  AREA.[Id],
+		                                AREA.[CreatedAt],
+		                                AREA.[LastUpdatedAt],
+		                                AREA.[Status],
+		                                AREA.[Name],
+		                                AREA.[Description],
+		                                AREA.[CategoryId],	
+		                                AREA.[ParentId],
+		                                AREA.[Location].ToString() as Location,		
+		                                CAT.[Id],
+		                                CAT.[CreatedAt],
+		                                CAT.[LastUpdatedAt],
+		                                CAT.[Status],
+		                                CAT.[TypeEntitie],
+		                                CAT.[Name],
+		                                APRT.[Id],
+		                                APRT.[CreatedAt],
+		                                APRT.[LastUpdatedAt],
+		                                APRT.[Status],
+		                                APRT.[Name],
+		                                APRT.[Description],
+		                                APRT.[CategoryId],	
+		                                APRT.[ParentId],
+		                                APRT.[Location].ToString() as LocationParent,		
+		                                COUNT(1) OVER () as Total
+	                                FROM [dbo].[Area] AREA
+	                                LEFT JOIN [dbo].[Area] APRT ON APRT.Id = AREA.ParentId
+	                                LEFT JOIN [dbo].[Categorys] CAT ON AREA.CategoryId = CAT.Id AND CAT.[TypeEntitie] = 2
+	                                WHERE 0 = 0 ");
 
             if (id.HasValue && !id.Equals(Guid.Empty))
             {
@@ -104,21 +114,23 @@ namespace Vale.Geographic.Infra.Data.Repositories
             }
 
             var count = 0;
-
-            IEnumerable<Area> result = this.Connection.Query<Area, string, Category, int, Area>(sqlQuery.ToString(),
-             (a, g, c, t) => {
-                 a.Category = c;
+            
+            IEnumerable<Area> result = this.Connection.Query<Area, string, Category, Area, string, int, Area>(sqlQuery.ToString(),
+             (a, g, c, p, geo, t) => {
+                 a.Category = c; 
+                 a.Location = new WKTReader().Read(g);
 
                  if (a.ParentId.HasValue)
-                     a.Parent = this.GetById(a.ParentId.Value);
-                  
-                 a.Location = new WKTReader().Read(g);
+                 {
+                     p.Location = new WKTReader().Read(geo);
+                     a.Parent = p;
+                 }
                  count = t;
                  return a;
              },
              param: param,
              transaction: (IDbTransaction)this.Uow.Transaction,
-             splitOn: "Id, Location, Id, Total");          
+             splitOn: "Id, Location, Id, Id, LocationParent, Total");          
 
             total = count;
             return result;
