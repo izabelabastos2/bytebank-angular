@@ -7,6 +7,7 @@ using Vale.Geographic.Application.Dto;
 using Vale.Geographic.Domain.Entities;
 using Vale.Geographic.Domain.Services;
 using Vale.Geographic.Infra.Data.Base;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
@@ -84,10 +85,8 @@ namespace Vale.Geographic.Application.Core.Services
             {
                 UoW.BeginTransaction();
 
-                var total = 0;
-
-                //var categoryOriginal = categoryRepository.GetById(id);
-                var categoryOriginal = categoryRepository.RecoverById(id);
+                var categoryOriginal = categoryRepository.GetById(id);
+                UoW.Context.Entry(categoryOriginal).State = EntityState.Detached;
 
                 if (categoryOriginal == null)
                     throw new ArgumentNullException();

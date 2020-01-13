@@ -9,7 +9,5 @@ namespace Vale.Geographic.Domain.Repositories.Interfaces
     public interface ICategoryRepository : IRepository<Category>
     {
         IEnumerable<Category> Get(Guid? id, out int total, bool? active = null, TypeEntitieEnum? TypeEntitie = null, IFilterParameters parameters = null);
-
-        Category RecoverById(Guid Id);
     }
 }

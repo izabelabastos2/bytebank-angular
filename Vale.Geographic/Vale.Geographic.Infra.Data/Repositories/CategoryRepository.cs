@@ -75,10 +75,5 @@ namespace Vale.Geographic.Infra.Data.Repositories
             return result;
         }
 
-        public Category RecoverById(Guid Id)
-        {
-            var total = 0;
-            return this.Get(Id, out total).FirstOrDefault();
-        }
     }    
 }

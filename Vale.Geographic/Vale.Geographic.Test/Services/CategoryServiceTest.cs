@@ -9,6 +9,8 @@ using System;
 using Xunit;
 using FluentAssertions;
 using Vale.Geographic.Domain.Enumerable;
+using AutoFixture;
+using AutoFixture.AutoNSubstitute;
 
 namespace Vale.Geographic.Test.Services
 {
@@ -20,6 +22,7 @@ namespace Vale.Geographic.Test.Services
         private readonly CategoryService categoryService;
         private readonly CategoryValidator categoryValidator;
 
+        private readonly IFixture fixture;
         private readonly ICategoryRepository categoryRepository;
         private readonly IUnitOfWork unitOfWork;
 
@@ -34,16 +37,18 @@ namespace Vale.Geographic.Test.Services
             .RuleFor(u => u.LastUpdatedAt, DateTime.UtcNow.Date)
             .RuleFor(u => u.Name, (f, u) => f.Name.FullName());
 
-            this.categoryRepository = Substitute.For<ICategoryRepository>();
-            this.unitOfWork = Substitute.For<IUnitOfWork>();
+            fixture = new Fixture().Customize(new AutoNSubstituteCustomization { ConfigureMembers = true });
 
-            this.categoryService = new CategoryService(unitOfWork, categoryRepository);
+            this.categoryRepository = fixture.Freeze<ICategoryRepository>();
+            this.unitOfWork = fixture.Freeze<IUnitOfWork>();
+
+            this.categoryService = fixture.Create<CategoryService>();
         }
 
         #region Insert
 
         [Fact]
-        public void ValidateInsert_Success()
+        public void ValidateInsert_Valid_Success()
         {
             categoryRepository.Insert(category).Returns(x =>
             {
@@ -65,7 +70,7 @@ namespace Vale.Geographic.Test.Services
         }
 
         [Fact]
-        public void ValidateInsert_Message()
+        public void ValidateInsert_Invalid_Message()
         {
             category.Name = null;
             categoryRepository.Insert(category).Returns(category);

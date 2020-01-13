@@ -2,9 +2,10 @@
 using Vale.Geographic.Domain.Core.Validations;
 using Vale.Geographic.Domain.Enumerable;
 using Vale.Geographic.Domain.Entities;
+using AutoFixture.AutoNSubstitute;
 using FluentValidation.TestHelper;
 using System.Collections.Generic;
-using NSubstitute;
+using AutoFixture;
 using System;
 using Bogus;
 using Xunit;
@@ -17,6 +18,7 @@ namespace Vale.Geographic.Test.Validations
         private readonly Category category;
 
         private readonly ICategoryRepository categoryRepository;
+        private readonly IFixture fixture;
 
         private readonly CategoryValidator validator;
 
@@ -28,16 +30,24 @@ namespace Vale.Geographic.Test.Validations
                 .RuleFor(u => u.Id, Guid.NewGuid())
                 .RuleFor(u => u.Name, (f, u) => f.Name.FullName());
 
-            this.categoryRepository = Substitute.For<ICategoryRepository>();
+            fixture = new Fixture().Customize(new AutoNSubstituteCustomization { ConfigureMembers = true });
+
+            this.categoryRepository = fixture.Freeze<ICategoryRepository>();
 
             this.validator = new CategoryValidator(categoryRepository);
-        }
+        }       
 
-        public static readonly List<object[]> ValidId = new List<object[]>
+
+        public static readonly List<object[]> InvalidId = new List<object[]>
         {
-            new object[]{ Guid.NewGuid() },
             new object[]{ Guid.Empty },
+            new object[]{ null },
+        };
 
+        public static readonly List<object[]> IncorrectData = new List<object[]>
+        {
+            new object[]{ DateTime.MinValue },
+            new object[]{ null }
         };
 
         #region Id
@@ -47,29 +57,17 @@ namespace Vale.Geographic.Test.Validations
         {
             category.Id = Guid.NewGuid();
 
-            var categoryRetorno = new Faker<Category>()
-                   .RuleFor(u => u.Id, category.Id)
-                   .RuleFor(u => u.Name, (f, u) => f.Name.FullName());
-
-            //categoryRepository.GetById(category.Id).Returns(categoryRetorno);
-            categoryRepository.RecoverById(category.Id).Returns(categoryRetorno);
-
             validator.ShouldNotHaveValidationErrorFor(x => x.Id, category);
         }
 
         [Theory]
-        [MemberData(nameof(ValidId))]
+        [MemberData(nameof(InvalidId))]
         public void ValidateId_EmptyOrInvalid_Message(Guid id)
         {
             category.Id = id;
-           // categoryRepository.GetById(category.Id).Returns(x => null);
-            categoryRepository.RecoverById(category.Id).Returns(x => null);
-
 
             validator.ShouldHaveValidationErrorFor(x => x.Id, category)
-              .WithErrorMessage(id == Guid.Empty ?
-                 Domain.Resources.Validations.CategoryIdRequired :
-                 Domain.Resources.Validations.CategoryNotFound);
+              .WithErrorMessage(Domain.Resources.Validations.CategoryIdRequired);
         }
 
         #endregion
@@ -109,10 +107,11 @@ namespace Vale.Geographic.Test.Validations
 
         #region CreatedAt
 
-        [Fact]
-        public void ValidateCreatedAt_CreatedAtMinValue_Message()
+        [Theory]
+        [MemberData(nameof(IncorrectData))]
+        public void ValidateCreatedAt_CreatedAtMinValue_Message(DateTime createdAt)
         {
-            category.CreatedAt = DateTime.MinValue;
+            category.CreatedAt = createdAt;
 
             validator.ShouldHaveValidationErrorFor(x => x.CreatedAt, category)
              .WithErrorMessage(Domain.Resources.Validations.CategoryCreatedAtRequired);
@@ -130,10 +129,11 @@ namespace Vale.Geographic.Test.Validations
 
         #region LastUpdatedAt
 
-        [Fact]
-        public void ValidateLastUpdatedAt_LastUpdatedAtMinValue_Message()
+        [Theory]
+        [MemberData(nameof(IncorrectData))]
+        public void ValidateLastUpdatedAt_LastUpdatedAtMinValue_Message(DateTime lastUpdatedAt)
         {
-            category.LastUpdatedAt = DateTime.MinValue;
+            category.LastUpdatedAt = lastUpdatedAt;
 
             validator.ShouldHaveValidationErrorFor(x => x.LastUpdatedAt, category)
              .WithErrorMessage(Domain.Resources.Validations.CategoryLastUpdatedAtRequired);

@@ -46,9 +46,7 @@ namespace Vale.Geographic.Domain.Core.Validations
         private void ValidateId()
         {
             RuleFor(o => o.Id)
-                .NotEmpty().WithMessage(Resources.Validations.CategoryIdRequired)
-                .Must(ExistingCategory).WithMessage(Resources.Validations.CategoryNotFound);
-
+                .NotEmpty().WithMessage(Resources.Validations.CategoryIdRequired);
         }
 
         private void ValidateName()
@@ -80,13 +78,6 @@ namespace Vale.Geographic.Domain.Core.Validations
         {
             RuleFor(o => o.Status)
                 .NotNull().WithMessage(Resources.Validations.CategoryStatusRequired);
-        }
-
-        private bool ExistingCategory(Guid categoryId)
-        {
-            //return  categoryRepository.GetById(categoryId) != null ? true : false;
-            return categoryRepository.RecoverById(categoryId) != null ? true : false;
-
         }
 
         #endregion
