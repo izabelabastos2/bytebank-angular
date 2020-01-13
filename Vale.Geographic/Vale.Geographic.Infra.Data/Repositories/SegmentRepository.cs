@@ -113,11 +113,5 @@ namespace Vale.Geographic.Infra.Data.Repositories
             total = count;
             return result;
         }
-
-        public Segment RecoverById(Guid Id)
-        {
-            var total = 0;
-            return this.Get(Id, out total).FirstOrDefault();
-        }
     }
 }

@@ -1,21 +1,24 @@
 ﻿using Vale.Geographic.Domain.Repositories.Interfaces;
-using Vale.Geographic.Domain.Base.Interfaces;
 using Vale.Geographic.Domain.Core.Validations;
+using Vale.Geographic.Domain.Base.Interfaces;
 using Vale.Geographic.Domain.Core.Services;
+using Vale.Geographic.Domain.Enumerable;
 using Vale.Geographic.Domain.Entities;
 using NetTopologySuite.Geometries;
+using AutoFixture.AutoNSubstitute;
 using System.Collections.Generic;
 using NetTopologySuite.IO;
-using NetTopologySuite;
 using GeoAPI.Geometries;
+using FluentAssertions;
+using NetTopologySuite;
 using Newtonsoft.Json;
+using AutoFixture;
 using GeoJSON.Net;
 using NSubstitute;
+using System.Linq;
 using System;
 using Bogus;
 using Xunit;
-using Vale.Geographic.Domain.Enumerable;
-using FluentAssertions;
 
 namespace Vale.Geographic.Test.Services
 {
@@ -27,10 +30,10 @@ namespace Vale.Geographic.Test.Services
         private readonly Segment segment;
         private readonly Category category;
 
-
         private readonly SegmentValidator segmentValidator;
         private readonly SegmentService segmentService;
 
+        private readonly IFixture fixture;
         private readonly ISegmentRepository segmentRepository;
         private readonly IRouteRepository routeRepository;
         private readonly IAreaRepository areaRepository;
@@ -74,6 +77,8 @@ namespace Vale.Geographic.Test.Services
             this.segment = new Faker<Segment>()
                 .RuleFor(u => u.Location, MontarGeometry(CreatePolygon()))
                 .RuleFor(u => u.Length, (f, u) => f.Random.Double())
+                .RuleFor(u => u.CreatedAt, DateTime.UtcNow.Date)
+                .RuleFor(u => u.LastUpdatedAt, DateTime.UtcNow.Date)
                 .RuleFor(u => u.AreaId, area.Id)
                 .RuleFor(u => u.Area, area)
                 .RuleFor(u => u.RouteId, route.Id)
@@ -82,10 +87,16 @@ namespace Vale.Geographic.Test.Services
                 .RuleFor(u => u.Description, (f, u) => f.Name.JobDescriptor());
 
 
-            this.segmentRepository = Substitute.For<ISegmentRepository>();
-            this.routeRepository = Substitute.For<IRouteRepository>();
-            this.areaRepository = Substitute.For<IAreaRepository>();
-            this.unitOfWork = Substitute.For<IUnitOfWork>();
+            fixture = new Fixture().Customize(new AutoNSubstituteCustomization { ConfigureMembers = true });
+
+            fixture.Behaviors.OfType<ThrowingRecursionBehavior>().ToList()
+                .ForEach(b => fixture.Behaviors.Remove(b));
+            fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+
+            this.segmentRepository = fixture.Freeze<ISegmentRepository>();
+            this.routeRepository = fixture.Freeze<IRouteRepository>();
+            this.areaRepository = fixture.Freeze<IAreaRepository>();
+            this.unitOfWork = fixture.Freeze<IUnitOfWork>();
 
             this.segmentService = new SegmentService(unitOfWork, segmentRepository, routeRepository, areaRepository);
         }
@@ -122,10 +133,14 @@ namespace Vale.Geographic.Test.Services
         [Fact]
         public void ValidateInsert_Message()
         {
-            segmentRepository.Insert(segment).Returns(segment);
+            var segmentReturn = new Segment();
+            segmentReturn.Location = MontarGeometry(CreatePolygon());
+
+            segmentRepository.Insert(segmentReturn).Returns(segmentReturn);
 
             unitOfWork.ValidateEntity = true;
-            segmentService.Invoking(y => y.Insert(segment))
+
+            segmentService.Invoking(y => y.Insert(segmentReturn))
                 .Should().Throw<FluentValidation.ValidationException>();
 
         }

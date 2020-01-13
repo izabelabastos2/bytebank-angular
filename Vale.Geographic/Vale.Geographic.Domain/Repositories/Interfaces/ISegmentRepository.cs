@@ -9,6 +9,5 @@ namespace Vale.Geographic.Domain.Repositories.Interfaces
     {
         IEnumerable<Segment> Get(Guid? id, out int total, bool? active = null, Guid? areaId = null, Guid? routeId = null, IFilterParameters parameters = null);
 
-        Segment RecoverById(Guid Id);
     }
 }

@@ -2,14 +2,17 @@
 using Vale.Geographic.Domain.Core.Validations;
 using Vale.Geographic.Domain.Entities;
 using NetTopologySuite.Geometries;
-using System.Collections.Generic;
 using FluentValidation.TestHelper;
+using AutoFixture.AutoNSubstitute;
+using System.Collections.Generic;
 using NetTopologySuite.IO;
 using GeoAPI.Geometries;
 using NetTopologySuite;
 using Newtonsoft.Json;
 using GeoJSON.Net;
+using AutoFixture;
 using NSubstitute;
+using System.Linq;
 using System;
 using Bogus;
 using Xunit;
@@ -23,6 +26,7 @@ namespace Vale.Geographic.Test.Validations
         private readonly Area area;
         private readonly Segment segment;
 
+        private readonly IFixture fixture;
         private readonly IRouteRepository routeRepository;
         private readonly IAreaRepository areaRepository;
         private readonly ISegmentRepository segmentRepository;
@@ -51,9 +55,15 @@ namespace Vale.Geographic.Test.Validations
                 .RuleFor(u => u.RouteId, route.Id)
                 .RuleFor(u => u.Name, (f, u) => f.Name.FullName());
 
-            this.segmentRepository = Substitute.For<ISegmentRepository>();
-            this.routeRepository = Substitute.For<IRouteRepository>();
-            this.areaRepository = Substitute.For<IAreaRepository>();
+            fixture = new Fixture().Customize(new AutoNSubstituteCustomization { ConfigureMembers = true });
+
+            fixture.Behaviors.OfType<ThrowingRecursionBehavior>().ToList()
+                .ForEach(b => fixture.Behaviors.Remove(b));
+            fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+
+            this.segmentRepository = fixture.Freeze<ISegmentRepository>();
+            this.routeRepository = fixture.Freeze<IRouteRepository>();
+            this.areaRepository = fixture.Freeze<IAreaRepository>();
 
             this.validator = new SegmentValidator(segmentRepository, routeRepository, areaRepository);
         }
@@ -62,7 +72,18 @@ namespace Vale.Geographic.Test.Validations
         {
             new object[]{ Guid.NewGuid() },
             new object[]{ Guid.Empty },
+        };
 
+        public static readonly List<object[]> InvalidId = new List<object[]>
+        {
+            new object[]{ Guid.Empty },
+            new object[]{ null },
+        };
+        
+        public static readonly List<object[]> IncorrectData = new List<object[]>
+        {
+            new object[]{ DateTime.MinValue },
+            new object[]{ null }
         };
 
         #region Id
@@ -72,32 +93,17 @@ namespace Vale.Geographic.Test.Validations
         {
             this.segment.Id = Guid.NewGuid();
 
-            var segmentReturn = new Faker<Segment>()
-                   .RuleFor(u => u.Id, segment.Id)
-                   .RuleFor(u => u.Name, (f, u) => f.Name.FullName())
-                   .RuleFor(u => u.AreaId, area.Id)
-                   .RuleFor(u => u.RouteId, route.Id)
-                   .RuleFor(u => u.Location, MontarGeometry(CreatePolygon()))
-                   .RuleFor(u => u.Description, (f, u) => f.Name.JobDescriptor());
-
-            //segmentRepository.GetById(segment.Id).Returns(segmentReturn);
-            segmentRepository.RecoverById(segment.Id).Returns(segmentReturn);
-
             validator.ShouldNotHaveValidationErrorFor(x => x.Id, segment);
         }
 
         [Theory]
-        [MemberData(nameof(ValidId))]
+        [MemberData(nameof(InvalidId))]
         public void ValidateId_EmptyOrInvalid_Message(Guid id)
         {
             this.segment.Id = id;
-            //segmentRepository.GetById(segment.Id).Returns(x => null);
-            segmentRepository.RecoverById(segment.Id).Returns(x => null);
 
             validator.ShouldHaveValidationErrorFor(x => x.Id, segment)
-              .WithErrorMessage(id == Guid.Empty || id == null ?
-                 Domain.Resources.Validations.SegmentIdRequired :
-                 Domain.Resources.Validations.SegmentNotFound);
+              .WithErrorMessage(Domain.Resources.Validations.SegmentIdRequired);
         }
 
         #endregion
@@ -226,10 +232,11 @@ namespace Vale.Geographic.Test.Validations
 
         #region CreatedAt
 
-        [Fact]
-        public void ValidateCreatedAt_CreatedAtMinValue_Message()
+        [Theory]
+        [MemberData(nameof(IncorrectData))]
+        public void ValidateCreatedAt_CreatedAtMinValue_Message(DateTime createdAt)
         {
-            this.segment.CreatedAt = DateTime.MinValue;
+            this.segment.CreatedAt = createdAt;
 
             validator.ShouldHaveValidationErrorFor(x => x.CreatedAt, segment)
              .WithErrorMessage(Domain.Resources.Validations.SegmentCreatedAtRequired);
@@ -247,10 +254,11 @@ namespace Vale.Geographic.Test.Validations
 
         #region LastUpdatedAt
 
-        [Fact]
-        public void ValidateLastUpdatedAt_LastUpdatedAtMinValue_Message()
+        [Theory]
+        [MemberData(nameof(IncorrectData))]
+        public void ValidateLastUpdatedAt_LastUpdatedAtMinValue_Message(DateTime lastUpdatedAt)
         {
-            this.segment.LastUpdatedAt = DateTime.MinValue;
+            this.segment.LastUpdatedAt = lastUpdatedAt;
 
             validator.ShouldHaveValidationErrorFor(x => x.LastUpdatedAt, segment)
              .WithErrorMessage(Domain.Resources.Validations.SegmentLastUpdatedAtRequired);

@@ -178,7 +178,7 @@
     <value>Please inform the area location.</value>
   </data>
   <data name="AreaNotFound" xml:space="preserve">
-    <value>Area parente not found.</value>
+    <value>Area not found.</value>
   </data>
   <data name="AreaLocationInvalid" xml:space="preserve">
     <value>Please inform the area location valid.</value>

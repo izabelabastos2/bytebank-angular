@@ -14,6 +14,7 @@ using Newtonsoft.Json;
 using System.Linq;
 using AutoMapper;
 using System;
+using Microsoft.EntityFrameworkCore;
 
 namespace Vale.Geographic.Application.Core.Services
 {
@@ -107,6 +108,7 @@ namespace Vale.Geographic.Application.Core.Services
 
 
                 var segmentOriginal = segmentService.GetById(id);
+                UoW.Context.Entry(segmentOriginal).State = EntityState.Detached;
 
                 if (segmentOriginal == null)
                     throw new ArgumentNullException();

@@ -61,8 +61,7 @@ namespace Vale.Geographic.Domain.Core.Validations
         private void ValidateId()
         {
             RuleFor(o => o.Id)
-              .NotEmpty().WithMessage(Resources.Validations.SegmentIdRequired)
-              .Must(ExistingSegment).WithMessage(Resources.Validations.SegmentNotFound);
+              .NotEmpty().WithMessage(Resources.Validations.SegmentIdRequired);
         }
 
         private void ValidateName()
@@ -124,12 +123,6 @@ namespace Vale.Geographic.Domain.Core.Validations
         private bool ExistingRoute(Guid Id)
         {
             return routeRepository.GetById(Id) != null ? true : false;
-        }
-
-        private bool ExistingSegment(Guid Id)
-        {
-         //   return segmentRepository.GetById(Id) != null ? true : false;
-            return segmentRepository.RecoverById(Id) != null ? true : false;
         }
 
         #endregion Validações de campos
