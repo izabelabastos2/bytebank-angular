@@ -4,12 +4,15 @@ using Vale.Geographic.Domain.Enumerable;
 using Vale.Geographic.Domain.Entities;
 using NetTopologySuite.Geometries;
 using FluentValidation.TestHelper;
+using AutoFixture.AutoNSubstitute;
 using System.Collections.Generic;
 using NetTopologySuite.IO;
 using GeoAPI.Geometries;
 using NetTopologySuite;
 using Newtonsoft.Json;
+using AutoFixture;
 using GeoJSON.Net;
+using System.Linq;
 using NSubstitute;
 using System;
 using Bogus;
@@ -24,6 +27,7 @@ namespace Vale.Geographic.Test.Validations
         private readonly Category category;
         private readonly Area area;
 
+        private readonly IFixture fixture;
         private readonly IPointOfInterestRepository pointOfInterestRepository;
         private readonly ICategoryRepository categoryRepository;
         private readonly IAreaRepository areaRepository;
@@ -55,9 +59,16 @@ namespace Vale.Geographic.Test.Validations
                 .RuleFor(u => u.LastUpdatedAt, DateTime.UtcNow.Date)
                 .RuleFor(u => u.Name, (f, u) => f.Name.FullName());
 
-            this.categoryRepository = Substitute.For<ICategoryRepository>();
-            this.pointOfInterestRepository = Substitute.For<IPointOfInterestRepository>();
-            this.areaRepository = Substitute.For<IAreaRepository>();
+            fixture = new Fixture().Customize(new AutoNSubstituteCustomization { ConfigureMembers = true });
+
+            fixture.Behaviors.OfType<ThrowingRecursionBehavior>().ToList()
+                .ForEach(b => fixture.Behaviors.Remove(b));
+                 fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+
+            this.categoryRepository = fixture.Freeze<ICategoryRepository>();
+            this.pointOfInterestRepository = fixture.Freeze<IPointOfInterestRepository>();
+            this.areaRepository = fixture.Freeze<IAreaRepository>();
+
 
             this.validator = new PointOfInterestValidator(pointOfInterestRepository, areaRepository, categoryRepository);
         }
@@ -75,6 +86,18 @@ namespace Vale.Geographic.Test.Validations
             new object[]{ null },
         };
 
+        public static readonly List<object[]> InvalidId = new List<object[]>
+        {
+            new object[]{ Guid.Empty },
+            new object[]{ null },
+        };
+
+        public static readonly List<object[]> IncorrectData = new List<object[]>
+        {
+            new object[]{ DateTime.MinValue },
+            new object[]{ null }
+        };
+
         #region Id
 
         [Fact]
@@ -82,32 +105,17 @@ namespace Vale.Geographic.Test.Validations
         {
             this.pointOfInterest.Id = Guid.NewGuid();
 
-            var pointOfInterestReturn = new Faker<PointOfInterest>()
-                   .RuleFor(u => u.Id, pointOfInterest.Id)
-                   .RuleFor(u => u.Name, (f, u) => f.Name.FullName())
-                   .RuleFor(u => u.AreaId, area.Id)
-                   .RuleFor(u => u.Location, MontarGeometry(CreatePoint()))
-                   .RuleFor(u => u.Description, (f, u) => f.Name.JobDescriptor());
-
-            //pointOfInterestRepository.GetById(pointOfInterest.Id).Returns(pointOfInterestReturn);
-            pointOfInterestRepository.RecoverById(pointOfInterest.Id).Returns(pointOfInterestReturn);
-
             validator.ShouldNotHaveValidationErrorFor(x => x.Id, pointOfInterest);
         }
 
         [Theory]
-        [MemberData(nameof(ValidId))]
+        [MemberData(nameof(InvalidId))]
         public void ValidateId_EmptyOrInvalid_Message(Guid id)
         {
             this.pointOfInterest.Id = id;
 
-            //pointOfInterestRepository.GetById(pointOfInterest.Id).Returns(x => null);
-            pointOfInterestRepository.RecoverById(pointOfInterest.Id).Returns(x => null);
-
             validator.ShouldHaveValidationErrorFor(x => x.Id, pointOfInterest)
-              .WithErrorMessage(id == Guid.Empty || id == null ?
-                 Domain.Resources.Validations.PointOfInterestIdRequired :
-                 Domain.Resources.Validations.PointOfInterestNotFound);
+              .WithErrorMessage(Domain.Resources.Validations.PointOfInterestIdRequired);
         }
 
         #endregion
@@ -189,7 +197,7 @@ namespace Vale.Geographic.Test.Validations
                 .RuleFor(u => u.Name, (f, u) => f.Name.FullName())
                 .RuleFor(u => u.Description, (f, u) => f.Name.JobDescriptor());
 
-            areaRepository.GetById(pointOfInterest.AreaId).Returns(areaRetorno);            
+            this.areaRepository.GetById(pointOfInterest.AreaId).Returns(areaRetorno);            
 
             validator.ShouldNotHaveValidationErrorFor(x => x.AreaId, pointOfInterest);
         }
@@ -266,10 +274,11 @@ namespace Vale.Geographic.Test.Validations
 
         #region CreatedAt
 
-        [Fact]
-        public void ValidateCreatedAt_CreatedAtMinValue_Message()
+        [Theory]
+        [MemberData(nameof(IncorrectData))]
+        public void ValidateCreatedAt_CreatedAtMinValue_Message(DateTime createdAt)
         {
-            this.pointOfInterest.CreatedAt = DateTime.MinValue;
+            this.pointOfInterest.CreatedAt = createdAt;
 
             validator.ShouldHaveValidationErrorFor(x => x.CreatedAt, pointOfInterest)
              .WithErrorMessage(Domain.Resources.Validations.PointOfInterestCreatedAtRequired);
@@ -287,14 +296,14 @@ namespace Vale.Geographic.Test.Validations
 
         #region LastUpdatedAt
 
-        [Fact]
-        public void ValidateLastUpdatedAt_LastUpdatedAtMinValue_Message()
+        [Theory]
+        [MemberData(nameof(IncorrectData))]
+        public void ValidateLastUpdatedAt_LastUpdatedAtMinValue_Message(DateTime lastUpdatedAt )
         {
-            this.pointOfInterest.LastUpdatedAt = DateTime.MinValue;
+            this.pointOfInterest.LastUpdatedAt = lastUpdatedAt;
 
             validator.ShouldHaveValidationErrorFor(x => x.LastUpdatedAt, pointOfInterest)
              .WithErrorMessage(Domain.Resources.Validations.PointOfInterestLastUpdatedAtRequired);
-
         }
 
         [Fact]

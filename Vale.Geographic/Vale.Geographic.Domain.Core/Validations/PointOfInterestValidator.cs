@@ -72,8 +72,7 @@ namespace Vale.Geographic.Domain.Core.Validations
         private void ValidateId()
         {
             RuleFor(o => o.Id)
-                .NotEmpty().WithMessage(Resources.Validations.PointOfInterestIdRequired)
-                .Must(ExistingPoint).WithMessage(Resources.Validations.PointOfInterestNotFound);
+                .NotEmpty().WithMessage(Resources.Validations.PointOfInterestIdRequired);
         }
 
         private void ValidateName()
@@ -136,12 +135,6 @@ namespace Vale.Geographic.Domain.Core.Validations
         private bool ExistingArea(Guid areaId)
         {
             return  areaRepository.GetById(areaId) != null ? true : false;
-        }
-
-        private bool ExistingPoint(Guid Id)
-        {
-            //return pointOfInterestRepository.GetById(Id) != null ? true : false;
-            return pointOfInterestRepository.RecoverById(Id) != null ? true : false;
         }
 
         private void ValidatePointDuplicate()

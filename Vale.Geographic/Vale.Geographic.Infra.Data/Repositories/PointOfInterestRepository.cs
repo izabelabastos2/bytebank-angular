@@ -177,10 +177,5 @@ namespace Vale.Geographic.Infra.Data.Repositories
             return point;
         }
 
-        public PointOfInterest RecoverById(Guid Id)
-        {
-            var total = 0;
-            return this.Get(Id, out total).FirstOrDefault();
-        }
     }
 }

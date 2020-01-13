@@ -5,12 +5,15 @@ using Vale.Geographic.Domain.Core.Services;
 using Vale.Geographic.Domain.Enumerable;
 using Vale.Geographic.Domain.Entities;
 using NetTopologySuite.Geometries;
+using AutoFixture.AutoNSubstitute;
 using System.Collections.Generic;
 using NetTopologySuite.IO;
 using GeoAPI.Geometries;
 using NetTopologySuite;
 using FluentAssertions;
 using Newtonsoft.Json;
+using AutoFixture;
+using System.Linq;
 using GeoJSON.Net;
 using NSubstitute;
 using System;
@@ -29,6 +32,7 @@ namespace Vale.Geographic.Test.Services
         private readonly PointOfInterestService pointOfInterestService;
         private readonly PointOfInterestValidator pointOfInterestValidator;
 
+        private readonly IFixture fixture;
         private readonly IAreaRepository areaRepository;
         private readonly ICategoryRepository categoryRepository;
         private readonly IPointOfInterestRepository pointOfInterestRepository;
@@ -67,13 +71,18 @@ namespace Vale.Geographic.Test.Services
                 .RuleFor(u => u.Location, MontarGeometry(CreatePoint()))
                 .RuleFor(u => u.Description, (f, u) => f.Name.JobDescriptor());
 
+            fixture = new Fixture().Customize(new AutoNSubstituteCustomization { ConfigureMembers = true });
 
-            this.pointOfInterestRepository = Substitute.For<IPointOfInterestRepository>();
-            this.categoryRepository = Substitute.For<ICategoryRepository>();
-            this.areaRepository = Substitute.For<IAreaRepository>();
-            this.unitOfWork = Substitute.For<IUnitOfWork>();
+            fixture.Behaviors.OfType<ThrowingRecursionBehavior>().ToList()
+                .ForEach(b => fixture.Behaviors.Remove(b));
+            fixture.Behaviors.Add(new OmitOnRecursionBehavior());
 
-            this.pointOfInterestService = new PointOfInterestService(unitOfWork, pointOfInterestRepository, areaRepository, categoryRepository);
+            this.categoryRepository = fixture.Freeze<ICategoryRepository>();
+            this.pointOfInterestRepository = fixture.Freeze<IPointOfInterestRepository>();
+            this.areaRepository = fixture.Freeze<IAreaRepository>();
+            this.unitOfWork = fixture.Freeze<IUnitOfWork>();
+
+            this.pointOfInterestService = fixture.Create<PointOfInterestService>();
         }
 
         #region Insert

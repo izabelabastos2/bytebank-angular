@@ -16,6 +16,7 @@ using Newtonsoft.Json;
 using System.Linq;
 using AutoMapper;
 using System;
+using Microsoft.EntityFrameworkCore;
 
 namespace Vale.Geographic.Application.Core.Services
 {
@@ -150,8 +151,9 @@ namespace Vale.Geographic.Application.Core.Services
             {
                 UoW.BeginTransaction();
 
-                //var pointOfInterestOriginal = pointOfInterestService.GetById(id);
-                var pointOfInterestOriginal = pointOfInterestRepository.RecoverById(id);            
+                var pointOfInterestOriginal = pointOfInterestService.GetById(id);
+                UoW.Context.Entry(pointOfInterestOriginal).State = EntityState.Detached;
+
                 if (pointOfInterestOriginal == null)
                     throw new ArgumentNullException();
 
