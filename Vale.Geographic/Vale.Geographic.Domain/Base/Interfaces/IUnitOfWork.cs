@@ -10,7 +10,7 @@ namespace Vale.Geographic.Domain.Base.Interfaces
     {
         IDbConnection Connection { get; }
         Guid Id { get; }
-        IDbContextTransaction Transaction { get; }
+        IDbTransaction Transaction { get; }
 
         DbContext Context { get; set; }
 
