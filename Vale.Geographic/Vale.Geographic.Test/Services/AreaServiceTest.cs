@@ -5,6 +5,7 @@ using Vale.Geographic.Domain.Core.Services;
 using Vale.Geographic.Domain.Enumerable;
 using Vale.Geographic.Domain.Entities;
 using NetTopologySuite.Geometries;
+using AutoFixture.AutoNSubstitute;
 using System.Collections.Generic;
 using NetTopologySuite.IO;
 using GeoAPI.Geometries;
@@ -12,6 +13,8 @@ using NetTopologySuite;
 using FluentAssertions;
 using Newtonsoft.Json;
 using GeoJSON.Net;
+using AutoFixture;
+using System.Linq;
 using NSubstitute;
 using System;
 using Bogus;
@@ -24,10 +27,9 @@ namespace Vale.Geographic.Test.Services
         private readonly Faker faker;
         private readonly Area area;
         private readonly Category category;
-
-
-        private readonly AreaService areaService;
         private readonly AreaValidator areaValidator;
+
+        private readonly IFixture fixture;
 
         private readonly IAreaRepository areaRepository;
         private readonly ICategoryRepository categoryRepository;
@@ -53,19 +55,26 @@ namespace Vale.Geographic.Test.Services
                 .RuleFor(u => u.Status, (f, u) => f.Random.Bool())
                 .RuleFor(u => u.Description, (f, u) => f.Name.JobDescriptor());
 
-            this.categoryRepository = Substitute.For<ICategoryRepository>();
-            this.areaRepository = Substitute.For<IAreaRepository>();
-            this.unitOfWork = Substitute.For<IUnitOfWork>();
 
-            this.areaService = new AreaService(unitOfWork, areaRepository, categoryRepository);
+            fixture = new Fixture().Customize(new AutoNSubstituteCustomization { ConfigureMembers = true });
+
+            fixture.Behaviors.OfType<ThrowingRecursionBehavior>().ToList()
+            .ForEach(b => fixture.Behaviors.Remove(b));
+            fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+
+            this.areaRepository = fixture.Freeze<IAreaRepository>();
+            this.categoryRepository = fixture.Freeze<ICategoryRepository>();
+            this.unitOfWork = fixture.Freeze<IUnitOfWork>();
+
         }
-
 
         #region Insert
 
         [Fact]
         public void ValidateInsert_Success()
         {
+            var areaService = fixture.Create<AreaService>();
+
             areaRepository.Insert(area).Returns(x =>
             {
                 area.Id = Guid.NewGuid();
@@ -92,11 +101,17 @@ namespace Vale.Geographic.Test.Services
         [Fact]
         public void ValidateInsert_Message()
         {
-            area.Name = null;
-            areaRepository.Insert(area).Returns(area);
+            var areaReturn = new Area();
+            areaReturn.Location = MontarGeometry(CreateMultiPolygon());
+            var areaService = fixture.Create<AreaService>();
+
+            areaRepository.Insert(areaReturn).Returns(areaReturn);
+
+            areaRepository.Get(null, out int total, area.Location).Returns(x => new List<Area>());
 
             unitOfWork.ValidateEntity = true;
-            areaService.Invoking(y => y.Insert(area))
+
+            areaService.Invoking(y => y.Insert(areaReturn))
                 .Should().Throw<FluentValidation.ValidationException>();
 
         }
@@ -108,6 +123,8 @@ namespace Vale.Geographic.Test.Services
         [Fact]
         public void ValidateUpdate_Success()
         {
+            var areaService = fixture.Create<AreaService>();
+
             area.Id = Guid.NewGuid();
             area.LastUpdatedAt = DateTime.Parse("20/02/2013");
 
@@ -137,6 +154,8 @@ namespace Vale.Geographic.Test.Services
         [Fact]
         public void ValidateUpdate_Message()
         {
+            var areaService = fixture.Create<AreaService>();
+
             area.Id = Guid.NewGuid();
             area.Name = null;
             areaRepository.Update(area).Returns(area);
@@ -165,7 +184,30 @@ namespace Vale.Geographic.Test.Services
 
                     })
                 });
-        }        
+        }
+
+        private static GeoJSONObject CreateMultiPolygon()
+        {
+            return new GeoJSON.Net.Geometry.MultiPolygon(new List<GeoJSON.Net.Geometry.Polygon>
+                {
+                    new GeoJSON.Net.Geometry.Polygon(new List<GeoJSON.Net.Geometry.LineString>
+                    {
+                       new GeoJSON.Net.Geometry.LineString(new List<GeoJSON.Net.Geometry.Position>
+                       {
+                            new GeoJSON.Net.Geometry.Position(-43.202322372018273, -19.634192139453091),
+                            new GeoJSON.Net.Geometry.Position(-43.2023795712837, -19.634192710981779),
+                            new GeoJSON.Net.Geometry.Position(-43.202379269686112, -19.634219808792981),
+                            new GeoJSON.Net.Geometry.Position(-43.202350670048418, -19.634219523030421),
+                            new GeoJSON.Net.Geometry.Position(-43.202350066842143, -19.634273718651681),
+                            new GeoJSON.Net.Geometry.Position(-43.20229286754892, -19.634273147111291),
+                            new GeoJSON.Net.Geometry.Position(-43.202293169161983, -19.63424604930157),
+                            new GeoJSON.Net.Geometry.Position(-43.202321768803472, -19.634246335073609),
+                            new GeoJSON.Net.Geometry.Position(-43.202322372018273, -19.634192139453091)
+
+                       })
+                    })
+                });
+        }
 
         private static IGeometry MontarGeometry(GeoJSONObject obj)
         {

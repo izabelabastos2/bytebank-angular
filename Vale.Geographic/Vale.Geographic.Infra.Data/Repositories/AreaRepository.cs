@@ -114,7 +114,7 @@ namespace Vale.Geographic.Infra.Data.Repositories
             }
 
             var count = 0;
-            
+
             IEnumerable<Area> result = this.Connection.Query<Area, string, Category, Area, string, int, Area>(sqlQuery.ToString(),
              (a, g, c, p, geo, t) => {
                  a.Category = c; 
@@ -129,7 +129,7 @@ namespace Vale.Geographic.Infra.Data.Repositories
                  return a;
              },
              param: param,
-             transaction: (IDbTransaction)this.Uow.Transaction,
+             transaction: this.Uow.Transaction,
              splitOn: "Id, Location, Id, Id, LocationParent, Total");          
 
             total = count;
@@ -180,10 +180,5 @@ namespace Vale.Geographic.Infra.Data.Repositories
            return area;
         }
 
-        public Area RecoverById(Guid Id)
-        {
-            var total = 0;
-            return this.Get(Id, out total).FirstOrDefault();
-        }
     }
 }

@@ -16,6 +16,7 @@ using Newtonsoft.Json;
 using System.Linq;
 using AutoMapper;
 using System;
+using Microsoft.EntityFrameworkCore;
 
 namespace Vale.Geographic.Application.Core.Services
 {
@@ -148,15 +149,18 @@ namespace Vale.Geographic.Application.Core.Services
         {
             try
             {
+
                 UoW.BeginTransaction();
 
-                //var areaOriginal = areaService.GetById(id);
-                var areaOriginal = areaRepository.RecoverById(id);
+                var areaOriginal = areaService.GetById(id);
+                UoW.Context.Entry(areaOriginal).State = EntityState.Detached;
 
                 if (areaOriginal == null)
-                    throw new ArgumentNullException();
+                   throw new ArgumentNullException();
+
 
                 Area area = Mapper.Map<Area>(obj);
+                
                 area.Id = id;
                 area.CreatedAt = areaOriginal.CreatedAt;
 

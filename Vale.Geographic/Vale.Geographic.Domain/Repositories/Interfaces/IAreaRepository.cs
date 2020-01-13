@@ -9,7 +9,5 @@ namespace Vale.Geographic.Domain.Repositories.Interfaces
     public interface IAreaRepository : IRepository<Area>
     {
         IEnumerable<Area> Get(Guid? id, out int total, IGeometry location = null, IGeometry point = null, bool? active = null, Guid? categoryId = null, Guid? parentId = null, IFilterParameters parameters = null);
-
-        Area RecoverById(Guid Id);
     }
 }

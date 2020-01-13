@@ -23,6 +23,7 @@ namespace Vale.Geographic.Domain.Core.Validations
             ValidateStatus();
             ValidateLocation();
             ValidateParentId();
+            ValidateParent();
             ValidateCategoryId();
             ValidateCategory();
             ValidateAreaDuplicate();
@@ -37,6 +38,7 @@ namespace Vale.Geographic.Domain.Core.Validations
                 ValidateStatus();
                 ValidateLocation();
                 ValidateParentId();
+                ValidateParent();
                 ValidateCategoryId();
                 ValidateCategory();
                 ValidateAreaDuplicate();
@@ -52,6 +54,7 @@ namespace Vale.Geographic.Domain.Core.Validations
                 ValidateStatus();
                 ValidateLocation();
                 ValidateParentId();
+                ValidateParent();
                 ValidateCategoryId();
                 ValidateCategory();
             });
@@ -65,8 +68,7 @@ namespace Vale.Geographic.Domain.Core.Validations
         private void ValidateId()
         {
             RuleFor(o => o.Id)
-                .NotEmpty().WithMessage(Resources.Validations.AreaIdRequired)
-                .Must(ExistingArea).WithMessage(Resources.Validations.AreaNotFound);            
+                .NotEmpty().WithMessage(Resources.Validations.AreaIdRequired);
         }
 
         private void ValidateName()
@@ -128,7 +130,7 @@ namespace Vale.Geographic.Domain.Core.Validations
         private void ValidateParent()
         {
             RuleFor(o => o.Parent)
-               .Must(x => ExistingArea(x.Id)).When(x => x.ParentId != null).WithMessage(Resources.Validations.AreaNotFound);
+               .Must(x => ExistingArea(x.Id)).When(x => x.Parent != null).WithMessage(Resources.Validations.AreaNotFound);
         }
 
         private void ValidateAreaDuplicate()
@@ -137,20 +139,18 @@ namespace Vale.Geographic.Domain.Core.Validations
         }
 
         private bool ExistingArea(Guid areaId)
-        {
-            //return areaRepository.GetById(areaId) != null ? true : false;
-            return areaRepository.RecoverById(areaId) != null ? true : false;
+        {        
+            return areaRepository.GetById(areaId) != null ? true : false;
         }
 
         private bool NotExistingArea(Area area)
         {
-            return areaRepository.Get(area.Id, out int total, area.Location).Count() == 0;
+            return areaRepository.Get(null, out int total, area.Location).Count() == 0;
         }
 
         private bool ExistingCategory(Guid? categoryId)
         {
-            return categoryRepository.GetById(categoryId.Value) != null ? true : false;
-            //return categoryRepository.Get(categoryId.Value, out int total, true) != null ? true : false;
+            return categoryId.HasValue && categoryRepository.Get(categoryId.Value, out int total, true) != null ? true : false;
         }
 
         #endregion Validações de campos

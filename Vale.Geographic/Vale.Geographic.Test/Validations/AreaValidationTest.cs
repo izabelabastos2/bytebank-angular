@@ -4,11 +4,15 @@ using Vale.Geographic.Domain.Enumerable;
 using Vale.Geographic.Domain.Entities;
 using NetTopologySuite.Geometries;
 using FluentValidation.TestHelper;
+using AutoFixture.AutoNSubstitute;
 using System.Collections.Generic;
 using NetTopologySuite.IO;
 using GeoAPI.Geometries;
+using FluentAssertions;
 using NetTopologySuite;
 using Newtonsoft.Json;
+using AutoFixture;
+using System.Linq;
 using GeoJSON.Net;
 using NSubstitute;
 using System;
@@ -22,21 +26,17 @@ namespace Vale.Geographic.Test.Validations
         private readonly Faker faker;
         private readonly Category category;
         private readonly Area area;
+        private readonly Area parent;
 
         private readonly IAreaRepository areaRepository;
         private readonly ICategoryRepository categoryRepository;
+        private readonly IFixture fixture;
 
         private readonly AreaValidator validator;
 
         public AreaValidationTest()
         {
             this.faker = new Faker("en");
-
-            this.area = new Faker<Area>()
-                .RuleFor(u => u.Name, (f, u) => f.Name.FullName())
-                .RuleFor(u => u.Location, MontarGeometry(CreatePolygon()))
-                .RuleFor(u => u.Description, (f, u) => f.Name.JobDescriptor());
-
 
             this.category = new Faker<Category>()
                 .RuleFor(u => u.Id, Guid.NewGuid())
@@ -46,8 +46,32 @@ namespace Vale.Geographic.Test.Validations
                 .RuleFor(u => u.LastUpdatedAt, DateTime.UtcNow.Date)
                 .RuleFor(u => u.Name, (f, u) => f.Name.FullName());
 
-            this.categoryRepository = Substitute.For<ICategoryRepository>();
-            this.areaRepository = Substitute.For<IAreaRepository>();
+            this.parent = new Faker<Area>()
+                    .RuleFor(u => u.Id, Guid.NewGuid())
+                    .RuleFor(u => u.Name, (f, u) => f.Name.FullName())
+                    .RuleFor(u => u.CreatedAt, DateTime.UtcNow.Date)
+                    .RuleFor(u => u.LastUpdatedAt, DateTime.UtcNow.Date)
+                    .RuleFor(u => u.Location, (f, u) => MontarGeometry(CreateMultiPolygon()))
+                    .RuleFor(u => u.CategoryId, category.Id)
+                    .RuleFor(u => u.Category, category)
+                    .RuleFor(u => u.Description, (f, u) => f.Name.JobDescriptor());
+
+            this.area = new Faker<Area>()
+                .RuleFor(u => u.Name, (f, u) => f.Name.FullName())
+                .RuleFor(u => u.Location, MontarGeometry(CreatePolygon()))
+                .RuleFor(u => u.CategoryId, category.Id)
+                .RuleFor(u => u.Category, category)
+                .RuleFor(u => u.Description, (f, u) => f.Name.JobDescriptor());
+
+
+            fixture = new Fixture().Customize(new AutoNSubstituteCustomization { ConfigureMembers = true });
+
+            fixture.Behaviors.OfType<ThrowingRecursionBehavior>().ToList()
+            .ForEach(b => fixture.Behaviors.Remove(b));
+            fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+
+            this.areaRepository = fixture.Freeze<IAreaRepository>();
+            this.categoryRepository = fixture.Freeze<ICategoryRepository>();  
 
             this.validator = new AreaValidator(areaRepository, categoryRepository);
         }
@@ -65,6 +89,17 @@ namespace Vale.Geographic.Test.Validations
             new object[]{ null },
         };
 
+        public static readonly List<object[]> InvalidId = new List<object[]>
+        {
+            new object[]{ Guid.Empty },
+            new object[]{ null },
+        };
+
+        public static readonly List<object[]> IncorrectData = new List<object[]>
+        {
+            new object[]{ DateTime.MinValue },
+            new object[]{ null }
+        };
 
         #region Id
 
@@ -74,31 +109,18 @@ namespace Vale.Geographic.Test.Validations
 
             area.Id = Guid.NewGuid();
 
-            var areaRetorno = new Faker<Area>()
-                   .RuleFor(u => u.Id, area.Id)
-                   .RuleFor(u => u.Name, (f, u) => f.Name.FullName())
-                   .RuleFor(u => u.Description, (f, u) => f.Name.JobDescriptor());
-
-            //areaRepository.GetById(area.Id).Returns(areaRetorno);
-            areaRepository.RecoverById(area.Id).Returns(areaRetorno);
-
             validator.ShouldNotHaveValidationErrorFor(x => x.Id, area);
 
         }
 
         [Theory]
-        [MemberData(nameof(ValidId))]
+        [MemberData(nameof(InvalidId))]
         public void ValidateId_EmptyOrInvalid_Message(Guid id)
         {
-            area.Id = id;
-            //areaRepository.GetById(area.Id).Returns(x => null);
-            areaRepository.RecoverById(area.Id).Returns(x => null);
-
+            area.Id = Guid.Empty;
 
             validator.ShouldHaveValidationErrorFor(x => x.Id, area)
-              .WithErrorMessage(id == Guid.Empty || id == null ?
-                 Domain.Resources.Validations.AreaIdRequired :
-                 Domain.Resources.Validations.AreaNotFound);
+              .WithErrorMessage(Domain.Resources.Validations.AreaIdRequired);
         }
 
         #endregion
@@ -127,7 +149,7 @@ namespace Vale.Geographic.Test.Validations
         [MemberData(nameof(ValidId))]
         public void ValidateCategoryId_NotFound_Message(Guid id)
         {
-            area.CategoryId = id;
+            area.CategoryId = id;    
 
             categoryRepository.Get(area.CategoryId.Value, out int total, true).Returns(x => null);
 
@@ -181,8 +203,7 @@ namespace Vale.Geographic.Test.Validations
                    .RuleFor(u => u.Name, (f, u) => f.Name.FullName())
                    .RuleFor(u => u.Description, (f, u) => f.Name.JobDescriptor());
 
-                //areaRepository.GetById(area.ParentId.Value).Returns(areaRetorno);
-                areaRepository.RecoverById(area.ParentId.Value).Returns(areaRetorno);
+                areaRepository.GetById(area.ParentId.Value).Returns(areaRetorno);
             }
 
             validator.ShouldNotHaveValidationErrorFor(x => x.ParentId, area);
@@ -194,8 +215,7 @@ namespace Vale.Geographic.Test.Validations
         {
             area.ParentId = id;
 
-            //areaRepository.GetById(area.ParentId.Value).Returns(x => null);
-            areaRepository.RecoverById(area.ParentId.Value).Returns(x => null);
+            areaRepository.GetById(area.ParentId.Value).Returns(x => null);
 
             validator.ShouldHaveValidationErrorFor(x => x.ParentId.Value, area)
                 .WithErrorMessage(Domain.Resources.Validations.AreaNotFound);
@@ -203,49 +223,34 @@ namespace Vale.Geographic.Test.Validations
 
         #endregion
 
-        //#region Parent
+        #region Parent
 
-        //[Fact]
-        //public void ValidateParent_Parent_Sucesso()
-        //{
-        //    area.ParentId = Guid.NewGuid();
-        //    area.Parent = new Faker<Area>()
-        //        .RuleFor(u => u.Id, area.ParentId)
-        //        .RuleFor(u => u.Name, (f, u) => f.Name.FullName())
-        //        .RuleFor(u => u.CreatedAt, DateTime.UtcNow.Date)
-        //        .RuleFor(u => u.LastUpdatedAt, DateTime.UtcNow.Date)
-        //        .RuleFor(u => u.CategoryId, category.Id)
-        //        .RuleFor(u => u.Category, category)
-        //        .RuleFor(u => u.Location, MontarGeometry(CreatePolygon()))
-        //        .RuleFor(u => u.Status, (f, u) => f.Random.Bool())
-        //        .RuleFor(u => u.Description, (f, u) => f.Name.JobDescriptor());
+        [Fact]
+        public void ValidateParent_Parent_Sucesso()
+        {
+            area.ParentId = Guid.NewGuid();
+            area.Parent = new Faker<Area>()
+                .RuleFor(u => u.Id, area.ParentId)
+                .RuleFor(u => u.Name, (f, u) => f.Name.FullName())
+                .RuleFor(u => u.CreatedAt, DateTime.UtcNow.Date)
+                .RuleFor(u => u.LastUpdatedAt, DateTime.UtcNow.Date)
+                .RuleFor(u => u.CategoryId, category.Id)
+                .RuleFor(u => u.Category, category)
+                .RuleFor(u => u.Location, MontarGeometry(CreatePolygon()))
+                .RuleFor(u => u.Status, (f, u) => f.Random.Bool())
+                .RuleFor(u => u.Description, (f, u) => f.Name.JobDescriptor());
 
-        //    areaRepository.GetById(area.ParentId.Value).Returns(area.Parent);
+            areaRepository.GetById(area.ParentId.Value).Returns(area.Parent);
 
-        //    validator.ShouldNotHaveValidationErrorFor(x => x.Parent, area);
-        //}
-
-
-        //[Fact]
-        //public void ValidateParent_ParentInvalid_Message()
-        //{
-        //    area.Parent = new Faker<Area>()
-        //        .RuleFor(u => u.Id, area.ParentId)
-        //        .RuleFor(u => u.Name, (f, u) => f.Name.FullName())
-        //        .RuleFor(u => u.CreatedAt, DateTime.UtcNow.Date)
-        //        .RuleFor(u => u.LastUpdatedAt, DateTime.UtcNow.Date)
-        //        .RuleFor(u => u.CategoryId, category.Id)
-        //        .RuleFor(u => u.Category, category)
-        //        .RuleFor(u => u.Location, MontarGeometry(CreatePolygon()))
-        //        .RuleFor(u => u.Status, (f, u) => f.Random.Bool())
-        //        .RuleFor(u => u.Description, (f, u) => f.Name.JobDescriptor());
+            areaRepository.Get(null, out int total, area.Parent.Location).Returns(x => new List<Area>());
+            var resul = validator.TestValidate(area.Parent).Result;
+            resul.IsValid.Should().BeTrue();
+            resul.Errors.Should().BeNullOrEmpty();
 
 
-        //    validator.ShouldHaveValidationErrorFor(x => x.Parent, area)
-        //     .WithErrorMessage(Domain.Resources.Validations.AreaNotFound);
-        //}
-
-        //#endregion
+        }
+                
+        #endregion
 
         #region Description
 
@@ -303,10 +308,11 @@ namespace Vale.Geographic.Test.Validations
 
         #region CreatedAt
 
-        [Fact]
-        public void ValidateCreatedAt_CreatedAtMinValue_Message()
+        [Theory]
+        [MemberData(nameof(IncorrectData))]
+        public void ValidateCreatedAt_CreatedAtMinValue_Message(DateTime createdAt)
         {
-            area.CreatedAt = DateTime.MinValue;
+            area.CreatedAt = createdAt;
 
             validator.ShouldHaveValidationErrorFor(x => x.CreatedAt, area)
              .WithErrorMessage(Domain.Resources.Validations.AreaCreatedAtRequired);
@@ -324,10 +330,11 @@ namespace Vale.Geographic.Test.Validations
 
         #region LastUpdatedAt
 
-        [Fact]
-        public void ValidateLastUpdatedAt_LastUpdatedAtMinValue_Message()
+        [Theory]
+        [MemberData(nameof(IncorrectData))]
+        public void ValidateLastUpdatedAt_LastUpdatedAtMinValue_Message(DateTime lastUpdatedAt)
         {
-            area.LastUpdatedAt = DateTime.MinValue; 
+            this.area.LastUpdatedAt = lastUpdatedAt;
 
             validator.ShouldHaveValidationErrorFor(x => x.LastUpdatedAt, area)
              .WithErrorMessage(Domain.Resources.Validations.AreaLastUpdatedAtRequired);
