@@ -8,7 +8,5 @@ namespace Vale.Geographic.Domain.Repositories.Interfaces
     public interface IRouteRepository : IRepository<Route>
     {
         IEnumerable<Route> Get(Guid? id, out int total, bool? active = null, Guid? areaId = null, IFilterParameters parameters = null);
-
-        Route RecoverById(Guid Id);
     }
 }

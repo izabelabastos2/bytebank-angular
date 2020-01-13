@@ -95,10 +95,5 @@ namespace Vale.Geographic.Infra.Data.Repositories
             return result;
         }
 
-        public Route RecoverById(Guid Id)
-        {
-            var total = 0;
-            return this.Get(Id, out total).FirstOrDefault();
-        }
     }
 }

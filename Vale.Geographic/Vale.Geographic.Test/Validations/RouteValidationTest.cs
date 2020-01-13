@@ -3,6 +3,7 @@ using Vale.Geographic.Domain.Core.Validations;
 using Vale.Geographic.Domain.Entities;
 using NetTopologySuite.Geometries;
 using FluentValidation.TestHelper;
+using AutoFixture.AutoNSubstitute;
 using System.Collections.Generic;
 using NetTopologySuite.IO;
 using GeoAPI.Geometries;
@@ -10,6 +11,8 @@ using NetTopologySuite;
 using Newtonsoft.Json;
 using GeoJSON.Net;
 using NSubstitute;
+using AutoFixture;
+using System.Linq;
 using System;
 using Bogus;
 using Xunit;
@@ -22,6 +25,7 @@ namespace Vale.Geographic.Test.Validations
         private readonly Route route;
         private readonly Area area;
 
+        private readonly IFixture fixture;
         private readonly IRouteRepository routeRepository;
         private readonly IAreaRepository areaRepository;
         private readonly RouteValidator validator;
@@ -42,8 +46,14 @@ namespace Vale.Geographic.Test.Validations
                 .RuleFor(u => u.AreaId, area.Id)
                 .RuleFor(u => u.Name, (f, u) => f.Name.FullName());
 
-            this.routeRepository = Substitute.For<IRouteRepository>();
-            this.areaRepository = Substitute.For<IAreaRepository>();
+            fixture = new Fixture().Customize(new AutoNSubstituteCustomization { ConfigureMembers = true });
+
+            fixture.Behaviors.OfType<ThrowingRecursionBehavior>().ToList()
+                .ForEach(b => fixture.Behaviors.Remove(b));
+            fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+
+            this.routeRepository = fixture.Freeze<IRouteRepository>();
+            this.areaRepository = fixture.Freeze<IAreaRepository>();
 
             this.validator = new RouteValidator(routeRepository, areaRepository);
         }
@@ -55,6 +65,18 @@ namespace Vale.Geographic.Test.Validations
 
         };
 
+        public static readonly List<object[]> InvalidId = new List<object[]>
+        {
+            new object[]{ Guid.Empty },
+            new object[]{ null },
+        };
+        
+        public static readonly List<object[]> IncorrectData = new List<object[]>
+        {
+            new object[]{ DateTime.MinValue },
+            new object[]{ null }
+        };
+
         #region Id
 
         [Fact]
@@ -62,32 +84,17 @@ namespace Vale.Geographic.Test.Validations
         {
             this.route.Id = Guid.NewGuid();
 
-            var routeReturn = new Faker<Route>()
-                   .RuleFor(u => u.Id, route.Id)
-                   .RuleFor(u => u.Name, (f, u) => f.Name.FullName())
-                   .RuleFor(u => u.AreaId, area.Id)
-                   .RuleFor(u => u.Location, MontarGeometry(CreateLineString()))
-                   .RuleFor(u => u.Description, (f, u) => f.Name.JobDescriptor());
-
-            //routeRepository.GetById(route.Id).Returns(routeReturn);
-            routeRepository.RecoverById(route.Id).Returns(routeReturn);
-
             validator.ShouldNotHaveValidationErrorFor(x => x.Id, route);
         }
 
         [Theory]
-        [MemberData(nameof(ValidId))]
+        [MemberData(nameof(InvalidId))]
         public void ValidateId_EmptyOrInvalid_Message(Guid id)
         {
             this.route.Id = id;
 
-            //routeRepository.GetById(route.Id).Returns(x => null);
-            routeRepository.RecoverById(route.Id).Returns(x => null);
-
             validator.ShouldHaveValidationErrorFor(x => x.Id, route)
-              .WithErrorMessage(id == Guid.Empty || id == null ?
-                 Domain.Resources.Validations.RouteIdRequired :
-                 Domain.Resources.Validations.RouteNotFound);
+              .WithErrorMessage(Domain.Resources.Validations.RouteIdRequired);
         }
 
         #endregion
@@ -182,10 +189,11 @@ namespace Vale.Geographic.Test.Validations
 
         #region CreatedAt
 
-        [Fact]
-        public void ValidateCreatedAt_CreatedAtMinValue_Message()
+        [Theory]
+        [MemberData(nameof(IncorrectData))]
+        public void ValidateCreatedAt_CreatedAtMinValue_Message(DateTime createdAt)
         {
-            this.route.CreatedAt = DateTime.MinValue;
+            this.route.CreatedAt = createdAt;
 
             validator.ShouldHaveValidationErrorFor(x => x.CreatedAt, route)
              .WithErrorMessage(Domain.Resources.Validations.RouteCreatedAtRequired);
@@ -203,10 +211,11 @@ namespace Vale.Geographic.Test.Validations
 
         #region LastUpdatedAt
 
-        [Fact]
-        public void ValidateLastUpdatedAt_LastUpdatedAtMinValue_Message()
+        [Theory]
+        [MemberData(nameof(IncorrectData))]
+        public void ValidateLastUpdatedAt_LastUpdatedAtMinValue_Message(DateTime lastUpdatedAt)
         {
-            this.route.LastUpdatedAt = DateTime.MinValue;
+            this.route.LastUpdatedAt = lastUpdatedAt;
 
             validator.ShouldHaveValidationErrorFor(x => x.LastUpdatedAt, route)
              .WithErrorMessage(Domain.Resources.Validations.RouteLastUpdatedAtRequired);

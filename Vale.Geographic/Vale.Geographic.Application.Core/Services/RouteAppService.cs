@@ -14,6 +14,7 @@ using Newtonsoft.Json;
 using System.Linq;
 using AutoMapper;
 using System;
+using Microsoft.EntityFrameworkCore;
 
 namespace Vale.Geographic.Application.Core.Services
 {
@@ -105,6 +106,7 @@ namespace Vale.Geographic.Application.Core.Services
                 UoW.BeginTransaction();
 
                 var routeOriginal = routeService.GetById(id);
+                UoW.Context.Entry(routeOriginal).State = EntityState.Detached;
 
                 if (routeOriginal == null)
                     throw new ArgumentNullException();

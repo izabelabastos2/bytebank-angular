@@ -1,21 +1,23 @@
-﻿using Bogus;
-using FluentAssertions;
-using GeoAPI.Geometries;
-using GeoJSON.Net;
-using NetTopologySuite;
-using NetTopologySuite.Geometries;
-using NetTopologySuite.IO;
-using Newtonsoft.Json;
-using NSubstitute;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Vale.Geographic.Domain.Repositories.Interfaces;
+using Vale.Geographic.Domain.Core.Validations;
 using Vale.Geographic.Domain.Base.Interfaces;
 using Vale.Geographic.Domain.Core.Services;
-using Vale.Geographic.Domain.Core.Validations;
-using Vale.Geographic.Domain.Entities;
 using Vale.Geographic.Domain.Enumerable;
-using Vale.Geographic.Domain.Repositories.Interfaces;
+using Vale.Geographic.Domain.Entities;
+using AutoFixture.AutoNSubstitute;
+using NetTopologySuite.Geometries;
+using System.Collections.Generic;
+using NetTopologySuite.IO;
+using GeoAPI.Geometries;
+using FluentAssertions;
+using NetTopologySuite;
+using Newtonsoft.Json;
+using AutoFixture;
+using GeoJSON.Net;
+using NSubstitute;
+using System.Linq;
+using System;
+using Bogus;
 using Xunit;
 
 namespace Vale.Geographic.Test.Services
@@ -30,6 +32,7 @@ namespace Vale.Geographic.Test.Services
         private readonly RouteService routeService;
         private readonly RouteValidator routeValidator;
 
+        private readonly IFixture fixture;
         private readonly IRouteRepository routeRepository;
         private readonly IAreaRepository areaRepository;
         private readonly IUnitOfWork unitOfWork;
@@ -66,17 +69,23 @@ namespace Vale.Geographic.Test.Services
                 .RuleFor(u => u.Description, (f, u) => f.Name.JobDescriptor())
                 .RuleFor(u => u.Name, (f, u) => f.Name.FullName());
 
-            this.routeRepository = Substitute.For<IRouteRepository>();
-            this.areaRepository = Substitute.For<IAreaRepository>();
-            this.unitOfWork = Substitute.For<IUnitOfWork>();
 
-            this.routeService = new RouteService(unitOfWork, routeRepository, areaRepository);
+            fixture = new Fixture().Customize(new AutoNSubstituteCustomization { ConfigureMembers = true });
+
+            fixture.Behaviors.OfType<ThrowingRecursionBehavior>().ToList()
+                .ForEach(b => fixture.Behaviors.Remove(b));
+            fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+
+            this.routeRepository = fixture.Freeze<IRouteRepository>();
+            this.areaRepository = fixture.Freeze<IAreaRepository>();
+            this.unitOfWork = fixture.Freeze<IUnitOfWork>();
+            this.routeService = fixture.Create<RouteService>();
         }
 
         #region Insert
 
         [Fact]
-        public void ValidateInsert_Success()
+        public void ValidateInsert_Valid_Success()
         {
             routeRepository.Insert(route).Returns(x =>
             {
@@ -100,12 +109,14 @@ namespace Vale.Geographic.Test.Services
         }
 
         [Fact]
-        public void ValidateInsert_Message()
+        public void ValidateInsert_Validating_Message()
         {
-            routeRepository.Insert(route).Returns(route);
+            var routeReturn = new Route();
+            routeReturn.Location = MontarGeometry(CreatePolygon());
 
             unitOfWork.ValidateEntity = true;
-            routeService.Invoking(y => y.Insert(route))
+
+            routeService.Invoking(y => y.Insert(routeReturn))
                 .Should().Throw<FluentValidation.ValidationException>();
 
         }

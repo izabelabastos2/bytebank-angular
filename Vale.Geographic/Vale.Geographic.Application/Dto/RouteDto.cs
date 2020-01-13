@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
+using System.Collections.Generic;
 using GeoJSON.Net.Feature;
 using System;
-using System.Collections.Generic;
 
 namespace Vale.Geographic.Application.Dto
 {
