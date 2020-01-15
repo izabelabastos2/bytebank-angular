@@ -1,6 +1,6 @@
 ﻿using System;
+using GeoAPI.Geometries;
 using Microsoft.EntityFrameworkCore.Migrations;
-using NetTopologySuite.Geometries;
 
 namespace Vale.Geographic.Infra.Data.Migrations
 {
@@ -17,7 +17,7 @@ namespace Vale.Geographic.Infra.Data.Migrations
                     LastUpdatedAt = table.Column<DateTime>(type: "datetime", nullable: false),
                     Status = table.Column<bool>(type: "bit", nullable: false),
                     TypeEntitie = table.Column<int>(nullable: false),
-                    Description = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: true)
+                    Name = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -32,9 +32,9 @@ namespace Vale.Geographic.Infra.Data.Migrations
                     CreatedAt = table.Column<DateTime>(type: "datetime", nullable: false),
                     LastUpdatedAt = table.Column<DateTime>(type: "datetime", nullable: false),
                     Status = table.Column<bool>(type: "bit", nullable: false),
-                    Name = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: false),
+                    Name = table.Column<string>(type: "varchar(150)", maxLength: 150, nullable: false),
                     Description = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: true),
-                    Location = table.Column<Geometry>(type: "geography", nullable: false),
+                    Location = table.Column<IGeometry>(type: "geography", nullable: false),
                     CategoryId = table.Column<Guid>(nullable: true),
                     ParentId = table.Column<Guid>(nullable: true)
                 },
@@ -63,9 +63,9 @@ namespace Vale.Geographic.Infra.Data.Migrations
                     CreatedAt = table.Column<DateTime>(type: "datetime", nullable: false),
                     LastUpdatedAt = table.Column<DateTime>(type: "datetime", nullable: false),
                     Status = table.Column<bool>(type: "bit", nullable: false),
-                    Name = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: false),
+                    Name = table.Column<string>(type: "varchar(150)", maxLength: 150, nullable: false),
                     Description = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: true),
-                    Location = table.Column<Geometry>(type: "geography", nullable: false),
+                    Location = table.Column<IGeometry>(type: "geography", nullable: false),
                     AreaId = table.Column<Guid>(nullable: false),
                     CategoryId = table.Column<Guid>(nullable: true)
                 },
@@ -94,10 +94,10 @@ namespace Vale.Geographic.Infra.Data.Migrations
                     CreatedAt = table.Column<DateTime>(type: "datetime", nullable: false),
                     LastUpdatedAt = table.Column<DateTime>(type: "datetime", nullable: false),
                     Status = table.Column<bool>(type: "bit", nullable: false),
-                    Name = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: false),
+                    Name = table.Column<string>(type: "varchar(150)", maxLength: 150, nullable: false),
                     Description = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: true),
                     Length = table.Column<decimal>(type: "decimal(5,2)", nullable: false),
-                    Location = table.Column<Geometry>(type: "geography", nullable: false),
+                    Location = table.Column<IGeometry>(type: "geography", nullable: false),
                     AreaId = table.Column<Guid>(nullable: false)
                 },
                 constraints: table =>
@@ -119,10 +119,10 @@ namespace Vale.Geographic.Infra.Data.Migrations
                     CreatedAt = table.Column<DateTime>(type: "datetime", nullable: false),
                     LastUpdatedAt = table.Column<DateTime>(type: "datetime", nullable: false),
                     Status = table.Column<bool>(type: "bit", nullable: false),
-                    Name = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: false),
-                    Description = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: false),
+                    Name = table.Column<string>(type: "varchar(150)", maxLength: 150, nullable: false),
+                    Description = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: true),
                     Length = table.Column<decimal>(type: "decimal(5,2)", nullable: false),
-                    Location = table.Column<Geometry>(type: "geography", nullable: false),
+                    Location = table.Column<IGeometry>(type: "geography", nullable: false),
                     RouteId = table.Column<Guid>(nullable: false),
                     AreaId = table.Column<Guid>(nullable: false)
                 },
