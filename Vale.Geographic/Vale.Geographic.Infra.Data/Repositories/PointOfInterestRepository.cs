@@ -39,6 +39,7 @@ namespace Vale.Geographic.Infra.Data.Repositories
 		                                  POINT.[Description],
 		                                  POINT.[CategoryId],
 	                                      POINT.[AreaId],
+	                                      POINT.[Icon],
 		                                  POINT.[Location].ToString() as Location,
                                           AREA.[Id],
 		                                  AREA.[CreatedAt],
@@ -48,6 +49,7 @@ namespace Vale.Geographic.Infra.Data.Repositories
 		                                  AREA.[Description],
 		                                  AREA.[CategoryId],	
 	                                      AREA.[ParentId],
+	                                      AREA.[Color],
 		                                  AREA.[Location].ToString() as LocationArea,
 		                                  CAT.[Id],
 		                                  CAT.[CreatedAt],
@@ -57,7 +59,7 @@ namespace Vale.Geographic.Infra.Data.Repositories
 		                                  CAT.[Name],
 		                                  COUNT(1) OVER () as Total
                                   FROM dbo.PointOfInterest POINT
-                                  INNER JOIN dbo.Area AREA ON POINT.AreaId = AREA.Id
+                                  LEFT JOIN dbo.Area AREA ON POINT.AreaId = AREA.Id
                                   LEFT JOIN dbo.Categorys CAT ON POINT.CategoryId = CAT.Id AND CAT.[TypeEntitie] = 1
                                   WHERE 0 = 0 ");
 
@@ -119,8 +121,13 @@ namespace Vale.Geographic.Infra.Data.Repositories
             
                     p.Category = c;
                     p.Location = new WKTReader().Read(geo);
-                    p.Area = a;
-                    a.Location = new WKTReader().Read(geoa);
+
+                    if (p.AreaId.HasValue)
+                    {
+                        p.Area = a;
+                        a.Location = new WKTReader().Read(geoa);
+                    }
+
                     count = t;
                     return p;
                 },
@@ -145,7 +152,8 @@ namespace Vale.Geographic.Infra.Data.Repositories
                                                ,[Description]
                                                ,[Location]
                                                ,[AreaId]
-                                               ,[CategoryId])
+                                               ,[CategoryId]
+                                               ,[Icon])
                                          VALUES
                                               (@Id
 		                                      ,@CreatedAt
@@ -155,7 +163,8 @@ namespace Vale.Geographic.Infra.Data.Repositories
 		                                      ,@Description
 		                                      ,geography::STGeomFromText(@Location, 4326).MakeValid()
 		                                      ,@AreaId
-		                                      ,@CategoryId) ");
+		                                      ,@CategoryId
+                                              ,@Icon) ");
 
             point.Id = Guid.NewGuid();
 
@@ -169,6 +178,8 @@ namespace Vale.Geographic.Infra.Data.Repositories
             param.Add("AreaId", point.AreaId);
             param.Add("CategoryId", point.CategoryId);
             param.Add("Location", point.Location.ToString());
+            param.Add("Icon", point.Icon);
+
 
             this.Uow.Connection.Execute(sqlQuery.ToString(),
                 param,

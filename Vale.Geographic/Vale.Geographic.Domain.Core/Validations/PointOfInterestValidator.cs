@@ -19,10 +19,11 @@ namespace Vale.Geographic.Domain.Core.Validations
             ValidateId();
             ValidateName();
             ValidateDescription();
+            ValidateIcon();
             ValidateCreatedAt();
             ValidateLastUpdatedAt();
             ValidateStatus();
-            ValidateParentId();
+            ValidateAreaId();
             ValidateCategoryId();
             ValidateCategory();
             ValidateLocation();
@@ -33,10 +34,11 @@ namespace Vale.Geographic.Domain.Core.Validations
             {
                 ValidateName();
                 ValidateDescription();
+                ValidateIcon();
                 ValidateCreatedAt();
                 ValidateLastUpdatedAt();
                 ValidateStatus();
-                ValidateParentId();
+                ValidateAreaId();
                 ValidateCategoryId();
                 ValidateCategory();
                 ValidateLocation();
@@ -48,10 +50,11 @@ namespace Vale.Geographic.Domain.Core.Validations
                 ValidateId();
                 ValidateName();
                 ValidateDescription();
+                ValidateIcon();
                 ValidateCreatedAt();
                 ValidateLastUpdatedAt();
                 ValidateStatus();
-                ValidateParentId();
+                ValidateAreaId();
                 ValidateCategoryId();
                 ValidateCategory();
                 ValidateLocation();
@@ -88,6 +91,12 @@ namespace Vale.Geographic.Domain.Core.Validations
                 .Length(1, 255).When(x => !string.IsNullOrWhiteSpace(x.Description)).WithMessage(Resources.Validations.PointOfInterestDescriptionLength);
         }
 
+        private void ValidateIcon()
+        {
+            RuleFor(o => o.Icon)
+               .Length(1, 255).When(x => !string.IsNullOrWhiteSpace(x.Icon)).WithMessage(Resources.Validations.PointOfInterestIconLength);
+        }
+
         private void ValidateCreatedAt()
         {
             RuleFor(o => o.CreatedAt)
@@ -113,17 +122,16 @@ namespace Vale.Geographic.Domain.Core.Validations
                 .Must(x => x.OgcGeometryType.Equals(OgcGeometryType.Point)).WithMessage(Resources.Validations.PointOfInterestLocationInvalid);
         }
 
-        private void ValidateParentId()
+        private void ValidateAreaId()
         {
             RuleFor(o => o.AreaId)
-                .NotEmpty().WithMessage(Resources.Validations.PointOfInterestAreaIdRequired)
-                .Must(ExistingArea).WithMessage(Resources.Validations.AreaNotFound);
+                .Must(ExistingArea).When(x => x.AreaId != null).WithMessage(Resources.Validations.AreaNotFound);
         }
 
         private void ValidateCategoryId()
         {
             RuleFor(o => o.CategoryId)
-                .Must(ExistingCategoria).When(x => x.AreaId != null).WithMessage(Resources.Validations.CategoryNotFound);
+                .Must(ExistingCategoria).When(x => x.CategoryId != null).WithMessage(Resources.Validations.CategoryNotFound);
         }
 
         private void ValidateCategory()
@@ -132,9 +140,9 @@ namespace Vale.Geographic.Domain.Core.Validations
                 .Must(x => x.TypeEntitie.Equals(TypeEntitieEnum.PointOfInterest)).When(x => x.Category != null).WithMessage(Resources.Validations.PointOfInterestCategoryInvalid);
         }
 
-        private bool ExistingArea(Guid areaId)
+        private bool ExistingArea(Guid? areaId)
         {
-            return  areaRepository.GetById(areaId) != null ? true : false;
+            return  areaRepository.GetById(areaId.Value) != null ? true : false;
         }
 
         private void ValidatePointDuplicate()

@@ -18,13 +18,14 @@ namespace Vale.Geographic.Application.Dto
         [Required]
         public string Name { get; set; }
 
+        public string Icon { get; set; }
+
         public string Description { get; set; }
 
         [Required]
         public Feature Geojson { get; set; }
 
-        [Required]
-        public Guid AreaId { get; set; }
+        public Guid? AreaId { get; set; }
 
         public AreaDto Area { get; set; }
 

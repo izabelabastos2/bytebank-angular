@@ -12,12 +12,13 @@ namespace Vale.Geographic.Domain.Entities
         public string Name { get; set; }
 
         public string Description { get; set; }
-        
+
+        public string Icon { get; set; }
+
         [Required]
         public virtual IGeometry Location { get; set; }
 
-        [Required]
-        public virtual Guid AreaId { get; set; }
+        public virtual Guid? AreaId { get; set; }
 
         [Write(false)]
         public virtual Area Area { get; set; }

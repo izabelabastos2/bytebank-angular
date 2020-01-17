@@ -15,7 +15,8 @@ namespace Vale.Geographic.Infra.Data.Mappings
             builder.Property(p => p.Status).IsRequired().HasColumnType("bit");
             builder.Property(p => p.Name).IsRequired().HasColumnType("varchar(150)").HasMaxLength(150);
             builder.Property(p => p.Description).HasColumnType("varchar(255)").HasMaxLength(255);
-            builder.Property(p => p.Location).HasColumnType("geography");
+            builder.Property(p => p.Icon).HasColumnType("varchar(255)").HasMaxLength(255);
+            builder.Property(p => p.Location).IsRequired().HasColumnType("geography");
 
 
             builder.HasOne<Category>(p => p.Category)

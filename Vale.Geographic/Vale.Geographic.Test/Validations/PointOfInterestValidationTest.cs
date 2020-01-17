@@ -187,17 +187,21 @@ namespace Vale.Geographic.Test.Validations
 
         #region AreaId
 
-        [Fact]
-        public void ValidateAreaId_AreaIdOrNull_Sucesso()
+        [Theory]
+        [MemberData(nameof(Id))]
+        public void ValidateAreaId_AreaIdOrNull_Sucesso(Guid id)
         {
-            this.pointOfInterest.AreaId = Guid.NewGuid();
-            
-            var areaRetorno = new Faker<Area>()
-                .RuleFor(u => u.Id, pointOfInterest.AreaId)
-                .RuleFor(u => u.Name, (f, u) => f.Name.FullName())
-                .RuleFor(u => u.Description, (f, u) => f.Name.JobDescriptor());
+            this.pointOfInterest.AreaId = id;
 
-            this.areaRepository.GetById(pointOfInterest.AreaId).Returns(areaRetorno);            
+            if (id != null)
+            {
+                var areaRetorno = new Faker<Area>()
+                    .RuleFor(u => u.Id, pointOfInterest.AreaId)
+                    .RuleFor(u => u.Name, (f, u) => f.Name.FullName())
+                    .RuleFor(u => u.Description, (f, u) => f.Name.JobDescriptor());
+
+                this.areaRepository.GetById(pointOfInterest.AreaId.Value).Returns(areaRetorno);
+            }
 
             validator.ShouldNotHaveValidationErrorFor(x => x.AreaId, pointOfInterest);
         }
@@ -208,12 +212,10 @@ namespace Vale.Geographic.Test.Validations
         {
             this.pointOfInterest.AreaId = id;
 
-            areaRepository.GetById(pointOfInterest.AreaId).Returns(x => null);
+            areaRepository.GetById(pointOfInterest.AreaId.Value).Returns(x => null);
 
             validator.ShouldHaveValidationErrorFor(x => x.AreaId, pointOfInterest)
-              .WithErrorMessage(id == Guid.Empty ?
-                 Domain.Resources.Validations.PointOfInterestAreaIdRequired :
-                 Domain.Resources.Validations.AreaNotFound);
+              .WithErrorMessage(Domain.Resources.Validations.AreaNotFound);
         }
 
         #endregion
@@ -238,7 +240,28 @@ namespace Vale.Geographic.Test.Validations
         }
 
         #endregion
+                       
+        #region Icon
 
+        [Fact]
+        public void ValidateIcon_IconGreaterThan255_Message()
+        {
+            this.pointOfInterest.Icon = faker.Random.String(256);
+            validator.ShouldHaveValidationErrorFor(x => x.Icon, pointOfInterest)
+                .WithErrorMessage(Domain.Resources.Validations.PointOfInterestIconLength);
+        }
+
+        [Theory]
+        [InlineData("TESTE")]
+        [InlineData(null)]
+        public void ValidateIcon_Icon_Sucesso(string icon)
+        {
+            this.pointOfInterest.Icon = icon;
+            validator.ShouldNotHaveValidationErrorFor(x => x.Icon, pointOfInterest);
+        }
+
+        #endregion
+        
         #region Name
 
         [Theory]
