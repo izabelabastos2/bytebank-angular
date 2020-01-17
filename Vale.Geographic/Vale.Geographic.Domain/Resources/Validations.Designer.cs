@@ -70,6 +70,15 @@ namespace Vale.Geographic.Domain.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to O nome da cor da área não pode ter mais que 255 caracteres..
+        /// </summary>
+        public static string AreaColorLength {
+            get {
+                return ResourceManager.GetString("AreaColorLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Por favor, informe a data de criação da area..
         /// </summary>
         public static string AreaCreatedAtRequired {
@@ -133,7 +142,7 @@ namespace Vale.Geographic.Domain.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to O nome da area não pode ter mais do que 255 caracteres..
+        ///   Looks up a localized string similar to O nome da area não pode ter mais do que 150 caracteres..
         /// </summary>
         public static string AreaNameLength {
             get {
@@ -358,6 +367,15 @@ namespace Vale.Geographic.Domain.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to O nome do ícone do ponto de interesse não pode ter mais que 255 caracteres..
+        /// </summary>
+        public static string PointOfInterestIconLength {
+            get {
+                return ResourceManager.GetString("PointOfInterestIconLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Por favor, informe o ID do ponto de interesse..
         /// </summary>
         public static string PointOfInterestIdRequired {
@@ -394,7 +412,7 @@ namespace Vale.Geographic.Domain.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to O nome do ponto de interesse não pode ter mais do que 255 caracteres..
+        ///   Looks up a localized string similar to O nome do ponto de interesse não pode ter mais do que 150 caracteres..
         /// </summary>
         public static string PointOfInterestNameLength {
             get {
@@ -493,7 +511,7 @@ namespace Vale.Geographic.Domain.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to O nome do ponto de interesse não pode ter mais do que 255 caracteres..
+        ///   Looks up a localized string similar to O nome do ponto de interesse não pode ter mais do que 150 caracteres..
         /// </summary>
         public static string RouteNameLength {
             get {

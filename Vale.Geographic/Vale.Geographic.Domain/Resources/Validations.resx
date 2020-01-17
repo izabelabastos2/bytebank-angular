@@ -145,7 +145,7 @@
     <value>Por favor, informe o ID da area</value>
   </data>
   <data name="AreaNameLength" xml:space="preserve">
-    <value>O nome da area não pode ter mais do que 255 caracteres.</value>
+    <value>O nome da area não pode ter mais do que 150 caracteres.</value>
   </data>
   <data name="AreaNameRequired" xml:space="preserve">
     <value>Por favor, informe o nome da area.</value>
@@ -214,7 +214,7 @@
     <value>Por favor, informe a localização do ponto de interesse.</value>
   </data>
   <data name="PointOfInterestNameLength" xml:space="preserve">
-    <value>O nome do ponto de interesse não pode ter mais do que 255 caracteres.</value>
+    <value>O nome do ponto de interesse não pode ter mais do que 150 caracteres.</value>
   </data>
   <data name="PointOfInterestNameRequired" xml:space="preserve">
     <value>Por favor, informe o nome do ponto de interesse.</value>
@@ -250,7 +250,7 @@
     <value>Por favor, informe a localização da rota.</value>
   </data>
   <data name="RouteNameLength" xml:space="preserve">
-    <value>O nome do ponto de interesse não pode ter mais do que 255 caracteres.</value>
+    <value>O nome do ponto de interesse não pode ter mais do que 150 caracteres.</value>
   </data>
   <data name="RouteNameRequired" xml:space="preserve">
     <value>Por favor, informe o nome do ponto de interesse.</value>
@@ -308,5 +308,11 @@
   </data>
   <data name="PointOfInterestExisting" xml:space="preserve">
     <value>Ponto de interesse existente.</value>
+  </data>
+  <data name="AreaColorLength" xml:space="preserve">
+    <value>O nome da cor da área não pode ter mais que 255 caracteres.</value>
+  </data>
+  <data name="PointOfInterestIconLength" xml:space="preserve">
+    <value>O nome do ícone do ponto de interesse não pode ter mais que 255 caracteres.</value>
   </data>
 </root>
