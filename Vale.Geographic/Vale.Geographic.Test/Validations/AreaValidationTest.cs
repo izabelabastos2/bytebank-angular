@@ -273,6 +273,27 @@ namespace Vale.Geographic.Test.Validations
 
         #endregion
 
+        #region Color
+
+        [Fact]
+        public void ValidateColor_ColorGreaterThan255_Message()
+        {
+            this.area.Color = faker.Random.String(256);
+            validator.ShouldHaveValidationErrorFor(x => x.Color, area)
+                .WithErrorMessage(Domain.Resources.Validations.AreaColorLength);
+        }
+
+        [Theory]
+        [InlineData("TESTE")]
+        [InlineData(null)]
+        public void ValidateColor_Color_Sucesso(string color)
+        {
+            this.area.Color = color;
+            validator.ShouldNotHaveValidationErrorFor(x => x.Color, area);
+        }
+
+        #endregion
+
         #region Name
 
         [Theory]

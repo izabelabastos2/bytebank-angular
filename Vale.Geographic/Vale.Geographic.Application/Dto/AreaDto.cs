@@ -18,6 +18,8 @@ namespace Vale.Geographic.Application.Dto
         [Required]
         public string Name { get; set; }
 
+        public string Color { get; set; }
+
         public string Description { get; set; }
 
         [Required]

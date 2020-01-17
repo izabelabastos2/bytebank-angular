@@ -33,30 +33,32 @@ namespace Vale.Geographic.Infra.Data.Repositories
             StringBuilder sqlQuery = new StringBuilder();
 
             sqlQuery.AppendLine(@"SELECT  AREA.[Id],
-		                                AREA.[CreatedAt],
-		                                AREA.[LastUpdatedAt],
-		                                AREA.[Status],
-		                                AREA.[Name],
-		                                AREA.[Description],
-		                                AREA.[CategoryId],	
-		                                AREA.[ParentId],
-		                                AREA.[Location].ToString() as Location,		
-		                                CAT.[Id],
-		                                CAT.[CreatedAt],
-		                                CAT.[LastUpdatedAt],
-		                                CAT.[Status],
-		                                CAT.[TypeEntitie],
-		                                CAT.[Name],
-		                                APRT.[Id],
-		                                APRT.[CreatedAt],
-		                                APRT.[LastUpdatedAt],
-		                                APRT.[Status],
-		                                APRT.[Name],
-		                                APRT.[Description],
-		                                APRT.[CategoryId],	
-		                                APRT.[ParentId],
-		                                APRT.[Location].ToString() as LocationParent,		
-		                                COUNT(1) OVER () as Total
+		                                  AREA.[CreatedAt],
+		                                  AREA.[LastUpdatedAt],
+		                                  AREA.[Status],
+		                                  AREA.[Name],
+		                                  AREA.[Description],
+		                                  AREA.[CategoryId],	
+		                                  AREA.[ParentId],
+	                                      AREA.[Color],
+		                                  AREA.[Location].ToString() as Location,		
+		                                  CAT.[Id],
+		                                  CAT.[CreatedAt],
+		                                  CAT.[LastUpdatedAt],
+		                                  CAT.[Status],
+		                                  CAT.[TypeEntitie],
+		                                  CAT.[Name],
+		                                  APRT.[Id],
+		                                  APRT.[CreatedAt],
+		                                  APRT.[LastUpdatedAt],
+		                                  APRT.[Status],
+		                                  APRT.[Name],
+		                                  APRT.[Description],
+		                                  APRT.[CategoryId],	
+		                                  APRT.[ParentId],
+	                                      APRT.[Color],
+		                                  APRT.[Location].ToString() as LocationParent,		
+		                                  COUNT(1) OVER () as Total
 	                                FROM [dbo].[Area] AREA
 	                                LEFT JOIN [dbo].[Area] APRT ON APRT.Id = AREA.ParentId
 	                                LEFT JOIN [dbo].[Categorys] CAT ON AREA.CategoryId = CAT.Id AND CAT.[TypeEntitie] = 2
@@ -148,7 +150,8 @@ namespace Vale.Geographic.Infra.Data.Repositories
                                        ,[Description]
 		                               ,[ParentId]
                                        ,[CategoryId]
-                                       ,[Location])
+                                       ,[Location]
+                                       ,[Color])
                                  VALUES
                                        (@Id
                                        ,@CreatedAt
@@ -158,7 +161,8 @@ namespace Vale.Geographic.Infra.Data.Repositories
                                        ,@Description
                                        ,@ParentId
                                        ,@CategoryId
-		                               ,geography::STGeomFromText(@Location, 4326).MakeValid()) ");
+		                               ,geography::STGeomFromText(@Location, 4326).MakeValid()
+                                       ,@Color) ");
 
             area.Id = Guid.NewGuid();
 
@@ -168,6 +172,7 @@ namespace Vale.Geographic.Infra.Data.Repositories
             param.Add("LastUpdatedAt", area.LastUpdatedAt);
             param.Add("Status", area.Status);
             param.Add("Name", area.Name);
+            param.Add("Color", area.Color);
             param.Add("Description", area.Description);
             param.Add("ParentId", area.ParentId);
             param.Add("CategoryId", area.CategoryId);

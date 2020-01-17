@@ -18,6 +18,7 @@ namespace Vale.Geographic.Domain.Core.Validations
             ValidateId();
             ValidateName();
             ValidateDescription();
+            ValidateColor();
             ValidateCreatedAt();
             ValidateLastUpdatedAt();
             ValidateStatus();
@@ -33,6 +34,7 @@ namespace Vale.Geographic.Domain.Core.Validations
             {
                 ValidateName();
                 ValidateDescription();
+                ValidateColor();
                 ValidateCreatedAt();
                 ValidateLastUpdatedAt();
                 ValidateStatus();
@@ -49,6 +51,7 @@ namespace Vale.Geographic.Domain.Core.Validations
                 ValidateId();
                 ValidateName();
                 ValidateDescription();
+                ValidateColor();
                 ValidateCreatedAt();
                 ValidateLastUpdatedAt();
                 ValidateStatus();
@@ -82,6 +85,12 @@ namespace Vale.Geographic.Domain.Core.Validations
         {
             RuleFor(o => o.Description)
                .Length(1, 255).When(x => !string.IsNullOrWhiteSpace(x.Description)).WithMessage(Resources.Validations.AreaDescriptionLength);
+        }
+
+        private void ValidateColor()
+        {
+            RuleFor(o => o.Color)
+               .Length(1, 255).When(x => !string.IsNullOrWhiteSpace(x.Color)).WithMessage(Resources.Validations.AreaColorLength);
         }
 
         private void ValidateCreatedAt()
