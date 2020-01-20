@@ -146,7 +146,7 @@ namespace Vale.Geographic.Test.Validations
         {
             this.pointOfInterest.CategoryId = id;
 
-            categoryRepository.Get(pointOfInterest.CategoryId.Value, out int total, true).Returns(x => null);
+            categoryRepository.Get(pointOfInterest.CategoryId.Value, out int total, true).Returns(x => new List<Category>());
 
             validator.ShouldHaveValidationErrorFor(x => x.CategoryId, pointOfInterest)
                 .WithErrorMessage(Domain.Resources.Validations.CategoryNotFound);
