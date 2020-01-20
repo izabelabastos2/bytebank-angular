@@ -159,7 +159,7 @@ namespace Vale.Geographic.Domain.Core.Validations
 
         private bool ExistingCategory(Guid? categoryId)
         {
-            return categoryId.HasValue && categoryRepository.Get(categoryId.Value, out int total, true) != null ? true : false;
+            return categoryId.HasValue && categoryRepository.Get(categoryId.Value, out int total, true).Count() == 0 ? false : true;
         }
 
         #endregion Validações de campos
