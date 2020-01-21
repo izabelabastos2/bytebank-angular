@@ -80,7 +80,7 @@ namespace Vale.Geographic.Application.Core.Services
                 var json = JsonConvert.SerializeObject(coordenate);
                 var geometryFactory = NtsGeometryServices.Instance.CreateGeometryFactory(srid: 4326);
 
-                point = (Geometry)geometryFactory.CreateGeometry(new GeoJsonReader().Read<Geometry>(json));
+                point = (Geometry)geometryFactory.CreateGeometry(new GeoJsonReader().Read<Geometry>(json)).Normalized().Reverse();
             }
 
             IEnumerable<Area> areas = areaRepository.Get(id, out total, null, point, active, categoryId, parentId, request);
@@ -98,7 +98,7 @@ namespace Vale.Geographic.Application.Core.Services
 
                 var json = JsonConvert.SerializeObject(obj.Geojson.Geometry);
                 var geometryFactory = NtsGeometryServices.Instance.CreateGeometryFactory(srid: 4326);                
-                area.Location = (Geometry)geometryFactory.CreateGeometry(new GeoJsonReader().Read<Geometry>(json));
+                area.Location = (Geometry)geometryFactory.CreateGeometry(new GeoJsonReader().Read<Geometry>(json)).Normalized().Reverse();
 
                 area = areaService.Insert(area);               
 
@@ -166,7 +166,7 @@ namespace Vale.Geographic.Application.Core.Services
 
                 var json = JsonConvert.SerializeObject(obj.Geojson.Geometry);
                 var geometryFactory = NtsGeometryServices.Instance.CreateGeometryFactory(srid: 4326);
-                area.Location = (Geometry)geometryFactory.CreateGeometry(new GeoJsonReader().Read<Geometry>(json));
+                area.Location = (Geometry)geometryFactory.CreateGeometry(new GeoJsonReader().Read<Geometry>(json)).Normalized().Reverse();
 
                 area = areaService.Update(area);
 

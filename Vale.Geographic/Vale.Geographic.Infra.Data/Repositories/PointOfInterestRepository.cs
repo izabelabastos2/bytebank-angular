@@ -6,11 +6,10 @@ using Vale.Geographic.Infra.Data.Base;
 using System.Collections.Generic;
 using NetTopologySuite.IO;
 using GeoAPI.Geometries;
+using System.Data;
 using System.Text;
-using System.Linq;
 using System;
 using Dapper;
-using System.Data;
 
 namespace Vale.Geographic.Infra.Data.Repositories
 {
@@ -79,7 +78,7 @@ namespace Vale.Geographic.Infra.Data.Repositories
             if (point != null)
             {              
                 sqlQuery.AppendLine(string.Format(@"  AND convert(decimal(18,2), 
-                                        POINT.[Location].MakeValid().STDistance('{0}') / 1000) < {1}",
+                                        POINT.[Location].MakeValid().STDistance(geography::STPointFromText('{0}', 4326).MakeValid()) / 1000) < {1}",
                                         point.ToString(),
                                         AreaDistance));
             }

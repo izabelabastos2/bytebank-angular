@@ -69,7 +69,7 @@ namespace Vale.Geographic.Application.Core.Services
             return Mapper.Map<IEnumerable<PointOfInterestDto>>(query);
         }
 
-        public IEnumerable<PointOfInterestDto> Get(bool? active, Guid? Id, Guid? categoryId, Guid? areaId, double? latitude, double? longitude,  double? altitude, IFilterParameters request, out int total)
+        public IEnumerable<PointOfInterestDto> Get(bool? active, Guid? Id, Guid? categoryId, Guid? areaId, double? longitude, double? latitude, double? altitude, IFilterParameters request, out int total)
         {
             IGeometry point = null;
 
@@ -79,7 +79,7 @@ namespace Vale.Geographic.Application.Core.Services
                 var json = JsonConvert.SerializeObject(coordenate);
                 var geometryFactory = NtsGeometryServices.Instance.CreateGeometryFactory(srid: 4326);
 
-                point = (Geometry)geometryFactory.CreateGeometry(new GeoJsonReader().Read<Geometry>(json));
+                point = (Geometry)geometryFactory.CreateGeometry(new GeoJsonReader().Read<Geometry>(json)).Normalized().Reverse();
             }
 
             IEnumerable<PointOfInterest> points = pointOfInterestRepository.Get( Id, out total, null, point, active, categoryId, areaId, request);
@@ -97,7 +97,7 @@ namespace Vale.Geographic.Application.Core.Services
 
                 var json = JsonConvert.SerializeObject(obj.Geojson.Geometry);
                 var geometryFactory = NtsGeometryServices.Instance.CreateGeometryFactory(srid: 4326);
-                pointOfInterest.Location = (Geometry) geometryFactory.CreateGeometry(new GeoJsonReader().Read<Geometry>(json));
+                pointOfInterest.Location = (Geometry) geometryFactory.CreateGeometry(new GeoJsonReader().Read<Geometry>(json)).Normalized().Reverse();
 
                 pointOfInterest = pointOfInterestService.Insert(pointOfInterest);
 
@@ -129,7 +129,7 @@ namespace Vale.Geographic.Application.Core.Services
 
                     var json = JsonConvert.SerializeObject(feature.Geometry);
                     var geometryFactory = NtsGeometryServices.Instance.CreateGeometryFactory(srid: 4326);
-                    pointOfInterest.Location = (Geometry)geometryFactory.CreateGeometry(new GeoJsonReader().Read<Geometry>(json));
+                    pointOfInterest.Location = (Geometry)geometryFactory.CreateGeometry(new GeoJsonReader().Read<Geometry>(json)).Normalized().Reverse();
 
                     points.Add(pointOfInterestService.Insert(pointOfInterest));                       
                 }                              
@@ -163,7 +163,7 @@ namespace Vale.Geographic.Application.Core.Services
 
                 var json = JsonConvert.SerializeObject(obj.Geojson.Geometry);
                 var geometryFactory = NtsGeometryServices.Instance.CreateGeometryFactory(srid: 4326);
-                pointOfInterest.Location = (Geometry)geometryFactory.CreateGeometry(new GeoJsonReader().Read<Geometry>(json));
+                pointOfInterest.Location = (Geometry)geometryFactory.CreateGeometry(new GeoJsonReader().Read<Geometry>(json)).Normalized().Reverse();
 
                 pointOfInterest = pointOfInterestService.Update(pointOfInterest);
 

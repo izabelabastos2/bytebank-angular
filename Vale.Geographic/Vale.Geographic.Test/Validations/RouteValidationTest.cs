@@ -295,7 +295,7 @@ namespace Vale.Geographic.Test.Validations
             var json = JsonConvert.SerializeObject(obj);
             var geometryFactory = NtsGeometryServices.Instance.CreateGeometryFactory(srid: 4326);
 
-            return geometryFactory.CreateGeometry(new GeoJsonReader().Read<Geometry>(json));
+            return geometryFactory.CreateGeometry(new GeoJsonReader().Read<Geometry>(json)).Normalized().Reverse();
 
         }
 
