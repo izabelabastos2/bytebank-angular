@@ -6,6 +6,7 @@ using Vale.Geographic.Application.Dto;
 using Vale.Geographic.Domain.Entities;
 using Vale.Geographic.Domain.Services;
 using Vale.Geographic.Infra.Data.Base;
+using Microsoft.EntityFrameworkCore;
 using NetTopologySuite.Geometries;
 using System.Collections.Generic;
 using GeoJSON.Net.Geometry;
@@ -16,7 +17,7 @@ using Newtonsoft.Json;
 using System.Linq;
 using AutoMapper;
 using System;
-using Microsoft.EntityFrameworkCore;
+
 
 namespace Vale.Geographic.Application.Core.Services
 {
@@ -70,7 +71,7 @@ namespace Vale.Geographic.Application.Core.Services
 
         }
 
-        public IEnumerable<AreaDto> Get(bool? active, Guid? id, Guid? categoryId, Guid? parentId, double? longitude, double? latitude, double? altitude, IFilterParameters request, out int total)
+        public IEnumerable<AreaDto> Get(bool? active, Guid? id, Guid? categoryId, Guid? parentId, double? longitude, double? latitude, double? altitude, int? radiusDistance, IFilterParameters request, out int total)
         {
             IGeometry point = null;
 
@@ -83,7 +84,7 @@ namespace Vale.Geographic.Application.Core.Services
                 point = (Geometry)geometryFactory.CreateGeometry(new GeoJsonReader().Read<Geometry>(json)).Normalized().Reverse();
             }
 
-            IEnumerable<Area> areas = areaRepository.Get(id, out total, null, point, active, categoryId, parentId, request);
+            IEnumerable<Area> areas = areaRepository.Get(id, out total, null, point, active, categoryId, parentId, radiusDistance, request);
 
             return Mapper.Map<IEnumerable<AreaDto>>(areas);
         }

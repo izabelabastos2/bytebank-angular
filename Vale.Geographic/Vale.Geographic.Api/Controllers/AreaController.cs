@@ -78,6 +78,7 @@ namespace Vale.Geographic.Api.Controllers
         ///     processo de gerenciamento do orçamento setorial.
         /// </remarks>
         /// <param name="active">Retrive all areas are active or not</param>
+        /// <param name="id"></param>
         /// <param name="categoryId"></param>
         /// <param name="parentId"></param>
         /// <param name="areaId"></param>
@@ -85,6 +86,7 @@ namespace Vale.Geographic.Api.Controllers
         /// <param name="longitude"></param>
         /// <param name="latitude"></param>
         /// <param name="altitude"></param>
+        /// <param name="radiusDistance"></param>
         /// <returns>Areas list have been solicited</returns>
         /// <response code="200">Area list!</response>
         /// <response code="400">Area has missing/invalid values</response>
@@ -93,11 +95,11 @@ namespace Vale.Geographic.Api.Controllers
         [ProducesResponseType(typeof(IEnumerable<AreaDto>), 200)]
         [ProducesResponseType(typeof(Error), 400)]
         [ProducesResponseType(typeof(Error), 500)]
-        public IActionResult Get([FromQuery] bool? active, Guid? id, Guid? categoryId, Guid? parentId, double? longitude, double? latitude, double? altitude, FilterDto request)
+        public IActionResult Get([FromQuery] bool? active, Guid? id, Guid? categoryId, Guid? parentId, double? longitude, double? latitude, double? altitude, int? radiusDistance, FilterDto request)
         {
             var total = 0;
 
-            var result = AreaAppService.Get(active, id, categoryId, parentId, longitude, latitude, altitude, request, out total);
+            var result = AreaAppService.Get(active, id, categoryId, parentId, longitude, latitude, altitude, radiusDistance, request, out total);
             Response.Headers.Add("X-Total-Count", total.ToString());
 
             return Ok(result);
