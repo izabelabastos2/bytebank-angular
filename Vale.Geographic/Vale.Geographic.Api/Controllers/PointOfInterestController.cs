@@ -78,12 +78,14 @@ namespace Vale.Geographic.Api.Controllers
         ///     processo de gerenciamento do orçamento setorial.
         /// </remarks>
         /// <param name="active">Retrive all points are active or not</param>
+        /// <param name="Id"></param>
         /// <param name="categoryId"></param>
         /// <param name="areaId"></param>
         /// <param name="request">Filter parameters</param>
         /// <param name="longitude"></param>
         /// <param name="latitude"></param>
         /// <param name="altitude"></param>
+        /// <param name="radiusDistance"></param>
         /// <returns>PointOfInterests list have been solicited</returns>
         /// <response code="200">PointOfInterest list!</response>
         /// <response code="400">PointOfInterest has missing/invalid values</response>
@@ -92,11 +94,11 @@ namespace Vale.Geographic.Api.Controllers
         [ProducesResponseType(typeof(IEnumerable<PointOfInterestDto>), 200)]
         [ProducesResponseType(typeof(Error), 400)]
         [ProducesResponseType(typeof(Error), 500)]
-        public IActionResult Get([FromQuery] bool? active, Guid? Id, Guid? categoryId, Guid? areaId, FilterDto request, double? longitude, double? latitude, double? altitude)
+        public IActionResult Get([FromQuery] bool? active, Guid? Id, Guid? categoryId, Guid? areaId,  double? longitude, double? latitude, double? altitude, int? radiusDistance, FilterDto request)
         {
             var total = 0;
 
-            var result = PointOfInterestAppService.Get(active, Id, categoryId, areaId, longitude, latitude, altitude, request, out total);
+            var result = PointOfInterestAppService.Get(active, Id, categoryId, areaId, longitude, latitude, altitude, radiusDistance, request, out total);
             Response.Headers.Add("X-Total-Count", total.ToString());
 
             return Ok(result);

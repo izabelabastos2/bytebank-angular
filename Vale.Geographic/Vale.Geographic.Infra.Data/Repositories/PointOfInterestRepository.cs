@@ -16,16 +16,16 @@ namespace Vale.Geographic.Infra.Data.Repositories
     public class PointOfInterestRepository : Repository<PointOfInterest>, IPointOfInterestRepository
     {
         private readonly IConfiguration configuration;
-        private static string AreaDistance { get; set; }
+        private static int AreaDistance { get; set; }
 
         public PointOfInterestRepository(IUnitOfWork context, IConfiguration configuration) : base(context)
         {
             this.configuration = configuration;
 
-            AreaDistance = this.configuration.GetSection("Distance:AreaDistance").Value;
+            AreaDistance = Convert.ToInt32(this.configuration.GetSection("Distance:AreaDistance").Value);
         }
 
-        public IEnumerable<PointOfInterest> Get(Guid? Id, out int total, IGeometry location = null, IGeometry point = null, bool? active = null, Guid? categoryId = null, Guid? areaId = null, IFilterParameters parameters = null)
+        public IEnumerable<PointOfInterest> Get(Guid? Id, out int total, IGeometry location, IGeometry point, bool? active, Guid? categoryId, Guid? areaId, int? radiusDistance, IFilterParameters parameters)
         {
             var param = new DynamicParameters();
             StringBuilder sqlQuery = new StringBuilder();
@@ -80,7 +80,7 @@ namespace Vale.Geographic.Infra.Data.Repositories
                 sqlQuery.AppendLine(string.Format(@"  AND convert(decimal(18,2), 
                                         POINT.[Location].MakeValid().STDistance(geography::STPointFromText('{0}', 4326).MakeValid()) / 1000) < {1}",
                                         point.ToString(),
-                                        AreaDistance));
+                                        radiusDistance.HasValue ? radiusDistance : AreaDistance));
             }
 
             if (location != null)

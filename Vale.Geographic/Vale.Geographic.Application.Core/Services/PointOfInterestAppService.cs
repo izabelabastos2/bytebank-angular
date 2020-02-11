@@ -69,7 +69,7 @@ namespace Vale.Geographic.Application.Core.Services
             return Mapper.Map<IEnumerable<PointOfInterestDto>>(query);
         }
 
-        public IEnumerable<PointOfInterestDto> Get(bool? active, Guid? Id, Guid? categoryId, Guid? areaId, double? longitude, double? latitude, double? altitude, IFilterParameters request, out int total)
+        public IEnumerable<PointOfInterestDto> Get(bool? active, Guid? Id, Guid? categoryId, Guid? areaId, double? longitude, double? latitude, double? altitude, int? radiusDistance, IFilterParameters request, out int total)
         {
             IGeometry point = null;
 
@@ -82,7 +82,7 @@ namespace Vale.Geographic.Application.Core.Services
                 point = (Geometry)geometryFactory.CreateGeometry(new GeoJsonReader().Read<Geometry>(json)).Normalized().Reverse();
             }
 
-            IEnumerable<PointOfInterest> points = pointOfInterestRepository.Get( Id, out total, null, point, active, categoryId, areaId, request);
+            IEnumerable<PointOfInterest> points = pointOfInterestRepository.Get( Id, out total, null, point, active, categoryId, areaId, radiusDistance, request);
 
             return Mapper.Map<IEnumerable<PointOfInterestDto>>(points);
         }
