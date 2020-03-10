@@ -315,4 +315,61 @@
   <data name="PointOfInterestIconLength" xml:space="preserve">
     <value>O nome do ícone do ponto de interesse não pode ter mais que 255 caracteres.</value>
   </data>
+  <data name="AreaCreatedByRequired" xml:space="preserve">
+    <value>Por favor, informe o usuario de criação da area.</value>
+  </data>
+  <data name="AreaLastUpdatedByRequired" xml:space="preserve">
+    <value>Por favor, informe o usuario de atualização da area.</value>
+  </data>
+  <data name="AuditoryCreatedAtRequired" xml:space="preserve">
+    <value>Por favor, informe a data de criação da auditoria.</value>
+  </data>
+  <data name="AuditoryCreatedByRequired" xml:space="preserve">
+    <value>Por favor, informe o usuario de criação da auditoria.</value>
+  </data>
+  <data name="AuditoryIdRequired" xml:space="preserve">
+    <value>Por favor, informe o ID da  da auditoria.</value>
+  </data>
+  <data name="AuditoryLastUpdatedAtRequired" xml:space="preserve">
+    <value>Por favor, informe a ultima data de atualização da auditoria.</value>
+  </data>
+  <data name="AuditoryLastUpdatedByRequired" xml:space="preserve">
+    <value>Por favor, informe o usuario de atualização da auditoria.</value>
+  </data>
+  <data name="AuditoryNewValueRequired" xml:space="preserve">
+    <value>Por favor, informe o novo valor.</value>
+  </data>
+  <data name="AuditoryOldValueRequired" xml:space="preserve">
+    <value>Por favor, informe o valor anterior.</value>
+  </data>
+  <data name="AuditoryStatusRequired" xml:space="preserve">
+    <value>Por favor, informe o status da auditoria.</value>
+  </data>
+  <data name="AuditoryTypeRequired" xml:space="preserve">
+    <value>Por favor, informe o tipo de auditoria.</value>
+  </data>
+  <data name="CategoryCreatedByRequired" xml:space="preserve">
+    <value>Por favor, informe o usuario de criação da categoria.</value>
+  </data>
+  <data name="CategoryLastUpdatedByRequired" xml:space="preserve">
+    <value>Por favor, informe o usuario de atualização da categoria.</value>
+  </data>
+  <data name="PointOfInterestCreatedByRequired" xml:space="preserve">
+    <value>Por favor, informe o usuario de criação do ponto de interesse.</value>
+  </data>
+  <data name="PointOfInterestLastUpdatedByRequired" xml:space="preserve">
+    <value>Por favor, informe o usuario de atualização do ponto de interesse.</value>
+  </data>
+  <data name="RouteCreatedByRequired" xml:space="preserve">
+    <value>Por favor, informe o usuario de criação da rota.</value>
+  </data>
+  <data name="RouteLastUpdatedByRequired" xml:space="preserve">
+    <value>Por favor, informe o usuario de atualização da rota.</value>
+  </data>
+  <data name="SegmentCreatedByRequired" xml:space="preserve">
+    <value>Por favor, informe o usuario de criação do segmento.</value>
+  </data>
+  <data name="SegmentLastUpdatedByRequired" xml:space="preserve">
+    <value>Por favor, informe o usuario de atualização do segmento.</value>
+  </data>
 </root>

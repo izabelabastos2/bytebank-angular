@@ -1,22 +1,27 @@
-﻿using System;
-using FluentValidation;
-using Vale.Geographic.Domain.Base;
+﻿using Vale.Geographic.Domain.Repositories.Interfaces;
+using Vale.Geographic.Domain.Core.Validations;
 using Vale.Geographic.Domain.Base.Interfaces;
 using Vale.Geographic.Domain.Core.Base;
-using Vale.Geographic.Domain.Repositories.Interfaces;
-using Vale.Geographic.Domain.Core.Validations;
 using Vale.Geographic.Domain.Entities;
 using Vale.Geographic.Domain.Services;
+using NetTopologySuite.IO;
+using FluentValidation;
+using System;
 
 namespace Vale.Geographic.Domain.Core.Services
 {
     public class RouteService : Service<Route>, IRouteService
     {
-        public RouteService(IUnitOfWork context, IRouteRepository rep, IAreaRepository areaRepository) : base(context, rep)
+        private readonly IAuditoryService auditoryService;
+
+        public RouteService(IUnitOfWork context, 
+                            IRouteRepository rep, 
+                            IAreaRepository areaRepository,
+                            IAuditoryService auditoryService) : base(context, rep)
         {
             Validator = new RouteValidator(rep, areaRepository);
+            this.auditoryService = auditoryService;
         }
-
 
         public override Route Insert(Route obj)
         {
@@ -40,5 +45,29 @@ namespace Vale.Geographic.Domain.Core.Services
             return Repository.Update(obj);
         }
 
+        public void InsertAuditory(Route newObj, Route oldObj)
+        {
+            var Audit = new Auditory();
+            Audit.TypeEntitie = Enumerable.TypeEntitieEnum.Route;
+            Audit.CreatedBy = newObj.LastUpdatedBy;
+            Audit.LastUpdatedBy = newObj.LastUpdatedBy;
+            Audit.Status = true;
+
+            if (!newObj.Equals(oldObj))
+            {
+                var json = GeoJsonSerializer.Create();
+                var sw = new System.IO.StringWriter();
+
+                json.Serialize(sw, newObj);
+                Audit.NewValue = sw.ToString();
+
+                sw = new System.IO.StringWriter();
+                json.Serialize(sw, oldObj);
+
+                Audit.OldValue = sw.ToString();
+
+                auditoryService.Insert(Audit);
+            }
+        }
     }
 }

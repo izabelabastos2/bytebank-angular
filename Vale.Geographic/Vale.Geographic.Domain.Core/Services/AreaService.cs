@@ -4,6 +4,7 @@ using Vale.Geographic.Domain.Base.Interfaces;
 using Vale.Geographic.Domain.Core.Base;
 using Vale.Geographic.Domain.Entities;
 using Vale.Geographic.Domain.Services;
+using NetTopologySuite.IO;
 using FluentValidation;
 using System;
 
@@ -12,11 +13,16 @@ namespace Vale.Geographic.Domain.Core.Services
     public class AreaService : Service<Area>, IAreaService
     {
         private readonly ICategoryRepository categoryRepository;
+        private readonly IAuditoryService auditoryService;
 
-        public AreaService(IUnitOfWork context, IAreaRepository rep, ICategoryRepository categoryRepository) : base(context, rep)
+        public AreaService(IUnitOfWork context, 
+                           IAreaRepository rep, 
+                           ICategoryRepository categoryRepository,
+                           IAuditoryService auditoryService) : base(context, rep)
         {
             Validator = new AreaValidator(rep, categoryRepository);
             this.categoryRepository = categoryRepository;
+            this.auditoryService = auditoryService;
         }
 
         public override Area Insert(Area obj)
@@ -46,5 +52,35 @@ namespace Vale.Geographic.Domain.Core.Services
 
             return Repository.Update(obj);
         }
+
+        public void InsertAuditory(Area newObj, Area oldObj )
+        {
+            var Audit = new Auditory();
+            Audit.AreaId = newObj.Id;
+            Audit.TypeEntitie = Enumerable.TypeEntitieEnum.Area;
+            Audit.CreatedBy = newObj.LastUpdatedBy;
+            Audit.LastUpdatedBy = newObj.LastUpdatedBy;
+            Audit.Status = true;
+
+
+            if (!newObj.Equals(oldObj))
+            {
+                var json = GeoJsonSerializer.Create();
+                var sw = new System.IO.StringWriter();
+
+                json.Serialize(sw, newObj);
+                Audit.NewValue = sw.ToString();
+
+                sw = new System.IO.StringWriter();
+                json.Serialize(sw, oldObj);
+
+                Audit.OldValue = sw.ToString();
+
+                auditoryService.Insert(Audit);
+            }
+
+        }
+
+
     }
 }

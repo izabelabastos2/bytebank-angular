@@ -88,6 +88,15 @@ namespace Vale.Geographic.Domain.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Por favor, informe o usuario de criação da area..
+        /// </summary>
+        public static string AreaCreatedByRequired {
+            get {
+                return ResourceManager.GetString("AreaCreatedByRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A descrição da area não pode ter mais do que 255 caracteres..
         /// </summary>
         public static string AreaDescriptionLength {
@@ -120,6 +129,15 @@ namespace Vale.Geographic.Domain.Resources {
         public static string AreaLastUpdatedAtRequired {
             get {
                 return ResourceManager.GetString("AreaLastUpdatedAtRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Por favor, informe o usuario de atualização da area..
+        /// </summary>
+        public static string AreaLastUpdatedByRequired {
+            get {
+                return ResourceManager.GetString("AreaLastUpdatedByRequired", resourceCulture);
             }
         }
         
@@ -178,11 +196,101 @@ namespace Vale.Geographic.Domain.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Por favor, informe a data de criação da auditoria..
+        /// </summary>
+        public static string AuditoryCreatedAtRequired {
+            get {
+                return ResourceManager.GetString("AuditoryCreatedAtRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Por favor, informe o usuario de criação da auditoria..
+        /// </summary>
+        public static string AuditoryCreatedByRequired {
+            get {
+                return ResourceManager.GetString("AuditoryCreatedByRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Por favor, informe o ID da  da auditoria..
+        /// </summary>
+        public static string AuditoryIdRequired {
+            get {
+                return ResourceManager.GetString("AuditoryIdRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Por favor, informe a ultima data de atualização da auditoria..
+        /// </summary>
+        public static string AuditoryLastUpdatedAtRequired {
+            get {
+                return ResourceManager.GetString("AuditoryLastUpdatedAtRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Por favor, informe o usuario de atualização da auditoria..
+        /// </summary>
+        public static string AuditoryLastUpdatedByRequired {
+            get {
+                return ResourceManager.GetString("AuditoryLastUpdatedByRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Por favor, informe o novo valor..
+        /// </summary>
+        public static string AuditoryNewValueRequired {
+            get {
+                return ResourceManager.GetString("AuditoryNewValueRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Por favor, informe o valor anterior..
+        /// </summary>
+        public static string AuditoryOldValueRequired {
+            get {
+                return ResourceManager.GetString("AuditoryOldValueRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Por favor, informe o status da auditoria..
+        /// </summary>
+        public static string AuditoryStatusRequired {
+            get {
+                return ResourceManager.GetString("AuditoryStatusRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Por favor, informe o tipo de auditoria..
+        /// </summary>
+        public static string AuditoryTypeRequired {
+            get {
+                return ResourceManager.GetString("AuditoryTypeRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Por favor, informe a data de criação da categoria..
         /// </summary>
         public static string CategoryCreatedAtRequired {
             get {
                 return ResourceManager.GetString("CategoryCreatedAtRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Por favor, informe o usuario de criação da categoria..
+        /// </summary>
+        public static string CategoryCreatedByRequired {
+            get {
+                return ResourceManager.GetString("CategoryCreatedByRequired", resourceCulture);
             }
         }
         
@@ -201,6 +309,15 @@ namespace Vale.Geographic.Domain.Resources {
         public static string CategoryLastUpdatedAtRequired {
             get {
                 return ResourceManager.GetString("CategoryLastUpdatedAtRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Por favor, informe o usuario de atualização da categoria..
+        /// </summary>
+        public static string CategoryLastUpdatedByRequired {
+            get {
+                return ResourceManager.GetString("CategoryLastUpdatedByRequired", resourceCulture);
             }
         }
         
@@ -349,6 +466,15 @@ namespace Vale.Geographic.Domain.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Por favor, informe o usuario de criação do ponto de interesse..
+        /// </summary>
+        public static string PointOfInterestCreatedByRequired {
+            get {
+                return ResourceManager.GetString("PointOfInterestCreatedByRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A descrição do ponto de interesse não pode ter mais do que 255 caracteres..
         /// </summary>
         public static string PointOfInterestDescriptionLength {
@@ -390,6 +516,15 @@ namespace Vale.Geographic.Domain.Resources {
         public static string PointOfInterestLastUpdatedAtRequired {
             get {
                 return ResourceManager.GetString("PointOfInterestLastUpdatedAtRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Por favor, informe o usuario de atualização do ponto de interesse..
+        /// </summary>
+        public static string PointOfInterestLastUpdatedByRequired {
+            get {
+                return ResourceManager.GetString("PointOfInterestLastUpdatedByRequired", resourceCulture);
             }
         }
         
@@ -466,6 +601,15 @@ namespace Vale.Geographic.Domain.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Por favor, informe o usuario de criação da rota..
+        /// </summary>
+        public static string RouteCreatedByRequired {
+            get {
+                return ResourceManager.GetString("RouteCreatedByRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A descrição da rota não pode ter mais do que 255 caracteres..
         /// </summary>
         public static string RouteDescriptionLength {
@@ -489,6 +633,15 @@ namespace Vale.Geographic.Domain.Resources {
         public static string RouteLastUpdatedAtRequired {
             get {
                 return ResourceManager.GetString("RouteLastUpdatedAtRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Por favor, informe o usuario de atualização da rota..
+        /// </summary>
+        public static string RouteLastUpdatedByRequired {
+            get {
+                return ResourceManager.GetString("RouteLastUpdatedByRequired", resourceCulture);
             }
         }
         
@@ -565,6 +718,15 @@ namespace Vale.Geographic.Domain.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Por favor, informe o usuario de criação do segmento..
+        /// </summary>
+        public static string SegmentCreatedByRequired {
+            get {
+                return ResourceManager.GetString("SegmentCreatedByRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A descrição do segmento não pode ter mais do que 255 caracteres..
         /// </summary>
         public static string SegmentDescriptionLength {
@@ -588,6 +750,15 @@ namespace Vale.Geographic.Domain.Resources {
         public static string SegmentLastUpdatedAtRequired {
             get {
                 return ResourceManager.GetString("SegmentLastUpdatedAtRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Por favor, informe o usuario de atualização do segmento..
+        /// </summary>
+        public static string SegmentLastUpdatedByRequired {
+            get {
+                return ResourceManager.GetString("SegmentLastUpdatedByRequired", resourceCulture);
             }
         }
         

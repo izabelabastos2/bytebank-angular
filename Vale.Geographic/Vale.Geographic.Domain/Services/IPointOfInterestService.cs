@@ -5,5 +5,6 @@ namespace Vale.Geographic.Domain.Services
 {
     public interface IPointOfInterestService : IService<PointOfInterest>
     {
+        void InsertAuditory(PointOfInterest newObj, PointOfInterest oldObj);
     }
 }

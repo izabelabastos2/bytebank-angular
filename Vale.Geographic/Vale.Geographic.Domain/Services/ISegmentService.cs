@@ -5,5 +5,6 @@ namespace Vale.Geographic.Domain.Services
 {
     public interface ISegmentService : IService<Segment>
     {
+        void InsertAuditory(Segment newObj, Segment oldObj);
     }
 }

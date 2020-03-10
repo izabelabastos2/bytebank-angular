@@ -5,5 +5,6 @@ namespace Vale.Geographic.Domain.Services
 {
     public interface ICategoryService : IService<Category>
     {
+        void InsertAuditory(Category newObj, Category oldObj);
     }
 }

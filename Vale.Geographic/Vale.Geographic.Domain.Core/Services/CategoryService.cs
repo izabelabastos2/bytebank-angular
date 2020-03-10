@@ -4,16 +4,22 @@ using Vale.Geographic.Domain.Base.Interfaces;
 using Vale.Geographic.Domain.Core.Base;
 using Vale.Geographic.Domain.Entities;
 using Vale.Geographic.Domain.Services;
-using System;
+using NetTopologySuite.IO;
 using FluentValidation;
+using System;
 
 namespace Vale.Geographic.Domain.Core.Services
 {
     public class CategoryService : Service<Category>, ICategoryService
     {
-        public CategoryService(IUnitOfWork context, ICategoryRepository rep) : base(context, rep)
+        private readonly IAuditoryService auditoryService;
+
+        public CategoryService(IUnitOfWork context, 
+                               ICategoryRepository rep,
+                               IAuditoryService auditoryService) : base(context, rep)
         {
             Validator = new CategoryValidator(rep);
+            this.auditoryService = auditoryService;
         }
 
         public override Category Insert(Category obj)
@@ -36,6 +42,33 @@ namespace Vale.Geographic.Domain.Core.Services
                 Validator.ValidateAndThrow(obj, "Update");
 
             return Repository.Update(obj);
+        }
+
+        public void InsertAuditory(Category newObj, Category oldObj)
+        {
+            var Audit = new Auditory();
+            Audit.CategoryId = newObj.Id;
+            Audit.TypeEntitie = Enumerable.TypeEntitieEnum.Category;
+            Audit.CreatedBy = newObj.LastUpdatedBy;
+            Audit.LastUpdatedBy = newObj.LastUpdatedBy;
+            Audit.Status = true;
+
+
+            if (!newObj.Equals(oldObj))
+            {
+                var json = GeoJsonSerializer.Create();
+                var sw = new System.IO.StringWriter();
+
+                json.Serialize(sw, newObj);
+                Audit.NewValue = sw.ToString();
+
+                sw = new System.IO.StringWriter();
+
+                json.Serialize(sw, oldObj);
+                Audit.OldValue = sw.ToString();
+
+                auditoryService.Insert(Audit);
+            }
         }
     }   
 }

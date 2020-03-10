@@ -5,5 +5,6 @@ namespace Vale.Geographic.Domain.Services
 {
     public interface IRouteService : IService<Route>
     {
+        void InsertAuditory(Route newObj, Route oldObj);
     }
 }

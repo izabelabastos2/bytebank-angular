@@ -315,4 +315,61 @@
   <data name="PointOfInterestIconLength" xml:space="preserve">
     <value>Point of interest icon name cannot be longer than 255 characters.</value>
   </data>
+  <data name="AreaCreatedByRequired" xml:space="preserve">
+    <value>Please inform the user of the creation of the area</value>
+  </data>
+  <data name="AreaLastUpdatedByRequired" xml:space="preserve">
+    <value>Please inform the user of the area update.</value>
+  </data>
+  <data name="AuditoryCreatedAtRequired" xml:space="preserve">
+    <value>Please inform the creation date of the Audit.</value>
+  </data>
+  <data name="AuditoryCreatedByRequired" xml:space="preserve">
+    <value>Please inform the user of the creation of the audit.</value>
+  </data>
+  <data name="AuditoryIdRequired" xml:space="preserve">
+    <value>Please inform the Audit ID.</value>
+  </data>
+  <data name="AuditoryLastUpdatedAtRequired" xml:space="preserve">
+    <value>Please inform the latest Audit update date.</value>
+  </data>
+  <data name="AuditoryLastUpdatedByRequired" xml:space="preserve">
+    <value>Please inform the user of the audit update.</value>
+  </data>
+  <data name="AuditoryNewValueRequired" xml:space="preserve">
+    <value>Please inform the  Audit new value.</value>
+  </data>
+  <data name="AuditoryOldValueRequired" xml:space="preserve">
+    <value>Please inform the Audit old value.</value>
+  </data>
+  <data name="AuditoryStatusRequired" xml:space="preserve">
+    <value>Please inform the Audit status.</value>
+  </data>
+  <data name="AuditoryTypeRequired" xml:space="preserve">
+    <value>Please enter the type of Audit.</value>
+  </data>
+  <data name="CategoryCreatedByRequired" xml:space="preserve">
+    <value>Please inform the user of the creation of the category.</value>
+  </data>
+  <data name="CategoryLastUpdatedByRequired" xml:space="preserve">
+    <value>Please inform the user of the category update.</value>
+  </data>
+  <data name="PointOfInterestCreatedByRequired" xml:space="preserve">
+    <value>Please inform the user of the creation of the point of interest.</value>
+  </data>
+  <data name="PointOfInterestLastUpdatedByRequired" xml:space="preserve">
+    <value>Please inform the user of the point of interest update.</value>
+  </data>
+  <data name="RouteCreatedByRequired" xml:space="preserve">
+    <value>Please inform the user of the creation of the route.</value>
+  </data>
+  <data name="RouteLastUpdatedByRequired" xml:space="preserve">
+    <value>Please inform the user of the route update.</value>
+  </data>
+  <data name="SegmentCreatedByRequired" xml:space="preserve">
+    <value>Please inform the user of the creation of the segment.</value>
+  </data>
+  <data name="SegmentLastUpdatedByRequired" xml:space="preserve">
+    <value>Please inform the user of the segment update.</value>
+  </data>
 </root>
