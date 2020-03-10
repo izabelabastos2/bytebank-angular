@@ -92,11 +92,11 @@ namespace Vale.Geographic.Api.Controllers
         [ProducesResponseType(typeof(IEnumerable<CategoryDto>), 200)]
         [ProducesResponseType(typeof(Error), 400)]
         [ProducesResponseType(typeof(Error), 500)]
-        public IActionResult Get([FromQuery] Guid? id, bool? active, TypeEntitieEnum? TypeEntitie, FilterDto request)
+        public IActionResult Get([FromQuery] Guid? id, bool? active, TypeEntitieEnum? TypeEntitie, DateTime? lastUpdatedAt, FilterDto request)
         {
             var total = 0;
 
-            var result = CategoryAppService.Get(id, active, TypeEntitie, request, out total);
+            var result = CategoryAppService.Get(id, active, TypeEntitie, lastUpdatedAt, request, out total);
             Response.Headers.Add("X-Total-Count", total.ToString());
 
             return Ok(result);
@@ -117,9 +117,12 @@ namespace Vale.Geographic.Api.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
+            value.CreatedBy = this.HttpContext.User.Identity.Name;
+
             var response = this.CategoryAppService.Insert(value);
             return Created("", response);
         }
+
 
         /// <summary>
         /// Update Category
@@ -136,6 +139,8 @@ namespace Vale.Geographic.Api.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
+            value.LastUpdatedBy = this.HttpContext.User.Identity.Name;
+
             try
             {
                 return Ok(this.CategoryAppService.Update(id, value));
@@ -150,10 +155,12 @@ namespace Vale.Geographic.Api.Controllers
             }
         }
 
+
         /// <summary>
         /// Delete Category by Id
         /// </summary>
         /// <param name="id"></param>
+        /// <param name="lastUpdatedBy"></param>
         /// <returns></returns>
         [HttpDelete("{id:GUID}")]
         [ProducesResponseType(typeof(void), 204)]
@@ -161,9 +168,11 @@ namespace Vale.Geographic.Api.Controllers
         [ProducesResponseType(typeof(Error), 500)]
         public IActionResult Delete(Guid id)
         {
+            var lastUpdatedBy = this.HttpContext.User.Identity.Name;
+
             try
             {
-                this.CategoryAppService.Delete(id);
+                this.CategoryAppService.Delete(id, lastUpdatedBy);
 
             }
             catch (ArgumentNullException)

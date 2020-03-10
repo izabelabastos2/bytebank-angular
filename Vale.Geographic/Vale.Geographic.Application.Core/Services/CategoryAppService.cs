@@ -20,25 +20,33 @@ namespace Vale.Geographic.Application.Core.Services
         private readonly ICategoryRepository categoryRepository;
         public ICategoryService categoryService { get; set; }
 
-        public CategoryAppService(IUnitOfWork uoW, IMapper mapper, ICategoryService categoryService,
-            ICategoryRepository categoryRepository) : base(uoW, mapper)
+        public CategoryAppService(IUnitOfWork uoW, 
+                                  IMapper mapper, 
+                                  ICategoryService categoryService,
+                                  ICategoryRepository categoryRepository) : base(uoW, mapper)
         {
             this.categoryRepository = categoryRepository;
             this.categoryService = categoryService;
         }
 
-        public void Delete(Guid id)
+        public void Delete(Guid id, string lastUpdatedBy)
         {
             try
             {
                 UoW.BeginTransaction();
                 Category category = categoryService.GetById(id);
+                Category categoryOriginal =  (Category)category.Clone();
+                UoW.Context.Entry(category).State = EntityState.Detached;
 
                 if (category == null)
                     throw new ArgumentNullException();
 
+                category.Status = false;
+                category.LastUpdatedBy = lastUpdatedBy;
+                categoryService.Update(category);
 
-                categoryService.Delete(Mapper.Map<Category>(category));
+                categoryService.InsertAuditory(category, categoryOriginal);
+
                 UoW.Commit();
             }
             catch (Exception ex)
@@ -53,9 +61,9 @@ namespace Vale.Geographic.Application.Core.Services
             return Mapper.Map<CategoryDto>(categoryService.GetById(id));
         }
 
-        public IEnumerable<CategoryDto> Get(Guid? id, bool? active, TypeEntitieEnum? TypeEntitie, IFilterParameters parameters, out int total)
+        public IEnumerable<CategoryDto> Get(Guid? id, bool? active, TypeEntitieEnum? TypeEntitie, DateTime? lastUpdatedAt, IFilterParameters parameters, out int total)
         {
-            IEnumerable<Category> categorys = categoryRepository.Get(id, out total, active, TypeEntitie, parameters);
+            IEnumerable<Category> categorys = categoryRepository.Get(id, out total, active, TypeEntitie, lastUpdatedAt, parameters);
 
             return Mapper.Map<IEnumerable<CategoryDto>>(categorys);
         }
@@ -66,6 +74,8 @@ namespace Vale.Geographic.Application.Core.Services
             {
                 UoW.BeginTransaction();
                 Category category = Mapper.Map<Category>(request);
+                category.LastUpdatedBy = category.CreatedBy;
+
                 category = categoryService.Insert(category);
                 UoW.Commit();
 
@@ -94,8 +104,11 @@ namespace Vale.Geographic.Application.Core.Services
                 Category category = Mapper.Map<Category>(request);
                 category.Id = id;
                 category.CreatedAt = categoryOriginal.CreatedAt;
+                category.CreatedBy = categoryOriginal.CreatedBy;
 
                 category = categoryService.Update(category);
+                categoryService.InsertAuditory(category, categoryOriginal);
+
                 UoW.Commit();
 
                 return Mapper.Map<CategoryDto>(category);

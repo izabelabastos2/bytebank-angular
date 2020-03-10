@@ -19,7 +19,7 @@ namespace Vale.Geographic.Infra.Data.Repositories
 
         }
 
-        public IEnumerable<Category> Get(Guid? id, out int total, bool? active = null, TypeEntitieEnum? TypeEntitie = null, IFilterParameters parameters = null)
+        public IEnumerable<Category> Get(Guid? id, out int total, bool? active, TypeEntitieEnum? TypeEntitie, DateTime? lastUpdatedAt, IFilterParameters parameters = null)
         {
             var param = new DynamicParameters();
             StringBuilder sqlQuery = new StringBuilder();
@@ -50,7 +50,13 @@ namespace Vale.Geographic.Infra.Data.Repositories
             {
                 sqlQuery.AppendLine(@" AND CAT.Status = @Status");
                 param.Add("Status", active);
-            }        
+            }
+
+            if (lastUpdatedAt.HasValue)
+            {
+                sqlQuery.AppendLine(@" AND CAT.LastUpdatedAt > @LastUpdatedAt");
+                param.Add("LastUpdatedAt", lastUpdatedAt);
+            }
 
             if (parameters != null && !string.IsNullOrWhiteSpace(parameters.sort))
             {

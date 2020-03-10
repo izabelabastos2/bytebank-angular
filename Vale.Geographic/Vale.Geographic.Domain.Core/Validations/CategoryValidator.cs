@@ -17,6 +17,8 @@ namespace Vale.Geographic.Domain.Core.Validations
             ValidateCreatedAt();
             ValidateLastUpdatedAt();
             ValidateStatus();
+            ValidateCreatedBy();
+            ValidateLastUpdatedBy();
 
             RuleSet("Insert", () =>
             {
@@ -25,6 +27,8 @@ namespace Vale.Geographic.Domain.Core.Validations
                 ValidateCreatedAt();
                 ValidateLastUpdatedAt();
                 ValidateStatus();
+                ValidateCreatedBy();
+                ValidateLastUpdatedBy();
 
             });
 
@@ -36,6 +40,8 @@ namespace Vale.Geographic.Domain.Core.Validations
                 ValidateCreatedAt();
                 ValidateLastUpdatedAt();
                 ValidateStatus();
+                ValidateCreatedBy();
+                ValidateLastUpdatedBy();
             });
 
             this.categoryRepository = categoryRepository;
@@ -80,6 +86,17 @@ namespace Vale.Geographic.Domain.Core.Validations
                 .NotNull().WithMessage(Resources.Validations.CategoryStatusRequired);
         }
 
+        private void ValidateCreatedBy()
+        {
+            RuleFor(o => o.CreatedBy)
+                .NotEmpty().WithMessage(Resources.Validations.CategoryCreatedByRequired);
+        }
+
+        private void ValidateLastUpdatedBy()
+        {
+            RuleFor(o => o.LastUpdatedBy)
+                .NotEmpty().WithMessage(Resources.Validations.CategoryLastUpdatedByRequired);
+        }
         #endregion
     }
 }

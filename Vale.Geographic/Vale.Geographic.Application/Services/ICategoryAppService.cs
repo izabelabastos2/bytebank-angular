@@ -11,11 +11,11 @@ namespace Vale.Geographic.Application.Services
     {
         ICategoryService categoryService { get; set; }
 
-        void Delete(Guid id);
+        void Delete(Guid id, string lastUpdatedBy);
         CategoryDto GetById(Guid id);
         CategoryDto Insert(CategoryDto obj);
         CategoryDto Update(Guid id, CategoryDto obj);
         IEnumerable<CategoryDto> GetAll(IFilterParameters parameters, out int total);
-        IEnumerable<CategoryDto> Get(Guid? id, bool? active, TypeEntitieEnum? TypeEntitie, IFilterParameters parameters, out int total);
+        IEnumerable<CategoryDto> Get(Guid? id, bool? active, TypeEntitieEnum? TypeEntitie, DateTime? lastUpdatedAt, IFilterParameters parameters, out int total);
     }
 }
