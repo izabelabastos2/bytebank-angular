@@ -38,6 +38,7 @@ namespace Vale.Geographic.Api.Controllers
         ///     na agilidade decisória.
         /// </remarks>
         /// <param name="id">PointOfInterest Id</param>
+        /// <param name="lastUpdatedBy"></param>
         /// <returns>No content</returns>
         /// <response code="204">PointOfInterest deleted!</response>
         /// <response code="400">PointOfInterest has missing/invalid values</response>
@@ -48,9 +49,11 @@ namespace Vale.Geographic.Api.Controllers
         [ProducesResponseType(typeof(Error), 500)]
         public IActionResult Delete(Guid id)
         {
+            var lastUpdatedBy = this.HttpContext.User.Identity.Name;
+
             try
             {
-                PointOfInterestAppService.Delete(id);
+                PointOfInterestAppService.Delete(id, lastUpdatedBy);
 
             }
             catch (ArgumentNullException)
@@ -94,11 +97,11 @@ namespace Vale.Geographic.Api.Controllers
         [ProducesResponseType(typeof(IEnumerable<PointOfInterestDto>), 200)]
         [ProducesResponseType(typeof(Error), 400)]
         [ProducesResponseType(typeof(Error), 500)]
-        public IActionResult Get([FromQuery] bool? active, Guid? Id, Guid? categoryId, Guid? areaId,  double? longitude, double? latitude, double? altitude, int? radiusDistance, FilterDto request)
+        public IActionResult Get([FromQuery] bool? active, Guid? Id, Guid? categoryId, Guid? areaId,  double? longitude, double? latitude, double? altitude, int? radiusDistance, DateTime? lastUpdatedAt, FilterDto request)
         {
             var total = 0;
 
-            var result = PointOfInterestAppService.Get(active, Id, categoryId, areaId, longitude, latitude, altitude, radiusDistance, request, out total);
+            var result = PointOfInterestAppService.Get(active, Id, categoryId, areaId, longitude, latitude, altitude, radiusDistance, lastUpdatedAt, request, out total);
             Response.Headers.Add("X-Total-Count", total.ToString());
 
             return Ok(result);
@@ -179,6 +182,8 @@ namespace Vale.Geographic.Api.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
+            value.CreatedBy = this.HttpContext.User.Identity.Name;            
+
             var response = PointOfInterestAppService.Insert(value);
             return Created("", response);
         }
@@ -192,6 +197,8 @@ namespace Vale.Geographic.Api.Controllers
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
+
+            obj.CreatedBy = this.HttpContext.User.Identity.Name;
 
             var response = PointOfInterestAppService.Insert(obj);
             return Created("", response);
@@ -221,6 +228,9 @@ namespace Vale.Geographic.Api.Controllers
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
+
+            if (string.IsNullOrEmpty(value.LastUpdatedBy))            
+                value.LastUpdatedBy = this.HttpContext.User.Identity.Name;            
 
             try
             {

@@ -25,7 +25,7 @@ namespace Vale.Geographic.Infra.Data.Repositories
             AreaDistance = Convert.ToInt32(this.configuration.GetSection("Distance:AreaDistance").Value);
         }
 
-        public IEnumerable<PointOfInterest> Get(Guid? Id, out int total, IGeometry location, IGeometry point, bool? active, Guid? categoryId, Guid? areaId, int? radiusDistance, IFilterParameters parameters)
+        public IEnumerable<PointOfInterest> Get(out int total, Guid? Id, IGeometry location, IGeometry point, bool? active, Guid? categoryId, Guid? areaId, int? radiusDistance, DateTime? lastUpdatedAt, IFilterParameters parameters)
         {
             var param = new DynamicParameters();
             StringBuilder sqlQuery = new StringBuilder();
@@ -94,6 +94,11 @@ namespace Vale.Geographic.Infra.Data.Repositories
                 sqlQuery.AppendLine(@" AND POINT.Status = @Status");
                 param.Add("Status", active);
             }
+            if (lastUpdatedAt.HasValue)
+            {
+                sqlQuery.AppendLine(@" AND POINT.LastUpdatedAt > @LastUpdatedAt");
+                param.Add("LastUpdatedAt", lastUpdatedAt);
+            }
 
             if (areaId.HasValue && !areaId.Equals(Guid.Empty))
             {
@@ -152,7 +157,9 @@ namespace Vale.Geographic.Infra.Data.Repositories
                                                ,[Location]
                                                ,[AreaId]
                                                ,[CategoryId]
-                                               ,[Icon])
+                                               ,[Icon]
+                                               ,[CreatedBy]
+                                               ,[LastUpdatedBy])
                                          VALUES
                                               (@Id
 		                                      ,@CreatedAt
@@ -163,7 +170,9 @@ namespace Vale.Geographic.Infra.Data.Repositories
 		                                      ,geography::STGeomFromText(@Location, 4326).MakeValid()
 		                                      ,@AreaId
 		                                      ,@CategoryId
-                                              ,@Icon) ");
+                                              ,@Icon
+                                              ,@CreatedBy
+                                              ,@LastUpdatedBy) ");
 
             point.Id = Guid.NewGuid();
 
@@ -178,6 +187,9 @@ namespace Vale.Geographic.Infra.Data.Repositories
             param.Add("CategoryId", point.CategoryId);
             param.Add("Location", point.Location.ToString());
             param.Add("Icon", point.Icon);
+            param.Add("CreatedBy", point.CreatedBy);
+            param.Add("LastUpdatedBy", point.LastUpdatedBy);
+
 
 
             this.Uow.Connection.Execute(sqlQuery.ToString(),

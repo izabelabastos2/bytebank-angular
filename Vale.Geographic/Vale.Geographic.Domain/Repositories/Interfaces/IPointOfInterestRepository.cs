@@ -8,6 +8,6 @@ namespace Vale.Geographic.Domain.Repositories.Interfaces
 {
     public interface IPointOfInterestRepository : IRepository<PointOfInterest>
     {
-        IEnumerable<PointOfInterest> Get(Guid? Id, out int total, IGeometry location = null, IGeometry point = null, bool? active = null, Guid? categoryId = null, Guid? areaId = null, int? radiusDistance = null, IFilterParameters parameters = null);
+        IEnumerable<PointOfInterest> Get(out int total, Guid? Id = null, IGeometry location = null, IGeometry point = null, bool? active = null, Guid? categoryId = null, Guid? areaId = null, int? radiusDistance = null, DateTime? lastUpdatedAt = null, IFilterParameters parameters = null);
     }
 }

@@ -12,5 +12,9 @@ namespace Vale.Geographic.Application.Dto
         public Guid? AreaId { get; set; }
 
         public Guid? CategoryId { get; set; }
+
+        public string CreatedBy { get; set; }
+
+
     }
 }

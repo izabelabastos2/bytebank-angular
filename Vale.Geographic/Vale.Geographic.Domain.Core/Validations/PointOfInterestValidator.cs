@@ -28,6 +28,8 @@ namespace Vale.Geographic.Domain.Core.Validations
             ValidateCategory();
             ValidateLocation();
             ValidatePointDuplicate();
+            ValidateCreatedBy();
+            ValidateLastUpdatedBy();
 
 
             RuleSet("Insert", () =>
@@ -43,6 +45,8 @@ namespace Vale.Geographic.Domain.Core.Validations
                 ValidateCategory();
                 ValidateLocation();
                 ValidatePointDuplicate();
+                ValidateCreatedBy();
+                ValidateLastUpdatedBy();
             });
 
             RuleSet("Update", () =>
@@ -58,6 +62,8 @@ namespace Vale.Geographic.Domain.Core.Validations
                 ValidateCategoryId();
                 ValidateCategory();
                 ValidateLocation();
+                ValidateCreatedBy();
+                ValidateLastUpdatedBy();
             });
 
             RuleSet("Delete", () =>
@@ -152,14 +158,26 @@ namespace Vale.Geographic.Domain.Core.Validations
 
         private bool NotExistingPoint(PointOfInterest point)
         {
-            return pointOfInterestRepository.Get(point.Id, out int total, point.Location).Count() == 0;
+            return pointOfInterestRepository.Get(location: point.Location, active: true, total: out int total).Count() == 0;
         }
 
         private bool ExistingCategoria(Guid? categoryId)
         {
             return categoryId.HasValue && categoryRepository.Get(categoryId.Value, out int total, true).Count() == 0 ? false : true;
-        }       
+        }
 
+        private void ValidateCreatedBy()
+        {
+            RuleFor(o => o.CreatedBy)
+                .NotEmpty().WithMessage(Resources.Validations.PointOfInterestCreatedByRequired);
+        }
+
+        private void ValidateLastUpdatedBy()
+        {
+            RuleFor(o => o.LastUpdatedBy)
+                .NotEmpty().WithMessage(Resources.Validations.PointOfInterestLastUpdatedByRequired);
+        }
+        
         #endregion Validações de campos
     }
 }

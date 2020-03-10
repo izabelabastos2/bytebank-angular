@@ -10,12 +10,12 @@ namespace Vale.Geographic.Application.Services
     {
         IPointOfInterestService pointOfInterestService { get; set; }
 
-        void Delete(Guid id);
+        void Delete(Guid id, string lastUpdatedBy);
         PointOfInterestDto GetById(Guid id);
         PointOfInterestDto Insert(PointOfInterestDto obj);
         IEnumerable<PointOfInterestDto> Insert(CollectionPointOfInterestDto GeoJson);
         PointOfInterestDto Update(Guid id, PointOfInterestDto obj);
-        IEnumerable<PointOfInterestDto> Get(bool? active, Guid? Id, Guid? categoryId, Guid? areaId, double? longitude, double? latitude, double? altitude, int? radiusDistance, IFilterParameters request, out int total);
+        IEnumerable<PointOfInterestDto> Get(bool? active, Guid? id, Guid? categoryId, Guid? areaId, double? longitude, double? latitude, double? altitude, int? radiusDistance, DateTime? lastUpdatedAt, IFilterParameters request, out int total);
         IEnumerable<PointOfInterestDto> GetAll(IFilterParameters parameters, out int total);
     }
 }
