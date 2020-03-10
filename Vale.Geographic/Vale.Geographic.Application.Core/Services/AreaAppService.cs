@@ -143,16 +143,7 @@ namespace Vale.Geographic.Application.Core.Services
                     var geometryFactory = NtsGeometryServices.Instance.CreateGeometryFactory(srid: 4326);
                     area.Location = (Geometry) geometryFactory.CreateGeometry(new GeoJsonReader().Read<Geometry>(json)).Normalized().Reverse();
 
-                    try
-                    {
-                      areas.Add(areaService.Insert(area));
-
-                    }
-                    catch (Exception ex )
-                    {
-                        continue;
-                    }
-
+                    areas.Add(areaService.Insert(area)); 
                 }
 
                 UoW.Commit();
