@@ -3,6 +3,7 @@ using Vale.Geographic.Domain.Core.Validations;
 using Vale.Geographic.Domain.Base.Interfaces;
 using Vale.Geographic.Domain.Core.Services;
 using Vale.Geographic.Domain.Enumerable;
+using Vale.Geographic.Domain.Services;
 using Vale.Geographic.Domain.Entities;
 using NetTopologySuite.Geometries;
 using AutoFixture.AutoNSubstitute;
@@ -34,9 +35,11 @@ namespace Vale.Geographic.Test.Services
         private readonly SegmentService segmentService;
 
         private readonly IFixture fixture;
+        private readonly IAuditoryService AuditService;
         private readonly ISegmentRepository segmentRepository;
         private readonly IRouteRepository routeRepository;
         private readonly IAreaRepository areaRepository;
+
         private readonly IUnitOfWork unitOfWork;
 
         public SegmentServiceTest()
@@ -79,6 +82,8 @@ namespace Vale.Geographic.Test.Services
                 .RuleFor(u => u.Length, (f, u) => f.Random.Double())
                 .RuleFor(u => u.CreatedAt, DateTime.UtcNow.Date)
                 .RuleFor(u => u.LastUpdatedAt, DateTime.UtcNow.Date)
+                .RuleFor(u => u.CreatedBy, (f, u) => f.Random.String())
+                .RuleFor(u => u.LastUpdatedBy, (f, u) => f.Random.String())
                 .RuleFor(u => u.AreaId, area.Id)
                 .RuleFor(u => u.Area, area)
                 .RuleFor(u => u.RouteId, route.Id)
@@ -96,9 +101,11 @@ namespace Vale.Geographic.Test.Services
             this.segmentRepository = fixture.Freeze<ISegmentRepository>();
             this.routeRepository = fixture.Freeze<IRouteRepository>();
             this.areaRepository = fixture.Freeze<IAreaRepository>();
+            this.AuditService = fixture.Freeze<IAuditoryService>();
+
             this.unitOfWork = fixture.Freeze<IUnitOfWork>();
 
-            this.segmentService = new SegmentService(unitOfWork, segmentRepository, routeRepository, areaRepository);
+            this.segmentService = new SegmentService(unitOfWork, segmentRepository, routeRepository, areaRepository, AuditService);
         }
 
         #region Insert

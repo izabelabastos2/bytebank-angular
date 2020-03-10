@@ -38,6 +38,7 @@ namespace Vale.Geographic.Api.Controllers
         ///     na agilidade decisória.
         /// </remarks>
         /// <param name="id">Segment Id</param>
+        /// <param name="lastUpdatedBy"></param>
         /// <returns>No content</returns>
         /// <response code="204">Segment deleted!</response>
         /// <response code="400">Segment has missing/invalid values</response>
@@ -48,9 +49,11 @@ namespace Vale.Geographic.Api.Controllers
         [ProducesResponseType(typeof(Error), 500)]
         public IActionResult Delete(Guid id)
         {
+            var lastUpdatedBy = this.HttpContext.User.Identity.Name;
+
             try
             {
-                SegmentAppService.Delete(id);
+                SegmentAppService.Delete(id, lastUpdatedBy);
             }
             catch (ArgumentNullException)
             {
@@ -174,6 +177,8 @@ namespace Vale.Geographic.Api.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
+            value.CreatedBy = this.HttpContext.User.Identity.Name;
+
             var response = SegmentAppService.Insert(value);
             return Created("", response);
         }
@@ -203,6 +208,8 @@ namespace Vale.Geographic.Api.Controllers
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
+
+            value.LastUpdatedBy = this.HttpContext.User.Identity.Name;
 
             try
             {

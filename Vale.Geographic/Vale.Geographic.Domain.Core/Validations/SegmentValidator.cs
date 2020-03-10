@@ -23,6 +23,8 @@ namespace Vale.Geographic.Domain.Core.Validations
             ValidateLocation();
             ValidateRouteId();
             ValidateAreaId();
+            ValidateCreatedBy();
+            ValidateLastUpdatedBy();
 
 
             RuleSet("Insert", () =>
@@ -35,6 +37,8 @@ namespace Vale.Geographic.Domain.Core.Validations
                 ValidateLocation();
                 ValidateRouteId();
                 ValidateAreaId();
+                ValidateCreatedBy();
+                ValidateLastUpdatedBy();
 
             });
 
@@ -49,6 +53,8 @@ namespace Vale.Geographic.Domain.Core.Validations
                 ValidateLocation();
                 ValidateRouteId();
                 ValidateAreaId();
+                ValidateCreatedBy();
+                ValidateLastUpdatedBy();
             });
 
             this.segmentRepository = segmentRepository;
@@ -125,6 +131,17 @@ namespace Vale.Geographic.Domain.Core.Validations
             return routeRepository.GetById(Id) != null ? true : false;
         }
 
+        private void ValidateCreatedBy()
+        {
+            RuleFor(o => o.CreatedBy)
+                .NotEmpty().WithMessage(Resources.Validations.SegmentCreatedByRequired);
+        }
+
+        private void ValidateLastUpdatedBy()
+        {
+            RuleFor(o => o.LastUpdatedBy)
+                .NotEmpty().WithMessage(Resources.Validations.SegmentLastUpdatedByRequired);
+        }
         #endregion Validações de campos
     }
 }

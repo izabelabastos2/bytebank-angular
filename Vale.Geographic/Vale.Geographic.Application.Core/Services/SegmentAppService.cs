@@ -6,6 +6,7 @@ using Vale.Geographic.Application.Dto;
 using Vale.Geographic.Domain.Entities;
 using Vale.Geographic.Domain.Services;
 using Vale.Geographic.Infra.Data.Base;
+using Microsoft.EntityFrameworkCore;
 using NetTopologySuite.Geometries;
 using System.Collections.Generic;
 using NetTopologySuite.IO;
@@ -14,35 +15,40 @@ using Newtonsoft.Json;
 using System.Linq;
 using AutoMapper;
 using System;
-using Microsoft.EntityFrameworkCore;
 
 namespace Vale.Geographic.Application.Core.Services
 {
     public class SegmentAppService : AppService, ISegmentAppService
     {
         private readonly ISegmentRepository segmentRepository;
+        public ISegmentService segmentService { get; set; }
 
-        public SegmentAppService(IUnitOfWork uoW, IMapper mapper, ISegmentService segmentService,
-            ISegmentRepository segmentRepository) : base(uoW, mapper)
+        public SegmentAppService(IUnitOfWork uoW, 
+                                 IMapper mapper, 
+                                 ISegmentService segmentService,
+                                 ISegmentRepository segmentRepository) : base(uoW, mapper)
         {
             this.segmentService = segmentService;
             this.segmentRepository = segmentRepository;
         }
 
-        public ISegmentService segmentService { get; set; }
-
-
-        public void Delete(Guid id)
+        public void Delete(Guid id, string lastUpdatedBy)
         {
             try
             {
                 UoW.BeginTransaction();
                 Segment segment = segmentService.GetById(id);
+                Segment segmentOriginal = (Segment)segment.Clone();
+                UoW.Context.Entry(segment).State = EntityState.Detached;
 
                 if (segment == null)
                     throw new ArgumentNullException();
 
-                segmentService.Delete(Mapper.Map<Segment>(segment));
+                segment.Status = false;
+                segment.LastUpdatedBy = lastUpdatedBy;
+                segmentService.Update(segment);
+                segmentService.InsertAuditory(segment, segmentOriginal);
+
                 UoW.Commit();
             }
             catch (Exception ex)
@@ -86,6 +92,7 @@ namespace Vale.Geographic.Application.Core.Services
                 var json = JsonConvert.SerializeObject(obj.Geojson.Geometry);
                 var geometryFactory = NtsGeometryServices.Instance.CreateGeometryFactory(srid: 4326);
                 segment.Location = (Geometry)geometryFactory.CreateGeometry(new GeoJsonReader().Read<Geometry>(json)).Normalized().Reverse();
+                segment.LastUpdatedBy = segment.CreatedBy;
 
                 segment = segmentService.Insert(segment);
 
@@ -106,7 +113,6 @@ namespace Vale.Geographic.Application.Core.Services
             {
                 UoW.BeginTransaction();
 
-
                 var segmentOriginal = segmentService.GetById(id);
                 UoW.Context.Entry(segmentOriginal).State = EntityState.Detached;
 
@@ -116,11 +122,14 @@ namespace Vale.Geographic.Application.Core.Services
                 Segment segment = Mapper.Map<Segment>(obj);
                 segment.Id = id;
                 segment.CreatedAt = segmentOriginal.CreatedAt;
+                segment.CreatedBy = segmentOriginal.CreatedBy;
 
                 var json = JsonConvert.SerializeObject(obj.Geojson.Geometry);
                 var geometryFactory = NtsGeometryServices.Instance.CreateGeometryFactory(srid: 4326);
                 segment.Location = (Geometry)geometryFactory.CreateGeometry(new GeoJsonReader().Read<Geometry>(json)).Normalized().Reverse();
                 segment = segmentService.Update(segment);
+
+                segmentService.InsertAuditory(segment, segmentOriginal);
 
                 UoW.Commit();
 

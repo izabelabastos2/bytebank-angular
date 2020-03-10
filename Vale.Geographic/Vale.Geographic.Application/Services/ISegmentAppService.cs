@@ -10,7 +10,7 @@ namespace Vale.Geographic.Application.Services
     {
         ISegmentService segmentService { get; set; }
 
-        void Delete(Guid id);
+        void Delete(Guid id, string lastUpdatedBy);
         SegmentDto GetById(Guid id);
         SegmentDto Insert(SegmentDto obj);
         SegmentDto Update(Guid id, SegmentDto obj);
