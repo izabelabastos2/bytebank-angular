@@ -18,33 +18,41 @@ using System.Linq;
 using AutoMapper;
 using System;
 
-
 namespace Vale.Geographic.Application.Core.Services
 {
     public class AreaAppService : AppService, IAreaAppService
     {
         private readonly IAreaRepository areaRepository;
+        public IAreaService areaService { get; set; }
 
-        public AreaAppService(IUnitOfWork uoW, IMapper mapper, IAreaService areaService,
-            IAreaRepository areaRepository) : base(uoW, mapper)
+
+        public AreaAppService(IUnitOfWork uoW, 
+                              IMapper mapper, 
+                              IAreaService areaService,
+                              IAreaRepository areaRepository) : base(uoW, mapper)
         {
             this.areaService = areaService;
             this.areaRepository = areaRepository;
         }
 
-        public IAreaService areaService { get; set; }
 
-        public void Delete(Guid id)
+        public void Delete(Guid id, string lastUpdatedBy)
         {
             try
             {
                 UoW.BeginTransaction();
                 Area area = areaService.GetById(id);
+                Area areaOriginal = (Area)area.Clone();
+                UoW.Context.Entry(area).State = EntityState.Detached;
 
                 if (area == null)
                     throw new ArgumentNullException();
 
-                areaService.Delete(Mapper.Map<Area>(area));
+                area.Status = false;
+                area.LastUpdatedBy = lastUpdatedBy;
+                areaService.Update(area);
+                areaService.InsertAuditory(area, areaOriginal);
+
                 UoW.Commit();
             }
             catch (Exception ex)
@@ -71,7 +79,7 @@ namespace Vale.Geographic.Application.Core.Services
 
         }
 
-        public IEnumerable<AreaDto> Get(bool? active, Guid? id, Guid? categoryId, Guid? parentId, double? longitude, double? latitude, double? altitude, int? radiusDistance, IFilterParameters request, out int total)
+        public IEnumerable<AreaDto> Get(bool? active, Guid? id, Guid? categoryId, Guid? parentId, double? longitude, double? latitude, double? altitude, int? radiusDistance, DateTime? lastUpdatedAt, IFilterParameters request, out int total)
         {
             IGeometry point = null;
 
@@ -84,7 +92,7 @@ namespace Vale.Geographic.Application.Core.Services
                 point = (Geometry)geometryFactory.CreateGeometry(new GeoJsonReader().Read<Geometry>(json)).Normalized().Reverse();
             }
 
-            IEnumerable<Area> areas = areaRepository.Get(id, out total, null, point, active, categoryId, parentId, radiusDistance, request);
+            IEnumerable<Area> areas = areaRepository.Get(out total, id, null, point, active, categoryId, parentId, radiusDistance, lastUpdatedAt, request);
 
             return Mapper.Map<IEnumerable<AreaDto>>(areas);
         }
@@ -100,6 +108,7 @@ namespace Vale.Geographic.Application.Core.Services
                 var json = JsonConvert.SerializeObject(obj.Geojson.Geometry);
                 var geometryFactory = NtsGeometryServices.Instance.CreateGeometryFactory(srid: 4326);                
                 area.Location = (Geometry)geometryFactory.CreateGeometry(new GeoJsonReader().Read<Geometry>(json)).Normalized().Reverse();
+                area.LastUpdatedBy = area.CreatedBy;
 
                 area = areaService.Insert(area);               
 
@@ -127,12 +136,23 @@ namespace Vale.Geographic.Application.Core.Services
                     Area area = Mapper.Map<Area>(feature);
                     area.CategoryId = obj.CategoryId;
                     area.ParentId = obj.ParentId;
+                    area.CreatedBy = obj.CreatedBy;
+                    area.LastUpdatedBy = area.CreatedBy;
 
                     var json = JsonConvert.SerializeObject(feature.Geometry);
                     var geometryFactory = NtsGeometryServices.Instance.CreateGeometryFactory(srid: 4326);
                     area.Location = (Geometry) geometryFactory.CreateGeometry(new GeoJsonReader().Read<Geometry>(json)).Normalized().Reverse();
-                           
-                    areas.Add(areaService.Insert(area));                                  
+
+                    try
+                    {
+                      areas.Add(areaService.Insert(area));
+
+                    }
+                    catch (Exception ex )
+                    {
+                        continue;
+                    }
+
                 }
 
                 UoW.Commit();
@@ -159,17 +179,18 @@ namespace Vale.Geographic.Application.Core.Services
                 if (areaOriginal == null)
                    throw new ArgumentNullException();
 
-
                 Area area = Mapper.Map<Area>(obj);
                 
                 area.Id = id;
                 area.CreatedAt = areaOriginal.CreatedAt;
+                area.CreatedBy = areaOriginal.CreatedBy;
 
                 var json = JsonConvert.SerializeObject(obj.Geojson.Geometry);
                 var geometryFactory = NtsGeometryServices.Instance.CreateGeometryFactory(srid: 4326);
                 area.Location = (Geometry)geometryFactory.CreateGeometry(new GeoJsonReader().Read<Geometry>(json)).Normalized().Reverse();
 
                 area = areaService.Update(area);
+                areaService.InsertAuditory(area, areaOriginal);
 
                 UoW.Commit();
 

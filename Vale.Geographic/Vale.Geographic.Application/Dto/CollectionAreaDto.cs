@@ -13,5 +13,7 @@ namespace Vale.Geographic.Application.Dto
 
         public Guid? ParentId { get; set; }
 
+        public string CreatedBy { get; set; }
+
     }
 }

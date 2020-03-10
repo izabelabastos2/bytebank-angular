@@ -10,12 +10,12 @@ namespace Vale.Geographic.Application.Services
     {
         IAreaService areaService { get; set; }
 
-        void Delete(Guid id);
+        void Delete(Guid id, string lastUpdatedBy);
         AreaDto GetById(Guid id);
         AreaDto Insert(AreaDto obj);
         AreaDto Update(Guid id, AreaDto obj);
         IEnumerable<AreaDto> Insert(CollectionAreaDto obj);
         IEnumerable<AreaDto> GetAll(IFilterParameters parameters, out int total);
-        IEnumerable<AreaDto> Get(bool? active, Guid? id, Guid? categoryId, Guid? parentId, double? longitude, double? latitude, double? altitude, int? radiusDistance, IFilterParameters request, out int total);
+        IEnumerable<AreaDto> Get(bool? active, Guid? id, Guid? categoryId, Guid? parentId, double? longitude, double? latitude, double? altitude, int? radiusDistance, DateTime? lastUpdatedAt, IFilterParameters request, out int total);
     }
 }

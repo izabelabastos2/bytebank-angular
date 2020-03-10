@@ -107,7 +107,7 @@ namespace Vale.Geographic.Test.Services
 
             areaRepository.Insert(areaReturn).Returns(areaReturn);
 
-            areaRepository.Get(null, out int total, area.Location).Returns(x => new List<Area>());
+            areaRepository.Get(location: area.Location, active: true, total: out int total).Returns(x => new List<Area>());
 
             unitOfWork.ValidateEntity = true;
 

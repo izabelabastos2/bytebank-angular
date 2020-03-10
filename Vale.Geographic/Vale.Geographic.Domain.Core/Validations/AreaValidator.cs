@@ -28,6 +28,8 @@ namespace Vale.Geographic.Domain.Core.Validations
             ValidateCategoryId();
             ValidateCategory();
             ValidateAreaDuplicate();
+            ValidateCreatedBy();
+            ValidateLastUpdatedBy();
 
 
             RuleSet("Insert", () =>
@@ -44,6 +46,8 @@ namespace Vale.Geographic.Domain.Core.Validations
                 ValidateCategoryId();
                 ValidateCategory();
                 ValidateAreaDuplicate();
+                ValidateCreatedBy();
+                ValidateLastUpdatedBy();
             });
 
             RuleSet("Update", () =>
@@ -60,6 +64,8 @@ namespace Vale.Geographic.Domain.Core.Validations
                 ValidateParent();
                 ValidateCategoryId();
                 ValidateCategory();
+                ValidateCreatedBy();
+                ValidateLastUpdatedBy();
             });
 
             this.areaRepository = areaRepository;
@@ -154,12 +160,24 @@ namespace Vale.Geographic.Domain.Core.Validations
 
         private bool NotExistingArea(Area area)
         {
-            return areaRepository.Get(null, out int total, area.Location).Count() == 0;
+            return areaRepository.Get(location: area.Location, active: true, total: out int total).Count() == 0;
         }
 
         private bool ExistingCategory(Guid? categoryId)
         {
             return categoryId.HasValue && categoryRepository.Get(categoryId.Value, out int total, true).Count() == 0 ? false : true;
+        }
+
+        private void ValidateCreatedBy()
+        {
+            RuleFor(o => o.CreatedBy)
+                .NotEmpty().WithMessage(Resources.Validations.AreaCreatedByRequired);
+        }
+
+        private void ValidateLastUpdatedBy()
+        {
+            RuleFor(o => o.LastUpdatedBy)
+                .NotEmpty().WithMessage(Resources.Validations.AreaLastUpdatedByRequired);
         }
 
         #endregion Validações de campos

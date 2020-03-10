@@ -26,7 +26,7 @@ namespace Vale.Geographic.Infra.Data.Repositories
             AreaDistance = Convert.ToInt32(this.configuration.GetSection("Distance:AreaDistance").Value);
         }
 
-        public IEnumerable<Area> Get( Guid? id, out int total, IGeometry location, IGeometry point , bool? active, Guid? categoryId , Guid? parentId, int? radiusDistance, IFilterParameters parameters)
+        public IEnumerable<Area> Get(out int total, Guid? id, IGeometry location, IGeometry point , bool? active, Guid? categoryId , Guid? parentId, int? radiusDistance, DateTime? lastUpdatedAt, IFilterParameters parameters)
         {
             var param = new DynamicParameters();
             StringBuilder sqlQuery = new StringBuilder();
@@ -71,8 +71,7 @@ namespace Vale.Geographic.Infra.Data.Repositories
 
             if (categoryId.HasValue && !categoryId.Equals(Guid.Empty))
             {
-                sqlQuery.AppendLine(@" AND AREA.CategoryId IS NOT NULL 
-                                       AND CAT.Id = @CategoryId");
+                sqlQuery.AppendLine(@" AND AREA.CategoryId = @CategoryId");
                 param.Add("CategoryId", categoryId);
             }
 
@@ -94,6 +93,12 @@ namespace Vale.Geographic.Infra.Data.Repositories
             {
                 sqlQuery.AppendLine(@" AND AREA.Status = @Status");
                 param.Add("Status", active);
+            }
+
+            if (lastUpdatedAt.HasValue)
+            {
+                sqlQuery.AppendLine(@" AND AREA.LastUpdatedAt > @LastUpdatedAt");
+                param.Add("LastUpdatedAt", lastUpdatedAt);
             }
 
             if (parentId.HasValue && !parentId.Equals(Guid.Empty))
@@ -150,7 +155,9 @@ namespace Vale.Geographic.Infra.Data.Repositories
 		                               ,[ParentId]
                                        ,[CategoryId]
                                        ,[Location]
-                                       ,[Color])
+                                       ,[Color]
+                                       ,[CreatedBy]
+                                       ,[LastUpdatedBy])
                                  VALUES
                                        (@Id
                                        ,@CreatedAt
@@ -161,8 +168,9 @@ namespace Vale.Geographic.Infra.Data.Repositories
                                        ,@ParentId
                                        ,@CategoryId
 		                               ,geography::STGeomFromText(@Location, 4326).MakeValid()
-                                       ,@Color) ");
-
+                                       ,@Color
+                                       ,@CreatedBy
+                                       ,@LastUpdatedBy) ");
             area.Id = Guid.NewGuid();
 
             var param = new DynamicParameters();
@@ -176,6 +184,8 @@ namespace Vale.Geographic.Infra.Data.Repositories
             param.Add("ParentId", area.ParentId);
             param.Add("CategoryId", area.CategoryId);
             param.Add("Location", area.Location.ToString());
+            param.Add("CreatedBy", area.CreatedBy);
+            param.Add("LastUpdatedBy", area.LastUpdatedBy);
 
             this.Uow.Connection.Execute(sqlQuery.ToString(),
                 param,

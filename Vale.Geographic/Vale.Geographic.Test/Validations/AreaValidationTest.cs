@@ -234,6 +234,8 @@ namespace Vale.Geographic.Test.Validations
                 .RuleFor(u => u.Name, (f, u) => f.Name.FullName())
                 .RuleFor(u => u.CreatedAt, DateTime.UtcNow.Date)
                 .RuleFor(u => u.LastUpdatedAt, DateTime.UtcNow.Date)
+                .RuleFor(u => u.CreatedBy, (f, u) => f.Random.String())
+                .RuleFor(u => u.LastUpdatedBy, (f, u) => f.Random.String())
                 .RuleFor(u => u.CategoryId, category.Id)
                 .RuleFor(u => u.Category, category)
                 .RuleFor(u => u.Location, MontarGeometry(CreatePolygon()))
@@ -242,7 +244,7 @@ namespace Vale.Geographic.Test.Validations
 
             areaRepository.GetById(area.ParentId.Value).Returns(area.Parent);
 
-            areaRepository.Get(null, out int total, area.Parent.Location).Returns(x => new List<Area>());
+            areaRepository.Get(location: area.Parent.Location, active: true, total: out int total).Returns(x => new List<Area>());
             var resul = validator.TestValidate(area.Parent).Result;
             resul.IsValid.Should().BeTrue();
             resul.Errors.Should().BeNullOrEmpty();

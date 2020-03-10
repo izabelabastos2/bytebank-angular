@@ -15,6 +15,10 @@ namespace Vale.Geographic.Domain.Base
         [Required]
         public DateTime LastUpdatedAt { get; set; }
 
+        public string CreatedBy { get; set; }
+
+        public string LastUpdatedBy { get; set; }
+
         [Required]
         public bool Status { get; set; }
     }
