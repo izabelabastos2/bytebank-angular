@@ -12,7 +12,9 @@ namespace Vale.Geographic.Application.AutoMapper
         public DomainToViewModelMappingProfile()
         {
             CreateMap<IGeometry, Feature>().ConvertUsing(x => new Feature(WktConvert.GeoJSONGeometry(x.ToString(), 4326), null, null));
-                       
+            
+            CreateMap<Auditory, AuditoryDto>();
+
             CreateMap<Category, CategoryDto>();
 
             CreateMap<Area, AreaDto>()

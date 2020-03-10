@@ -19,6 +19,8 @@ namespace Vale.Geographic.Application.AutoMapper
                .ForMember(x => x.ParentId, opt => opt.Ignore())
                .ForMember(x => x.CreatedAt, opt => opt.Ignore())
                .ForMember(x => x.LastUpdatedAt, opt => opt.Ignore())
+               .ForMember(x => x.CreatedBy, opt => opt.Ignore())
+               .ForMember(x => x.LastUpdatedBy, opt => opt.Ignore())
                .ForMember(x => x.Id, opt => opt.Ignore())
                .ForMember(x => x.Category, opt => opt.Ignore())
                .ForMember(x => x.CategoryId, opt => opt.Ignore());
@@ -40,6 +42,8 @@ namespace Vale.Geographic.Application.AutoMapper
               .ForMember(x => x.AreaId, opt => opt.Ignore())
               .ForMember(x => x.CreatedAt, opt => opt.Ignore())
               .ForMember(x => x.LastUpdatedAt, opt => opt.Ignore())
+              .ForMember(x => x.CreatedBy, opt => opt.Ignore())
+              .ForMember(x => x.LastUpdatedBy, opt => opt.Ignore())
               .ForMember(x => x.Id, opt => opt.Ignore())
               .ForMember(x => x.Category, opt => opt.Ignore())
               .ForMember(x => x.CategoryId, opt => opt.Ignore());
@@ -62,6 +66,13 @@ namespace Vale.Geographic.Application.AutoMapper
             CreateMap<CategoryDto, Category>()
               .ForMember(x => x.CreatedAt, opt => opt.Ignore())
               .ForMember(x => x.LastUpdatedAt, opt => opt.Ignore());
+
+            CreateMap<AuditoryDto, Auditory>()
+                .ForMember(x => x.CreatedAt, opt => opt.Ignore())
+                .ForMember(x => x.LastUpdatedAt, opt => opt.Ignore())
+                .ForMember(x => x.Area, opt => opt.Ignore())
+                .ForMember(x => x.Category, opt => opt.Ignore())
+                .ForMember(x => x.PointOfInterest, opt => opt.Ignore());
         }
     }
 }

@@ -88,6 +88,10 @@ namespace Vale.Geographic.Infra.CrossCutting.IoC
             container.Register<ICategoryService, CategoryService>(Lifestyle.Scoped);
             container.Register<ICategoryRepository, CategoryRepository>(Lifestyle.Scoped);
 
+            container.Register<IAuditoryAppService, AuditoryAppService>(Lifestyle.Scoped);
+            container.Register<IAuditoryService, AuditoryService>(Lifestyle.Scoped);
+            container.Register<IAuditoryRepository, AuditoryRepository>(Lifestyle.Scoped);
+
 
             container.RegisterSingleton(() => GetMapper(container));
         }

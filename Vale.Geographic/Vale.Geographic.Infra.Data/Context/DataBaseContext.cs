@@ -21,7 +21,7 @@ namespace Vale.Geographic.Infra.Data.Context
             modelBuilder.ApplyConfiguration(new RouteMap());
             modelBuilder.ApplyConfiguration(new SegmentMap());
             modelBuilder.ApplyConfiguration(new CategoryMap());
-
+            modelBuilder.ApplyConfiguration(new AuditoryMap());
 
             base.OnModelCreating(modelBuilder);
         }

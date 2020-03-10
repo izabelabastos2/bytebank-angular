@@ -76,9 +76,14 @@ namespace Vale.Geographic.Infra.Data.Repositories
 
             var count = 0;
 
-            IEnumerable<Auditory> result = this.Connection.Query<Auditory>(sqlQuery.ToString(),
+            IEnumerable<Auditory> result = this.Connection.Query<Auditory, int, Auditory>(sqlQuery.ToString(),
+                (a, t) => {
+                    count = t;
+                    return a;
+                },
                param,
-               (IDbTransaction)this.Uow.Transaction);
+               (IDbTransaction)this.Uow.Transaction,
+               splitOn: "Id,  Total");
 
             total = count;
             return result;
