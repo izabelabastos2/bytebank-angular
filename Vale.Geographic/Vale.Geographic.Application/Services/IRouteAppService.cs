@@ -10,7 +10,7 @@ namespace Vale.Geographic.Application.Services
     {
         IRouteService routeService { get; set; }
 
-        void Delete(Guid id);
+        void Delete(Guid id, string lastUpdatedBy);
         RouteDto GetById(Guid id);
         RouteDto Insert(RouteDto obj);
         RouteDto Update(Guid id, RouteDto obj);

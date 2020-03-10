@@ -48,9 +48,11 @@ namespace Vale.Geographic.Api.Controllers
         [ProducesResponseType(typeof(Error), 500)]
         public IActionResult Delete(Guid id)
         {
+            var lastUpdatedBy = this.HttpContext.User.Identity.Name;
+
             try
             {
-                RouteAppService.Delete(id);
+                RouteAppService.Delete(id, lastUpdatedBy);
             }
             catch (ArgumentNullException)
             {
@@ -172,6 +174,8 @@ namespace Vale.Geographic.Api.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
+            value.CreatedBy = this.HttpContext.User.Identity.Name;
+
             var response = RouteAppService.Insert(value);
             return Created("", response);
         }
@@ -201,6 +205,8 @@ namespace Vale.Geographic.Api.Controllers
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
+
+             value.LastUpdatedBy = this.HttpContext.User.Identity.Name;
 
             try
             {

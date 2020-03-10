@@ -6,6 +6,7 @@ using Vale.Geographic.Application.Dto;
 using Vale.Geographic.Domain.Entities;
 using Vale.Geographic.Domain.Services;
 using Vale.Geographic.Infra.Data.Base;
+using Microsoft.EntityFrameworkCore;
 using NetTopologySuite.Geometries;
 using System.Collections.Generic;
 using NetTopologySuite.IO;
@@ -14,34 +15,41 @@ using Newtonsoft.Json;
 using System.Linq;
 using AutoMapper;
 using System;
-using Microsoft.EntityFrameworkCore;
 
 namespace Vale.Geographic.Application.Core.Services
 {
     public class RouteAppService : AppService, IRouteAppService
     {
         private readonly IRouteRepository routeRepository;
+        public IRouteService routeService { get; set; }
 
-        public RouteAppService(IUnitOfWork uoW, IMapper mapper, IRouteService routeService,
-            IRouteRepository routeRepository) : base(uoW, mapper)
+
+        public RouteAppService(IUnitOfWork uoW, 
+                               IMapper mapper, 
+                               IRouteService routeService,
+                               IRouteRepository routeRepository) : base(uoW, mapper)
         {
             this.routeService = routeService;
             this.routeRepository = routeRepository;
         }
-
-        public IRouteService routeService { get; set; }
         
-        public void Delete(Guid id)
+        public void Delete(Guid id, string lastUpdatedBy)
         {
             try
             {
                 UoW.BeginTransaction();
                 Route route = routeService.GetById(id);
+                Route routeOriginal = (Route)route.Clone();
+                UoW.Context.Entry(route).State = EntityState.Detached;
 
                 if (route == null)
                     throw new ArgumentNullException();
 
-                routeService.Delete(Mapper.Map<Route>(route));
+                route.Status = false;
+                route.LastUpdatedBy = lastUpdatedBy;
+                routeService.Update(route);
+                routeService.InsertAuditory(route, routeOriginal);
+
                 UoW.Commit();
             }
             catch (Exception ex)
@@ -86,6 +94,8 @@ namespace Vale.Geographic.Application.Core.Services
                 var geometryFactory = NtsGeometryServices.Instance.CreateGeometryFactory(srid: 4326);
 
                 route.Location = (Geometry) geometryFactory.CreateGeometry(new GeoJsonReader().Read<Geometry>(json)).Normalized().Reverse();
+                route.LastUpdatedBy = route.CreatedBy;
+
                 route = routeService.Insert(route);
 
                 UoW.Commit();
@@ -114,12 +124,14 @@ namespace Vale.Geographic.Application.Core.Services
                 Route route = Mapper.Map<Route>(obj);
                 route.Id = id;
                 route.CreatedAt = routeOriginal.CreatedAt;
+                route.CreatedBy = routeOriginal.CreatedBy;
 
                 var json = JsonConvert.SerializeObject(obj.Geojson.Geometry);
                 var geometryFactory = NtsGeometryServices.Instance.CreateGeometryFactory(srid: 4326);
                 route.Location = (Geometry)geometryFactory.CreateGeometry(new GeoJsonReader().Read<Geometry>(json)).Normalized().Reverse();
 
                 route = routeService.Update(route);
+                routeService.InsertAuditory(route, routeOriginal);
 
                 UoW.Commit();
 

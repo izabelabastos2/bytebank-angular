@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using System.Collections.Generic;
 using GeoJSON.Net.Feature;
 using System;
 
@@ -12,6 +11,10 @@ namespace Vale.Geographic.Application.Dto
         public DateTime? CreatedAt { get; set; }
 
         public DateTime? LastUpdatedAt { get; set; }
+
+        public string CreatedBy { get; set; }
+
+        public string LastUpdatedBy { get; set; }
 
         [Required]
         public bool Status { get; set; }

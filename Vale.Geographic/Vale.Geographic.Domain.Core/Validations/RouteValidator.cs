@@ -21,6 +21,8 @@ namespace Vale.Geographic.Domain.Core.Validations
             ValidateStatus();
             ValidateLocation();
             ValidateAreaId();
+            ValidateCreatedBy();
+            ValidateLastUpdatedBy();
 
 
             RuleSet("Insert", () =>
@@ -32,6 +34,8 @@ namespace Vale.Geographic.Domain.Core.Validations
                 ValidateStatus();
                 ValidateLocation();
                 ValidateAreaId();
+                ValidateCreatedBy();
+                ValidateLastUpdatedBy();
             });
 
             RuleSet("Update", () =>
@@ -44,6 +48,8 @@ namespace Vale.Geographic.Domain.Core.Validations
                 ValidateStatus();
                 ValidateLocation();
                 ValidateAreaId();
+                ValidateCreatedBy();
+                ValidateLastUpdatedBy();
             });
             this.routeRepository = routeRepository;
             this.areaRepository = areaRepository;
@@ -106,6 +112,18 @@ namespace Vale.Geographic.Domain.Core.Validations
             return areaRepository.GetById(areaId) != null ? true : false;
         }
 
+        private void ValidateCreatedBy()
+        {
+            RuleFor(o => o.CreatedBy)
+                .NotEmpty().WithMessage(Resources.Validations.RouteCreatedByRequired);
+        }
+
+        private void ValidateLastUpdatedBy()
+        {
+            RuleFor(o => o.LastUpdatedBy)
+                .NotEmpty().WithMessage(Resources.Validations.RouteLastUpdatedByRequired);
+        }
+       
         #endregion Validações de campos
     }
 }
