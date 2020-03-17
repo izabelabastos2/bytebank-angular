@@ -50,6 +50,8 @@ namespace Vale.Geographic.Application.Core.Services
 
                 area.Status = false;
                 area.LastUpdatedBy = lastUpdatedBy;
+                area.LastUpdatedAt = DateTime.UtcNow;
+
                 areaService.Update(area);
                 areaService.InsertAuditory(area, areaOriginal);
 

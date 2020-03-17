@@ -35,7 +35,9 @@ namespace Vale.Geographic.Infra.Data.Migrations
                         .HasColumnType("datetime");
 
                     b.Property<string>("CreatedBy")
-                        .HasColumnType("varchar(100)");
+                        .IsRequired()
+                        .HasColumnType("varchar(100)")
+                        .HasMaxLength(100);
 
                     b.Property<string>("Description")
                         .HasColumnType("varchar(255)")
@@ -45,7 +47,9 @@ namespace Vale.Geographic.Infra.Data.Migrations
                         .HasColumnType("datetime");
 
                     b.Property<string>("LastUpdatedBy")
-                        .HasColumnType("varchar(100)");
+                        .IsRequired()
+                        .HasColumnType("varchar(100)")
+                        .HasMaxLength(100);
 
                     b.Property<IGeometry>("Location")
                         .IsRequired()
@@ -84,13 +88,16 @@ namespace Vale.Geographic.Infra.Data.Migrations
 
                     b.Property<string>("CreatedBy")
                         .IsRequired()
-                        .HasColumnType("varchar(100)");
+                        .HasColumnType("varchar(100)")
+                        .HasMaxLength(100);
 
                     b.Property<DateTime>("LastUpdatedAt")
                         .HasColumnType("datetime");
 
                     b.Property<string>("LastUpdatedBy")
-                        .HasColumnType("varchar(100)");
+                        .IsRequired()
+                        .HasColumnType("varchar(100)")
+                        .HasMaxLength(100);
 
                     b.Property<string>("NewValue")
                         .IsRequired()
@@ -127,13 +134,17 @@ namespace Vale.Geographic.Infra.Data.Migrations
                         .HasColumnType("datetime");
 
                     b.Property<string>("CreatedBy")
-                        .HasColumnType("varchar(100)");
+                        .IsRequired()
+                        .HasColumnType("varchar(100)")
+                        .HasMaxLength(100);
 
                     b.Property<DateTime>("LastUpdatedAt")
                         .HasColumnType("datetime");
 
                     b.Property<string>("LastUpdatedBy")
-                        .HasColumnType("varchar(100)");
+                        .IsRequired()
+                        .HasColumnType("varchar(100)")
+                        .HasMaxLength(100);
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -163,7 +174,9 @@ namespace Vale.Geographic.Infra.Data.Migrations
                         .HasColumnType("datetime");
 
                     b.Property<string>("CreatedBy")
-                        .HasColumnType("varchar(100)");
+                        .IsRequired()
+                        .HasColumnType("varchar(100)")
+                        .HasMaxLength(100);
 
                     b.Property<string>("Description")
                         .HasColumnType("varchar(255)")
@@ -177,7 +190,9 @@ namespace Vale.Geographic.Infra.Data.Migrations
                         .HasColumnType("datetime");
 
                     b.Property<string>("LastUpdatedBy")
-                        .HasColumnType("varchar(100)");
+                        .IsRequired()
+                        .HasColumnType("varchar(100)")
+                        .HasMaxLength(100);
 
                     b.Property<IGeometry>("Location")
                         .IsRequired()
@@ -211,7 +226,9 @@ namespace Vale.Geographic.Infra.Data.Migrations
                         .HasColumnType("datetime");
 
                     b.Property<string>("CreatedBy")
-                        .HasColumnType("varchar(100)");
+                        .IsRequired()
+                        .HasColumnType("varchar(100)")
+                        .HasMaxLength(100);
 
                     b.Property<string>("Description")
                         .HasColumnType("varchar(255)")
@@ -221,7 +238,9 @@ namespace Vale.Geographic.Infra.Data.Migrations
                         .HasColumnType("datetime");
 
                     b.Property<string>("LastUpdatedBy")
-                        .HasColumnType("varchar(100)");
+                        .IsRequired()
+                        .HasColumnType("varchar(100)")
+                        .HasMaxLength(100);
 
                     b.Property<decimal>("Length")
                         .HasConversion(new ValueConverter<decimal, decimal>(v => default(decimal), v => default(decimal), new ConverterMappingHints(precision: 38, scale: 17)))
@@ -257,7 +276,9 @@ namespace Vale.Geographic.Infra.Data.Migrations
                         .HasColumnType("datetime");
 
                     b.Property<string>("CreatedBy")
-                        .HasColumnType("varchar(100)");
+                        .IsRequired()
+                        .HasColumnType("varchar(100)")
+                        .HasMaxLength(100);
 
                     b.Property<string>("Description")
                         .HasColumnType("varchar(255)")
@@ -267,7 +288,9 @@ namespace Vale.Geographic.Infra.Data.Migrations
                         .HasColumnType("datetime");
 
                     b.Property<string>("LastUpdatedBy")
-                        .HasColumnType("varchar(100)");
+                        .IsRequired()
+                        .HasColumnType("varchar(100)")
+                        .HasMaxLength(100);
 
                     b.Property<decimal>("Length")
                         .HasConversion(new ValueConverter<decimal, decimal>(v => default(decimal), v => default(decimal), new ConverterMappingHints(precision: 38, scale: 17)))

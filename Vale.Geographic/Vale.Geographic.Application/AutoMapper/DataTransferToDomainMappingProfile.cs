@@ -1,6 +1,7 @@
 ﻿using Vale.Geographic.Application.Dto;
 using Vale.Geographic.Domain.Entities;
 using GeoJSON.Net.Feature;
+using System.Linq;
 using AutoMapper;
 
 namespace Vale.Geographic.Application.AutoMapper
@@ -10,8 +11,14 @@ namespace Vale.Geographic.Application.AutoMapper
         public DataTransferToDomainMappingProfile()
         {
             CreateMap<Feature, Area>()
-               .ForMember(dest => dest.Name, opt => opt.MapFrom(x => x.Properties.Count == 0 || !x.Properties.ContainsKey("Name") ? null : x.Properties["Name"]))
-               .ForMember(dest => dest.Description, opt => opt.MapFrom(x => x.Properties.Count == 0 || !x.Properties.ContainsKey("Description") ? null : x.Properties["Description"]))
+               .ForMember(dest => dest.Name, opt => opt.MapFrom(
+                   x => x.Properties.Count == 0 || !x.Properties.Keys.Any(i => i.ToLower().Contains("name")) ? 
+                    null : x.Properties.Where(y => y.Key.ToLower() == "name").Select(z => z.Value).FirstOrDefault()))
+
+               .ForMember(dest => dest.Description, opt => opt.MapFrom(
+                   x => x.Properties.Count == 0 || !x.Properties.Keys.Any(i => i.ToLower().Contains("description")) ?
+                    null : x.Properties.Where(y => y.Key.ToLower() == "description").Select(z => z.Value).FirstOrDefault()))
+
                .ForMember(x => x.Location, opt => opt.Ignore())
                .ForMember(x => x.Color, opt => opt.Ignore())
                .ForMember(x => x.Status, opt => opt.Ignore())
@@ -33,8 +40,14 @@ namespace Vale.Geographic.Application.AutoMapper
 
 
             CreateMap<Feature, PointOfInterest>()
-              .ForMember(dest => dest.Name, opt => opt.MapFrom(x => x.Properties.Count == 0 || !x.Properties.ContainsKey("Name") ? null : x.Properties["Name"]))
-              .ForMember(dest => dest.Description, opt => opt.MapFrom(x => x.Properties.Count == 0 || !x.Properties.ContainsKey("description") ? null : x.Properties["description"]))
+               .ForMember(dest => dest.Name, opt => opt.MapFrom(
+                   x => x.Properties.Count == 0 || !x.Properties.Keys.Any(i => i.ToLower().Contains("name")) ?
+                    null : x.Properties.Where(y => y.Key.ToLower() == "name").Select(z => z.Value).FirstOrDefault()))
+
+               .ForMember(dest => dest.Description, opt => opt.MapFrom(
+                   x => x.Properties.Count == 0 || !x.Properties.Keys.Any(i => i.ToLower().Contains("description")) ?
+                    null : x.Properties.Where(y => y.Key.ToLower() == "description").Select(z => z.Value).FirstOrDefault()))
+
               .ForMember(x => x.Icon, opt => opt.Ignore())
               .ForMember(x => x.Location, opt => opt.Ignore())
               .ForMember(x => x.Status, opt => opt.Ignore())

@@ -43,6 +43,8 @@ namespace Vale.Geographic.Application.Core.Services
 
                 category.Status = false;
                 category.LastUpdatedBy = lastUpdatedBy;
+                category.LastUpdatedAt = DateTime.UtcNow;
+
                 categoryService.Update(category);
 
                 categoryService.InsertAuditory(category, categoryOriginal);

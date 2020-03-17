@@ -11,61 +11,71 @@ namespace Vale.Geographic.Infra.Data.Migrations
                 name: "CreatedBy",
                 table: "Segment",
                 type: "varchar(100)",
-                nullable: true);
+                maxLength: 100,
+                nullable: false);
 
             migrationBuilder.AddColumn<string>(
                 name: "LastUpdatedBy",
                 table: "Segment",
                 type: "varchar(100)",
-                nullable: true);
+                maxLength: 100,
+                nullable: false);
 
             migrationBuilder.AddColumn<string>(
                 name: "CreatedBy",
                 table: "Route",
                 type: "varchar(100)",
-                nullable: true);
+                maxLength: 100,
+                nullable: false);
 
             migrationBuilder.AddColumn<string>(
                 name: "LastUpdatedBy",
                 table: "Route",
                 type: "varchar(100)",
-                nullable: true);
+                maxLength: 100,
+                nullable: false);
 
             migrationBuilder.AddColumn<string>(
                 name: "CreatedBy",
                 table: "PointOfInterest",
                 type: "varchar(100)",
-                nullable: true);
+                maxLength: 100,
+                nullable: false);
 
             migrationBuilder.AddColumn<string>(
                 name: "LastUpdatedBy",
                 table: "PointOfInterest",
                 type: "varchar(100)",
-                nullable: true);
+                maxLength: 100,
+                nullable: false);
 
             migrationBuilder.AddColumn<string>(
                 name: "CreatedBy",
                 table: "Categorys",
                 type: "varchar(100)",
-                nullable: true);
+                maxLength: 100,
+                nullable: false);
 
             migrationBuilder.AddColumn<string>(
                 name: "LastUpdatedBy",
                 table: "Categorys",
                 type: "varchar(100)",
-                nullable: true);
+                maxLength: 100,
+                nullable: false);
 
             migrationBuilder.AddColumn<string>(
                 name: "CreatedBy",
                 table: "Area",
                 type: "varchar(100)",
-                nullable: true);
+                maxLength: 100,
+                nullable: false);
 
             migrationBuilder.AddColumn<string>(
                 name: "LastUpdatedBy",
                 table: "Area",
                 type: "varchar(100)",
-                nullable: true);
+                maxLength: 100,
+                nullable: false);
 
             migrationBuilder.CreateTable(
                 name: "Auditory",
@@ -74,8 +84,8 @@ namespace Vale.Geographic.Infra.Data.Migrations
                     Id = table.Column<Guid>(nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime", nullable: false),
                     LastUpdatedAt = table.Column<DateTime>(type: "datetime", nullable: false),
-                    CreatedBy = table.Column<string>(type: "varchar(100)", nullable: false),
-                    LastUpdatedBy = table.Column<string>(type: "varchar(100)", nullable: true),
+                    CreatedBy = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false),
+                    LastUpdatedBy = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false),
                     Status = table.Column<bool>(type: "bit", nullable: false),
                     TypeEntitie = table.Column<int>(nullable: false),
                     OldValue = table.Column<string>(type: "varchar(MAX)", nullable: false),

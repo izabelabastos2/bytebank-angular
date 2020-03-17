@@ -92,6 +92,7 @@ namespace Vale.Geographic.Api.Controllers
         [ProducesResponseType(typeof(IEnumerable<CategoryDto>), 200)]
         [ProducesResponseType(typeof(Error), 400)]
         [ProducesResponseType(typeof(Error), 500)]
+        [AllowAnonymous]
         public IActionResult Get([FromQuery] Guid? id, bool? active, TypeEntitieEnum? TypeEntitie, DateTime? lastUpdatedAt, FilterDto request)
         {
             var total = 0;

@@ -50,6 +50,8 @@ namespace Vale.Geographic.Application.Core.Services
 
                 point.Status = false;
                 point.LastUpdatedBy = lastUpdatedBy;
+                point.LastUpdatedAt = DateTime.UtcNow;
+
                 pointOfInterestService.Update(point);
 
                 pointOfInterestService.InsertAuditory(point, pointOfInterestOriginal);
