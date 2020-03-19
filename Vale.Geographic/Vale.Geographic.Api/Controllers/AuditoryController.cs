@@ -6,20 +6,33 @@ using Vale.Geographic.Api.Filters;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Vale.Geographic.Api.Controllers
 {
+    /// <summary>
+    /// Controller to Audit
+    /// </summary>
     [Route("api/Auditory")]
-    [ApiController]
+    [Authorize]
     public class AuditoryController : Controller
     {
         private IAuditoryAppService AuditoryAppService { get; }
 
+        /// <summary>
+        /// Constructor to Auditory Controller 
+        /// </summary>
+        /// <param name="auditoryAppService"></param>
         public AuditoryController(IAuditoryAppService auditoryAppService)
         {
             AuditoryAppService = auditoryAppService;
         }
 
+        /// <summary>
+        /// Get all Audit with paging, filtering and sorting.
+        /// </summary>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
         [HttpGet("All")]
         [ProducesResponseType(typeof(IEnumerable<AuditoryDto>), 200)]
         [ProducesResponseType(typeof(Error), 400)]
@@ -36,7 +49,7 @@ namespace Vale.Geographic.Api.Controllers
         }
 
         /// <summary>
-        /// Get Category by Id
+        /// Get Audit by Id
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -51,15 +64,10 @@ namespace Vale.Geographic.Api.Controllers
         }
 
         /// <summary>
-        ///     Filter Areas
+        ///     Filter Audit
         /// </summary>
         /// <remarks>
-        ///     Faça aqui uma decrição mais detalhada do que esse metodo irá fazer. No entanto, não podemos esquecer que o
-        ///     consenso sobre a necessidade de qualificação oferece uma interessante oportunidade para verificação do sistema de
-        ///     participação geral. Do mesmo modo, o novo modelo estrutural aqui preconizado garante a contribuição de um grupo
-        ///     importante na determinação das posturas dos órgãos dirigentes com relação às suas atribuições. A certificação de
-        ///     metodologias que nos auxiliam a lidar com o início da atividade geral de formação de atitudes faz parte de um
-        ///     processo de gerenciamento do orçamento setorial.
+        ///    Search Audit by filters
         /// </remarks>
         /// <param name="areaId"></param>
         /// <param name="pointOfInterestId"></param>

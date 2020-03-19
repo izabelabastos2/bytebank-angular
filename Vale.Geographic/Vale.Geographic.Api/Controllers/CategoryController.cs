@@ -11,7 +11,7 @@ using System;
 namespace Vale.Geographic.Api.Controllers
 {
     /// <summary>
-    /// 
+    /// Controller to Category
     /// </summary>
     [Route("api/Category")]
     [Authorize]
@@ -20,7 +20,7 @@ namespace Vale.Geographic.Api.Controllers
         private ICategoryAppService CategoryAppService { get; }
 
         /// <summary>
-        /// 
+        /// Constructor to Category Controller 
         /// </summary>
         /// <param name="categoryAppService"></param>
         public CategoryController(ICategoryAppService categoryAppService)
@@ -64,15 +64,10 @@ namespace Vale.Geographic.Api.Controllers
         }
 
         /// <summary>
-        ///     Filter Areas
+        ///     Filter Category
         /// </summary>
         /// <remarks>
-        ///     Faça aqui uma decrição mais detalhada do que esse metodo irá fazer. No entanto, não podemos esquecer que o
-        ///     consenso sobre a necessidade de qualificação oferece uma interessante oportunidade para verificação do sistema de
-        ///     participação geral. Do mesmo modo, o novo modelo estrutural aqui preconizado garante a contribuição de um grupo
-        ///     importante na determinação das posturas dos órgãos dirigentes com relação às suas atribuições. A certificação de
-        ///     metodologias que nos auxiliam a lidar com o início da atividade geral de formação de atitudes faz parte de um
-        ///     processo de gerenciamento do orçamento setorial.
+        ///    Search Category by filters
         /// </remarks>
         /// <param name="id"></param>
         /// <param name="active">Retrive all areas are active or not</param>
