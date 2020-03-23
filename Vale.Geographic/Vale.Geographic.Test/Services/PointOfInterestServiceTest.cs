@@ -7,6 +7,7 @@ using Vale.Geographic.Domain.Entities;
 using NetTopologySuite.Geometries;
 using AutoFixture.AutoNSubstitute;
 using System.Collections.Generic;
+using System.Globalization;
 using NetTopologySuite.IO;
 using GeoAPI.Geometries;
 using NetTopologySuite;
@@ -132,7 +133,7 @@ namespace Vale.Geographic.Test.Services
         public void ValidateUpdate_Success()
         {
             pointOfInterest.Id = Guid.NewGuid();
-            pointOfInterest.LastUpdatedAt = DateTime.Parse("20/02/2013");
+            pointOfInterest.LastUpdatedAt = DateTime.ParseExact("20/02/2013", "dd/MM/yyyy", CultureInfo.CurrentCulture);
 
             pointOfInterestRepository.Update(pointOfInterest).Returns(x =>
             {

@@ -8,6 +8,7 @@ using Vale.Geographic.Domain.Entities;
 using NetTopologySuite.Geometries;
 using AutoFixture.AutoNSubstitute;
 using System.Collections.Generic;
+using System.Globalization;
 using NetTopologySuite.IO;
 using GeoAPI.Geometries;
 using FluentAssertions;
@@ -160,7 +161,7 @@ namespace Vale.Geographic.Test.Services
         public void ValidateUpdate_Success()
         {
             segment.Id = Guid.NewGuid();
-            segment.LastUpdatedAt = DateTime.Parse("20/02/2013");
+            segment.LastUpdatedAt = DateTime.ParseExact("20/02/2013", "dd/MM/yyyy", CultureInfo.CurrentCulture);
 
             segmentRepository.Update(segment).Returns(x =>
             {

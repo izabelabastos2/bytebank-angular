@@ -2,15 +2,16 @@
 using Vale.Geographic.Domain.Core.Validations;
 using Vale.Geographic.Domain.Base.Interfaces;
 using Vale.Geographic.Domain.Core.Services;
-using NSubstitute;
-using Bogus;
-using Vale.Geographic.Domain.Entities;
-using System;
-using Xunit;
-using FluentAssertions;
 using Vale.Geographic.Domain.Enumerable;
-using AutoFixture;
+using Vale.Geographic.Domain.Entities;
 using AutoFixture.AutoNSubstitute;
+using System.Globalization;
+using FluentAssertions;
+using AutoFixture;
+using NSubstitute;
+using System;
+using Bogus;
+using Xunit;
 
 namespace Vale.Geographic.Test.Services
 {
@@ -89,7 +90,7 @@ namespace Vale.Geographic.Test.Services
         public void ValidateUpdate_Success()
         {
             category.Id = Guid.NewGuid();
-            category.LastUpdatedAt = DateTime.Parse("20/02/2013");
+            category.LastUpdatedAt = DateTime.ParseExact("20/02/2013", "dd/MM/yyyy", CultureInfo.CurrentCulture);
 
             categoryRepository.Update(category).Returns(x =>
             {

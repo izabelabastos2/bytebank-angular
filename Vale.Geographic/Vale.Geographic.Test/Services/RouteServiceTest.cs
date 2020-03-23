@@ -7,6 +7,7 @@ using Vale.Geographic.Domain.Entities;
 using AutoFixture.AutoNSubstitute;
 using NetTopologySuite.Geometries;
 using System.Collections.Generic;
+using System.Globalization;
 using NetTopologySuite.IO;
 using GeoAPI.Geometries;
 using FluentAssertions;
@@ -129,7 +130,7 @@ namespace Vale.Geographic.Test.Services
         public void ValidateUpdate_Success()
         {
             route.Id = Guid.NewGuid();
-            route.LastUpdatedAt = DateTime.Parse("20/02/2013");
+            route.LastUpdatedAt = DateTime.ParseExact("20/02/2013", "dd/MM/yyyy", CultureInfo.CurrentCulture);
 
             routeRepository.Update(route).Returns(x =>
             {
