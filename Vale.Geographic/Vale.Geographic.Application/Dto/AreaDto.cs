@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using GeoJSON.Net.Feature;
 using System;
+using GeoJSON.Net.Geometry;
 
 namespace Vale.Geographic.Application.Dto
 {
@@ -28,6 +29,8 @@ namespace Vale.Geographic.Application.Dto
 
         [Required]
         public Feature Geojson { get; set; }
+
+        public Feature CentralPoint { get; set; }
 
         public Guid? CategoryId { get; set; }
 
