@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.ViewComponents;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -56,6 +57,7 @@ namespace Vale.Geographic.Infra.CrossCutting.IoC
             // Add application services. For instance:
             container.Register<IDbConnection>(() => new SqlConnection(ConnectionString), Lifestyle.Scoped);
 
+            container.Register<IMemoryCache>(() => new MemoryCache(new MemoryCacheOptions() { SizeLimit = 5000 }), Lifestyle.Singleton);
 
             container.Register<DbContextOptions>(() =>
             {
@@ -99,6 +101,12 @@ namespace Vale.Geographic.Infra.CrossCutting.IoC
             container.Register<IUserAppService, UserAppService>(Lifestyle.Scoped);
             container.Register<IUserService, UserService>(Lifestyle.Scoped);
             container.Register<IUserRepository, UserRepository>(Lifestyle.Scoped);
+
+            container.Register<INotificationAppService, NotificationAppService>(Lifestyle.Scoped);
+            container.Register<INotificationRepository, NotificationRepository>(Lifestyle.Scoped);
+
+            container.Register<IJWTRepository, JWTRepository>(Lifestyle.Scoped);
+
 
             container.RegisterSingleton(() => GetMapper(container));
         }
