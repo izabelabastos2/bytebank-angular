@@ -372,4 +372,79 @@
   <data name="SegmentLastUpdatedByRequired" xml:space="preserve">
     <value>Por favor, informe o usuario de atualização do segmento.</value>
   </data>
+  <data name="FocalPointCreatedAtRequired" xml:space="preserve">
+    <value>Por favor, informe a data de criação do ponto focal.</value>
+  </data>
+  <data name="FocalPointCreatedByRequired" xml:space="preserve">
+    <value>Por favor, informe o usuario de criação do ponto focal.</value>
+  </data>
+  <data name="FocalPointMatriculaRequired" xml:space="preserve">
+    <value>Por favor, informe a matricula do ponto focal.</value>
+  </data>
+  <data name="FocalPointMatriculaLength" xml:space="preserve">
+    <value>A matricula do ponto focal não pode ter mais do que 15 caracteres.</value>
+  </data>
+  <data name="FocalPointIdRequired" xml:space="preserve">
+    <value>Por favor, informe o ID do ponto focal.</value>
+  </data>
+  <data name="FocalPointLastUpdatedAtRequired" xml:space="preserve">
+    <value>Por favor, informe a última data de atualização do ponto focal.</value>
+  </data>
+  <data name="FocalPointLastUpdatedByRequired" xml:space="preserve">
+    <value>Por favor, informe o usuario de atualização do ponto focal.</value>
+  </data>
+  <data name="FocalPointNameLength" xml:space="preserve">
+    <value>O nome do ponto focal não pode ter mais do que 250 caracteres.</value>
+  </data>
+  <data name="FocalPointNameRequired" xml:space="preserve">
+    <value>Por favor, informe a nome do ponto focal.</value>
+  </data>
+  <data name="FocalPointNotFound" xml:space="preserve">
+    <value>Ponto Focal não encontrado.</value>
+  </data>
+  <data name="FocalPointPhoneNumberLength" xml:space="preserve">
+    <value>O telefone do ponto focal não pode ter mais do que 50 caracteres.</value>
+  </data>
+  <data name="FocalPointStatusRequired" xml:space="preserve">
+    <value>Por favor, informe o status do ponto focal.</value>
+  </data>
+  <data name="UserCreatedAtRequired" xml:space="preserve">
+    <value>Por favor, informe a data de criação do usuário.</value>
+  </data>
+  <data name="UserCreatedByRequired" xml:space="preserve">
+    <value>Por favor, informe o usuario de criação do usuário.</value>
+  </data>
+  <data name="UserEmailLength" xml:space="preserve">
+    <value>O email do usuário não pode ter mais do que 100 caracteres.</value>
+  </data>
+  <data name="UserIdRequired" xml:space="preserve">
+    <value>Por favor, informe o ID do usuário.</value>
+  </data>
+  <data name="UserLastUpdatedAtRequired" xml:space="preserve">
+    <value>Por favor, informe a última data de atualização do usuário.</value>
+  </data>
+  <data name="UserLastUpdatedByRequired" xml:space="preserve">
+    <value>Por favor, informe o usuário de atualização do usuário.</value>
+  </data>
+  <data name="UserMatriculaLength" xml:space="preserve">
+    <value>A matricula do usuário não pode ter mais do que 15 caracteres.</value>
+  </data>
+  <data name="UserMatriculaRequired" xml:space="preserve">
+    <value>Por favor, informe a matricula do usuário.</value>
+  </data>
+  <data name="UserNameLength" xml:space="preserve">
+    <value>O nome do usuário não pode ter mais do que 250 caracteres.</value>
+  </data>
+  <data name="UserNameRequired" xml:space="preserve">
+    <value>Por favor, informe a nome do usuário.</value>
+  </data>
+  <data name="UserNotFound" xml:space="preserve">
+    <value>Usuário não encontrado.</value>
+  </data>
+  <data name="UserProfileRequired" xml:space="preserve">
+    <value>Por favor, informe o perfil do usuário.</value>
+  </data>
+  <data name="UserStatusRequired" xml:space="preserve">
+    <value>Por favor, informe o status do usuário</value>
+  </data>
 </root>

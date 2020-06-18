@@ -4,6 +4,8 @@ using Vale.Geographic.Domain.Entities;
 using GeoJSON.Net.Feature;
 using GeoAPI.Geometries;
 using AutoMapper;
+using Vale.Geographic.Domain.Entities.Authorization;
+using Vale.Geographic.Application.Dto.Authorization;
 
 namespace Vale.Geographic.Application.AutoMapper
 {
@@ -17,8 +19,15 @@ namespace Vale.Geographic.Application.AutoMapper
 
             CreateMap<Category, CategoryDto>();
 
+            CreateMap<User, UserDto>();
+
+
+            CreateMap<FocalPoint, FocalPointDto>()
+                .ForMember(dest => dest.Locality, opt => opt.Ignore());
+
             CreateMap<Area, AreaDto>()
-              .ForMember(dest => dest.Geojson, opt => opt.MapFrom(x => x.Location));
+              .ForMember(dest => dest.Geojson, opt => opt.MapFrom(x => x.Location))
+             .ForMember(dest => dest.CentralPoint, opt => opt.MapFrom(x => new Feature(WktConvert.GeoJSONGeometry(x.Location.Centroid.ToString(), 4326), null, null)));
 
             CreateMap<PointOfInterest, PointOfInterestDto>()
               .ForMember(dest => dest.Geojson, opt => opt.MapFrom(x => x.Location))

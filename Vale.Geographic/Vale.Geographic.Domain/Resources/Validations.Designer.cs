@@ -367,6 +367,114 @@ namespace Vale.Geographic.Domain.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Por favor, informe a data de criação do ponto focal..
+        /// </summary>
+        public static string FocalPointCreatedAtRequired {
+            get {
+                return ResourceManager.GetString("FocalPointCreatedAtRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Por favor, informe o usuario de criação do ponto focal..
+        /// </summary>
+        public static string FocalPointCreatedByRequired {
+            get {
+                return ResourceManager.GetString("FocalPointCreatedByRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Por favor, informe o ID do ponto focal..
+        /// </summary>
+        public static string FocalPointIdRequired {
+            get {
+                return ResourceManager.GetString("FocalPointIdRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Por favor, informe a última data de atualização do ponto focal..
+        /// </summary>
+        public static string FocalPointLastUpdatedAtRequired {
+            get {
+                return ResourceManager.GetString("FocalPointLastUpdatedAtRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Por favor, informe o usuario de atualização do ponto focal..
+        /// </summary>
+        public static string FocalPointLastUpdatedByRequired {
+            get {
+                return ResourceManager.GetString("FocalPointLastUpdatedByRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A matricula do ponto focal não pode ter mais do que 15 caracteres..
+        /// </summary>
+        public static string FocalPointMatriculaLength {
+            get {
+                return ResourceManager.GetString("FocalPointMatriculaLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Por favor, informe a matricula do ponto focal..
+        /// </summary>
+        public static string FocalPointMatriculaRequired {
+            get {
+                return ResourceManager.GetString("FocalPointMatriculaRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to O nome do ponto focal não pode ter mais do que 250 caracteres..
+        /// </summary>
+        public static string FocalPointNameLength {
+            get {
+                return ResourceManager.GetString("FocalPointNameLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Por favor, informe a nome do ponto focal..
+        /// </summary>
+        public static string FocalPointNameRequired {
+            get {
+                return ResourceManager.GetString("FocalPointNameRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ponto Focal não encontrado..
+        /// </summary>
+        public static string FocalPointNotFound {
+            get {
+                return ResourceManager.GetString("FocalPointNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to O telefone do ponto focal não pode ter mais do que 50 caracteres..
+        /// </summary>
+        public static string FocalPointPhoneNumberLength {
+            get {
+                return ResourceManager.GetString("FocalPointPhoneNumberLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Por favor, informe o status do ponto focal..
+        /// </summary>
+        public static string FocalPointStatusRequired {
+            get {
+                return ResourceManager.GetString("FocalPointStatusRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Por favor, informe idade da pessoa..
         /// </summary>
         public static string PersonSampleAgeRequired {
@@ -822,6 +930,123 @@ namespace Vale.Geographic.Domain.Resources {
         public static string SegmentStatusRequired {
             get {
                 return ResourceManager.GetString("SegmentStatusRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Por favor, informe a data de criação do usuário..
+        /// </summary>
+        public static string UserCreatedAtRequired {
+            get {
+                return ResourceManager.GetString("UserCreatedAtRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Por favor, informe o usuario de criação do usuário..
+        /// </summary>
+        public static string UserCreatedByRequired {
+            get {
+                return ResourceManager.GetString("UserCreatedByRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to O email do usuário não pode ter mais do que 100 caracteres..
+        /// </summary>
+        public static string UserEmailLength {
+            get {
+                return ResourceManager.GetString("UserEmailLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Por favor, informe o ID do usuário..
+        /// </summary>
+        public static string UserIdRequired {
+            get {
+                return ResourceManager.GetString("UserIdRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Por favor, informe a última data de atualização do usuário..
+        /// </summary>
+        public static string UserLastUpdatedAtRequired {
+            get {
+                return ResourceManager.GetString("UserLastUpdatedAtRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Por favor, informe o usuário de atualização do usuário..
+        /// </summary>
+        public static string UserLastUpdatedByRequired {
+            get {
+                return ResourceManager.GetString("UserLastUpdatedByRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A matricula do usuário não pode ter mais do que 15 caracteres..
+        /// </summary>
+        public static string UserMatriculaLength {
+            get {
+                return ResourceManager.GetString("UserMatriculaLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Por favor, informe a matricula do usuário..
+        /// </summary>
+        public static string UserMatriculaRequired {
+            get {
+                return ResourceManager.GetString("UserMatriculaRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to O nome do usuário não pode ter mais do que 250 caracteres..
+        /// </summary>
+        public static string UserNameLength {
+            get {
+                return ResourceManager.GetString("UserNameLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Por favor, informe a nome do usuário..
+        /// </summary>
+        public static string UserNameRequired {
+            get {
+                return ResourceManager.GetString("UserNameRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Usuário não encontrado..
+        /// </summary>
+        public static string UserNotFound {
+            get {
+                return ResourceManager.GetString("UserNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Por favor, informe o perfil do usuário..
+        /// </summary>
+        public static string UserProfileRequired {
+            get {
+                return ResourceManager.GetString("UserProfileRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Por favor, informe o status do usuário.
+        /// </summary>
+        public static string UserStatusRequired {
+            get {
+                return ResourceManager.GetString("UserStatusRequired", resourceCulture);
             }
         }
     }

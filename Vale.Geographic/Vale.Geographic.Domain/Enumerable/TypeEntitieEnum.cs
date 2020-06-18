@@ -12,10 +12,11 @@ namespace Vale.Geographic.Domain.Enumerable
 
         [Description("Route")] Route = 4,
 
-        [Description("Segment")] Segment = 5
+        [Description("Segment")] Segment = 5,
 
+        [Description("FocalPoint")] FocalPoint = 6,
 
-
+        [Description("User")] User = 7
 
     }
 }

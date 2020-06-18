@@ -3,6 +3,8 @@ using Vale.Geographic.Domain.Entities;
 using GeoJSON.Net.Feature;
 using System.Linq;
 using AutoMapper;
+using Vale.Geographic.Application.Dto.Authorization;
+using Vale.Geographic.Domain.Entities.Authorization;
 
 namespace Vale.Geographic.Application.AutoMapper
 {
@@ -86,6 +88,14 @@ namespace Vale.Geographic.Application.AutoMapper
                 .ForMember(x => x.Area, opt => opt.Ignore())
                 .ForMember(x => x.Category, opt => opt.Ignore())
                 .ForMember(x => x.PointOfInterest, opt => opt.Ignore());
+
+            CreateMap<FocalPointDto, FocalPoint>()
+              .ForMember(x => x.CreatedAt, opt => opt.Ignore())
+              .ForMember(x => x.LastUpdatedAt, opt => opt.Ignore());
+
+            CreateMap<UserDto, User>()
+              .ForMember(x => x.CreatedAt, opt => opt.Ignore())
+              .ForMember(x => x.LastUpdatedAt, opt => opt.Ignore());
         }
     }
 }

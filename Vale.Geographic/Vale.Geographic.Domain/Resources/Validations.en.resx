@@ -372,4 +372,73 @@
   <data name="SegmentLastUpdatedByRequired" xml:space="preserve">
     <value>Please inform the user of the segment update.</value>
   </data>
+  <data name="FocalPointCreatedAtRequired" xml:space="preserve">
+    <value>Please enter the date of creation of the focal point.</value>
+  </data>
+  <data name="FocalPointCreatedByRequired" xml:space="preserve">
+    <value>Please inform the user of the creation of the focal point.</value>
+  </data>
+  <data name="FocalPointMatriculaRequired" xml:space="preserve">
+    <value>Please inform the matricula of the focal point.</value>
+  </data>
+  <data name="FocalPointMatriculaLength" xml:space="preserve">
+    <value>The focal point matricula cannot be longer than 15 characters.</value>
+  </data>
+  <data name="FocalPointIdRequired" xml:space="preserve">
+    <value>Please enter the ID of the focal point.</value>
+  </data>
+  <data name="FocalPointLastUpdatedAtRequired" xml:space="preserve">
+    <value>Please enter the latest update date for the focal point.</value>
+  </data>
+  <data name="FocalPointLastUpdatedByRequired" xml:space="preserve">
+    <value>Please inform the user of the update of the focal point.</value>
+  </data>
+  <data name="FocalPointNameLength" xml:space="preserve">
+    <value>The focal point name cannot be longer than 250 characters.</value>
+  </data>
+  <data name="FocalPointNameRequired" xml:space="preserve">
+    <value>Please enter the name of the focal point.</value>
+  </data>
+  <data name="FocalPointNotFound" xml:space="preserve">
+    <value>Focal point not found.</value>
+  </data>
+  <data name="FocalPointPhoneNumberLength" xml:space="preserve">
+    <value>The focal point phone cannot be longer than 50 characters.</value>
+  </data>
+  <data name="FocalPointStatusRequired" xml:space="preserve">
+    <value>Please inform the focal point status.</value>
+  </data>
+  <data name="UserEmailLength" xml:space="preserve">
+    <value>The user's email cannot exceed 100 characters.</value>
+  </data>
+  <data name="UserIdRequired" xml:space="preserve">
+    <value>Please enter the user ID.</value>
+  </data>
+  <data name="UserLastUpdatedAtRequired" xml:space="preserve">
+    <value>Please enter the user's last update date.</value>
+  </data>
+  <data name="UserLastUpdatedByRequired" xml:space="preserve">
+    <value>Please inform the user update user.</value>
+  </data>
+  <data name="UserMatriculaLength" xml:space="preserve">
+    <value>User registration cannot be longer than 15 characters.</value>
+  </data>
+  <data name="UserMatriculaRequired" xml:space="preserve">
+    <value>Please enter the user registration.</value>
+  </data>
+  <data name="UserNameLength" xml:space="preserve">
+    <value>The user name cannot be longer than 250 characters.</value>
+  </data>
+  <data name="UserNameRequired" xml:space="preserve">
+    <value>Please enter the user name.</value>
+  </data>
+  <data name="UserNotFound" xml:space="preserve">
+    <value>User not found.</value>
+  </data>
+  <data name="UserProfileRequired" xml:space="preserve">
+    <value>Please enter the user profile.</value>
+  </data>
+  <data name="UserStatusRequired" xml:space="preserve">
+    <value>Please inform the user status.</value>
+  </data>
 </root>
