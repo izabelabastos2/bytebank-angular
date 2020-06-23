@@ -20,9 +20,6 @@ namespace Vale.Geographic.Application.Core.Services
 
         public async Task<DeviceAddDto> RegisterDevice(string applicationId, DeviceAddDto device)
         {
-            device.IamId = "SVCPDSolutions";
-            device.UserName = "SVCPDSolutions";
-            device.Email = "xyz@email.com";
             var ret = await _repository.RegisterDevice(applicationId, Mapper.Map<DeviceAdd>(device));
             return Mapper.Map<DeviceAddDto>(ret);
         }

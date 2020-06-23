@@ -1,11 +1,11 @@
 ﻿using Vale.Geographic.Domain.Repositories.Interfaces;
+using Vale.Geographic.Domain.Entities.Notification;
 using Microsoft.Extensions.Configuration;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using System.Net.Http;
 using Newtonsoft.Json;
 using System.Text;
-using Vale.Geographic.Domain.Entities.Notification;
 
 namespace Vale.Geographic.Infra.Data.Repositories
 {
@@ -34,7 +34,7 @@ namespace Vale.Geographic.Infra.Data.Repositories
                 var param = new System.Net.Http.StringContent(JsonConvert.SerializeObject(deviceUpdate), Encoding.UTF8, "application/json");
 
 
-                var response = await client.PutAsync(string.Format("{0}/Applications/{1}/Devices/installations/{2}", this.PushNotificationEndpoint, applicationId, installationId), param);
+                var response = await client.PutAsync(string.Format("{0}Applications/{1}/Devices/installations/{2}", this.PushNotificationEndpoint, applicationId, installationId), param);
 
                 var responseString = await response.Content.ReadAsStringAsync();
 
@@ -51,7 +51,7 @@ namespace Vale.Geographic.Infra.Data.Repositories
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(token.token_type, token.access_token);
                 var param = new System.Net.Http.StringContent(JsonConvert.SerializeObject(device), Encoding.UTF8, "application/json");
 
-                var response = await client.PostAsync(string.Format("{0}/Applications/{1}/Devices", this.PushNotificationEndpoint, applicationId), param);
+                var response = await client.PostAsync(string.Format("{0}Applications/{1}/Devices", this.PushNotificationEndpoint, applicationId), param);
 
                 var responseString = await response.Content.ReadAsStringAsync();
 
@@ -69,7 +69,7 @@ namespace Vale.Geographic.Infra.Data.Repositories
                 var param = new System.Net.Http.StringContent(JsonConvert.SerializeObject(notificationAddDto), Encoding.UTF8, "application/json");
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-                var response = await client.PostAsync(string.Format("{0}/Applications/{1}/Notifications", this.PushNotificationEndpoint, applicationId), param);
+                var response = await client.PostAsync(string.Format("{0}Applications/{1}/Notifications", this.PushNotificationEndpoint, applicationId), param);
 
                 var responseString = await response.Content.ReadAsStringAsync();
 

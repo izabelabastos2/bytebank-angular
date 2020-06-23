@@ -18,7 +18,7 @@ namespace Vale.Geographic.Infra.Data.Mappings
             builder.Property(p => p.LastUpdatedBy).IsRequired().HasColumnType("varchar(100)").HasMaxLength(100);
             builder.Property(p => p.Name).IsRequired().HasColumnType("varchar(250)").HasMaxLength(250);
             builder.Property(p => p.Matricula).IsRequired().HasColumnType("varchar(15)").HasMaxLength(15);
-            builder.Property(p => p.PhoneNumber).HasMaxLength(50);
+            builder.Property(p => p.PhoneNumber).HasMaxLength(20);
 
             builder.HasOne<Area>(p => p.Locality)
                 .WithMany()

@@ -28,7 +28,6 @@ namespace Vale.Geographic.Api.Controllers
             this._notificationAppService = notificationAppService;
         }
 
-
         /// <summary>
         /// 
         /// </summary>
@@ -39,7 +38,6 @@ namespace Vale.Geographic.Api.Controllers
         [ProducesResponseType(typeof(void), 204)]
         [ProducesResponseType(typeof(Error), 400)]
         [ProducesResponseType(typeof(Error), 500)]
-        [AllowAnonymous]
         public async Task<IActionResult> RegisterDevice(string applicationId, [FromBody] DeviceAddDto device)
         {
             var ret = await this._notificationAppService.RegisterDevice(applicationId, device);
@@ -57,7 +55,6 @@ namespace Vale.Geographic.Api.Controllers
         [ProducesResponseType(typeof(void), 204)]
         [ProducesResponseType(typeof(Error), 400)]
         [ProducesResponseType(typeof(Error), 500)]
-        [AllowAnonymous]
         public async Task<IActionResult> InstalationDevice(string applicationId, string installationId, [FromBody]DeviceUpdateDto deviceUpdate)
         {
             await this._notificationAppService.InstalationDevice(applicationId, installationId, deviceUpdate);

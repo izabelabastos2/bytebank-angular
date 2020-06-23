@@ -78,7 +78,7 @@ namespace Vale.Geographic.Api.Controllers
         /// <response code="400">Area has missing/invalid values</response>
         /// <response code="500">Oops! Can't list your area right now</response>
         [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<CategoryDto>), 200)]
+        [ProducesResponseType(typeof(IEnumerable<FocalPointDto>), 200)]
         [ProducesResponseType(typeof(Error), 400)]
         [ProducesResponseType(typeof(Error), 500)]
         public IActionResult Get([FromQuery] bool? active, Guid? localityId, Guid? pointOfInterestId, string matricula, FilterDto request)
