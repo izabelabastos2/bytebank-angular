@@ -447,4 +447,16 @@
   <data name="UserStatusRequired" xml:space="preserve">
     <value>Por favor, informe o status do usuário</value>
   </data>
+  <data name="NotificationAnswerAnsweredRequired" xml:space="preserve">
+    <value>Por favor, informe se a notifcação foi respondida</value>
+  </data>
+  <data name="NotificationAnswerFocalPointIdRequired" xml:space="preserve">
+    <value>Por favor, informe o id do ponto focal </value>
+  </data>
+  <data name="NotificationAnswerIdRequired" xml:space="preserve">
+    <value>Por favor, informe o id da resposta</value>
+  </data>
+  <data name="NotificationAnswerNotificationIdRequired" xml:space="preserve">
+    <value>Por favor, informe  o id da notificação</value>
+  </data>
 </root>

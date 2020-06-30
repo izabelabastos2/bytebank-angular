@@ -475,6 +475,42 @@ namespace Vale.Geographic.Domain.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Por favor, informe se a notifcação foi respondida.
+        /// </summary>
+        public static string NotificationAnswerAnsweredRequired {
+            get {
+                return ResourceManager.GetString("NotificationAnswerAnsweredRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Por favor, informe o id do ponto focal .
+        /// </summary>
+        public static string NotificationAnswerFocalPointIdRequired {
+            get {
+                return ResourceManager.GetString("NotificationAnswerFocalPointIdRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Por favor, informe o id da resposta.
+        /// </summary>
+        public static string NotificationAnswerIdRequired {
+            get {
+                return ResourceManager.GetString("NotificationAnswerIdRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Por favor, informe  o id da notificação.
+        /// </summary>
+        public static string NotificationAnswerNotificationIdRequired {
+            get {
+                return ResourceManager.GetString("NotificationAnswerNotificationIdRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Por favor, informe idade da pessoa..
         /// </summary>
         public static string PersonSampleAgeRequired {

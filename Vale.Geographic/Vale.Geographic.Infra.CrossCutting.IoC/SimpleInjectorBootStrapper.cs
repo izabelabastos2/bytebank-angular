@@ -104,6 +104,8 @@ namespace Vale.Geographic.Infra.CrossCutting.IoC
 
             container.Register<INotificationAppService, NotificationAppService>(Lifestyle.Scoped);
             container.Register<INotificationRepository, NotificationRepository>(Lifestyle.Scoped);
+            container.Register<INotificationAnswerService, NotificationAnswerService>(Lifestyle.Scoped);
+            container.Register<INotificationAnswerRepository, NotificationAnswerRepository>(Lifestyle.Scoped);
 
             container.Register<IJWTRepository, JWTRepository>(Lifestyle.Scoped);
 

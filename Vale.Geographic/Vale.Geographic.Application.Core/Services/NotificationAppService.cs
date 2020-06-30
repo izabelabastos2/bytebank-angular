@@ -6,16 +6,32 @@ using Vale.Geographic.Application.Services;
 using Vale.Geographic.Application.Base;
 using System.Threading.Tasks;
 using AutoMapper;
+using System.Linq;
+using Vale.Geographic.Domain.Services;
+using Vale.Geographic.Domain.Entities;
+using System;
+using Vale.Geographic.Application.Dto;
 
 namespace Vale.Geographic.Application.Core.Services
 {
     public class NotificationAppService : AppService, INotificationAppService
     {
         private readonly INotificationRepository _repository;
+        private readonly INotificationAnswerRepository notificationAnswerRepository;
+        private readonly IFocalPointRepository focalPointRepository;
+        public INotificationAnswerService notificationAnswerService { get; set; }
 
-        public NotificationAppService(IUnitOfWork uoW, IMapper mapper, INotificationRepository repository) : base(uoW, mapper)
+        public NotificationAppService(IUnitOfWork uoW, 
+                                      IMapper mapper,
+                                      INotificationRepository repository,
+                                      INotificationAnswerService notificationAnswerService,
+                                      INotificationAnswerRepository notificationAnswerRepository,
+                                      IFocalPointRepository focalPointRepository) : base(uoW, mapper)
         {
             _repository = repository;
+            this.notificationAnswerService = notificationAnswerService;
+            this.notificationAnswerRepository = notificationAnswerRepository;
+            this.focalPointRepository = focalPointRepository;
         }
 
         public async Task<DeviceAddDto> RegisterDevice(string applicationId, DeviceAddDto device)
@@ -31,8 +47,68 @@ namespace Vale.Geographic.Application.Core.Services
 
         public async Task<NotificationAddDto> RegisterNotification(string applicationId, NotificationAddDto notificationAddDto)
         {
-            var ret = await _repository.RegisterNotification(applicationId, Mapper.Map<NotificationAdd>(notificationAddDto));
-            return Mapper.Map<NotificationAddDto>(ret);
+            
+                var ret = await _repository.RegisterNotification(applicationId, Mapper.Map<NotificationAdd>(notificationAddDto));
+                string matricula = notificationAddDto.Categories.Select(o => o.Tag).ToArray().FirstOrDefault();
+
+                SaveNotificationAnswer(ret.Id, matricula, ret.CreatedBy);
+                return Mapper.Map<NotificationAddDto>(ret);                
+            
+        }
+
+        private NotificationAnswerDto SaveNotificationAnswer(long notificationId, string matricula, string createdBy)
+        {
+            try
+            {
+                UoW.BeginTransaction();                
+                NotificationAnswerDto notificationAnswer = new NotificationAnswerDto();
+                FocalPoint focalPoint = focalPointRepository.GetByMatricula(matricula.ToLower());
+                notificationAnswer.FocalPointId = focalPoint.Id;
+                notificationAnswer.NotificationId = notificationId;
+                notificationAnswer.CreatedBy = createdBy;
+                notificationAnswer.LastUpdatedBy = createdBy;
+
+                var ret =  notificationAnswerService.Insert(Mapper.Map<NotificationAnswer>(notificationAnswer));
+
+                UoW.Commit();
+
+                return Mapper.Map<NotificationAnswerDto>(ret);
+            }
+            catch (Exception ex)
+            {
+                UoW.Rollback();
+                throw ex;
+            }
+
+        }
+
+        public NotificationAnswerDto UpdateNotificationAnswer(string applicationId, long notificationId)
+        {
+            try
+            {
+                UoW.BeginTransaction();
+                var notificationAnswer = notificationAnswerService.GetAll().Where(o => o.NotificationId == notificationId).SingleOrDefault();
+
+                if (notificationAnswer == null)
+                    throw new ArgumentNullException();
+
+                notificationAnswerService.Update(notificationAnswer);
+                UoW.Commit();
+
+                return Mapper.Map<NotificationAnswerDto>(notificationAnswer);
+            }
+
+            catch (Exception ex)
+            {
+                UoW.Rollback();
+                throw ex;
+            }
+
+            }
+
+        public NotificationAnswerDto GetLastNotification(string applicationId, string focalPointId)
+        {
+            return Mapper.Map<NotificationAnswerDto>(notificationAnswerRepository.GetLastByFocalPointId(focalPointId));
         }
     }
 }

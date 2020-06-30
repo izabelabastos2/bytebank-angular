@@ -96,6 +96,8 @@ namespace Vale.Geographic.Application.AutoMapper
             CreateMap<UserDto, User>()
               .ForMember(x => x.CreatedAt, opt => opt.Ignore())
               .ForMember(x => x.LastUpdatedAt, opt => opt.Ignore());
+
+            CreateMap<NotificationAnswerDto, NotificationAnswer>();
         }
     }
 }

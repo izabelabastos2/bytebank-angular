@@ -441,4 +441,16 @@
   <data name="UserStatusRequired" xml:space="preserve">
     <value>Please inform the user status.</value>
   </data>
+  <data name="NotificationAnswerAnsweredRequired" xml:space="preserve">
+    <value>Please inform if user anwser the notification</value>
+  </data>
+  <data name="NotificationAnswerFocalPointIdRequired" xml:space="preserve">
+    <value>Please inform the focal point id</value>
+  </data>
+  <data name="NotificationAnswerIdRequired" xml:space="preserve">
+    <value>Please inform the answer id</value>
+  </data>
+  <data name="NotificationAnswerNotificationIdRequired" xml:space="preserve">
+    <value>Please inform the notification id</value>
+  </data>
 </root>

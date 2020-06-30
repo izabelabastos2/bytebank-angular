@@ -8,6 +8,7 @@ using System.Data;
 using System.Text;
 using Dapper;
 using NetTopologySuite.IO;
+using System.Linq;
 
 namespace Vale.Geographic.Infra.Data.Repositories
 {
@@ -113,6 +114,33 @@ namespace Vale.Geographic.Infra.Data.Repositories
                 splitOn: "Id, Id, Location, Id, Total");
 
             total = count;
+
+            return result;
+        }
+
+
+        public FocalPoint GetByMatricula(string matricula)
+        {
+            var param = new DynamicParameters();
+            StringBuilder sqlQuery = new StringBuilder();
+
+            sqlQuery.AppendLine(@"SELECT FP.[Id],
+		                                 FP.[CreatedAt],
+		                                 FP.[LastUpdatedAt],
+		                                 FP.[CreatedBy],
+		                                 FP.[LastUpdatedBy],
+		                                 FP.[Status],
+		                                 FP.[Name],
+		                                 FP.[Matricula],
+		                                 FP.[PhoneNumber],
+		                                 FP.[LocalityId],
+		                                 FP.[PointOfInterestId]
+                                        FROM [dbo].[FocalPoints] FP
+	                                WHERE FP.[Matricula] = @Matricula");
+
+            param.Add("Matricula", matricula);
+
+            FocalPoint result = this.Connection.Query<FocalPoint>(sqlQuery.ToString(), param, (IDbTransaction)this.Uow.Transaction).FirstOrDefault();
 
             return result;
         }

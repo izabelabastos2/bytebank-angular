@@ -24,8 +24,7 @@ namespace Vale.Geographic.Infra.Data.Context
             modelBuilder.ApplyConfiguration(new AuditoryMap());
             modelBuilder.ApplyConfiguration(new FocalPointMap());
             modelBuilder.ApplyConfiguration(new UserMap());
-
-
+            modelBuilder.ApplyConfiguration(new NotificationAnswerMap());
 
             base.OnModelCreating(modelBuilder);
         }

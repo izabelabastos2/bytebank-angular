@@ -38,6 +38,8 @@ namespace Vale.Geographic.Application.AutoMapper
 
             CreateMap<Segment, SegmentDto>()
               .ForMember(dest => dest.Geojson, opt => opt.MapFrom(x => x.Location));
+
+            CreateMap<NotificationAnswer, NotificationAnswerDto>();
         }
     }
 }

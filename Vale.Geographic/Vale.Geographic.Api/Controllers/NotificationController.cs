@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Vale.Geographic.Api.Filters;
+using Vale.Geographic.Application.Dto;
 using Vale.Geographic.Application.Dto.Notification;
 using Vale.Geographic.Application.Services;
 
@@ -74,6 +75,39 @@ namespace Vale.Geographic.Api.Controllers
         public async Task<IActionResult> RegisterNotification(string applicationId, [FromBody] NotificationAddDto notificationAddDto)
         {
             var ret = await this._notificationAppService.RegisterNotification(applicationId, notificationAddDto);
+            return Ok(ret);
+        }
+
+
+        /// <summary>
+        /// Confirmação do usuario que recebeu a notificação
+        /// </summary>
+        /// <param name="applicationId"></param>
+        /// <param name="notificationId"></param>
+        /// <returns></returns>
+        [HttpPut("{applicationId}/Notifications/{notificationId:long}")]
+        [ProducesResponseType(typeof(NotificationAnswerDto), 204)]
+        [ProducesResponseType(typeof(Error), 400)]
+        [ProducesResponseType(typeof(Error), 500)]
+        public async Task<IActionResult> AnswerNotification(string applicationId, long notificationId)
+        {
+            var ret =  this._notificationAppService.UpdateNotificationAnswer(applicationId, notificationId);
+            return Ok(ret);
+        }
+
+        /// <summary>
+        /// Retorna último registro de notificação enviada para o usuario
+        /// </summary>
+        /// <param name="applicationId"></param>
+        /// <param name="focalPointId"></param>
+        /// <returns></returns>
+        [HttpGet("{applicationId}/Notifications/FocalPoint/{focalPointId}")]
+        [ProducesResponseType(typeof(NotificationAnswerDto), 200)]
+        [ProducesResponseType(typeof(Error), 400)]
+        [ProducesResponseType(typeof(Error), 500)]
+        public async Task<IActionResult> GetLastNotification(string applicationId, string focalPointId)
+        {
+            var ret = this._notificationAppService.GetLastNotification(applicationId, focalPointId);
             return Ok(ret);
         }
     }

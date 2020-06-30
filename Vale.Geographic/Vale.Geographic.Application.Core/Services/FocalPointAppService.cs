@@ -71,7 +71,7 @@ namespace Vale.Geographic.Application.Core.Services
                 UoW.BeginTransaction();
                 FocalPoint focalPoint = Mapper.Map<FocalPoint>(request);
                 focalPoint.LastUpdatedBy = focalPoint.CreatedBy;
-
+                focalPoint.Matricula = focalPoint.Matricula.ToLower();
                 focalPoint = focalPointService.Insert(focalPoint);
                 UoW.Commit();
 
