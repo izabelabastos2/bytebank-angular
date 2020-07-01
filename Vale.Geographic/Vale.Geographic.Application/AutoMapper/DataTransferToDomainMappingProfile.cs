@@ -5,6 +5,8 @@ using System.Linq;
 using AutoMapper;
 using Vale.Geographic.Application.Dto.Authorization;
 using Vale.Geographic.Domain.Entities.Authorization;
+using Vale.Geographic.Application.Dto.Notification;
+using Vale.Geographic.Domain.Entities.Notification;
 
 namespace Vale.Geographic.Application.AutoMapper
 {
@@ -96,6 +98,9 @@ namespace Vale.Geographic.Application.AutoMapper
             CreateMap<UserDto, User>()
               .ForMember(x => x.CreatedAt, opt => opt.Ignore())
               .ForMember(x => x.LastUpdatedAt, opt => opt.Ignore());
+
+            CreateMap<NotificationAddDto, NotificationAdd>()
+              .ForMember(x => x.NotId, opt => opt.Ignore());
 
             CreateMap<NotificationAnswerDto, NotificationAnswer>();
         }

@@ -23,5 +23,11 @@ namespace Vale.Geographic.Domain.Entities.Notification
         public DateTimeOffset CreatedOn { get; set; }
 
         public CategoryNotification[] Categories { get; set; }
+
+        public List<ActionAdd> Actions { get; set; }
+
+        public bool? Ongoing { get; set; }
+
+        public Guid NotId { get; set; }
     }
 }

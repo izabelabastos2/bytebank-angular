@@ -23,5 +23,9 @@ namespace Vale.Geographic.Application.Dto.Notification
         public DateTimeOffset CreatedOn { get; set; }
 
         public CategoryNotificationDto[] Categories { get; set; }
+
+        public List<ActionAddDto> Actions { get; set; }
+
+        public bool? Ongoing { get; set; }
     }
 }
