@@ -34,6 +34,11 @@ namespace Vale.Geographic.Infra.Data.Repositories
 		                                 FP.[PhoneNumber],
 		                                 FP.[LocalityId],
 		                                 FP.[PointOfInterestId],
+                                         (SELECT top 1 NA.[Answered]
+                                            FROM [dbo].[NotificationAnswers] NA
+                                           WHERE NA.[FocalPointId] = FP.[Id]
+                                             AND CAST(NA.[CreatedAt] AS Date) =  CAST(@Date AS Date)
+                                        ORDER BY NA.[CreatedAt] DESC) AS Answered,
 		                                 POINT.[Id],
 		                                 POINT.[CreatedAt],
 		                                 POINT.[LastUpdatedAt],
@@ -56,9 +61,10 @@ namespace Vale.Geographic.Infra.Data.Repositories
 		                                 COUNT(1) OVER () as Total
                                     FROM [dbo].[FocalPoints] FP
                                     INNER JOIN [dbo].[PointOfInterest] POINT on  POINT.Id = FP.[PointOfInterestId]
-                                    INNER JOIN [dbo].[Area] AREA ON AREA.Id = FP.[LocalityId]
+                                    INNER JOIN [dbo].[Area] AREA ON AREA.Id = FP.[LocalityId]                                    
                                     WHERE 0 = 0");
 
+            param.Add("Date", DateTime.UtcNow);
 
             if (localityId.HasValue && !localityId.Equals(Guid.Empty))
             {

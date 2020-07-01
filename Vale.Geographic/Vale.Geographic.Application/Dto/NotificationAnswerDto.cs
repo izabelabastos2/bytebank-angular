@@ -8,7 +8,7 @@ namespace Vale.Geographic.Application.Dto
     {
         public Guid? Id { get; set; }
         public Guid FocalPointId { get; set; }        
-        public long NotificationId { get; set; }
+        public Guid NotificationId { get; set; }
         public bool Answered { get; set; }
         public DateTime? CreatedAt { get; set; }
         public DateTime? LastUpdatedAt { get; set; }

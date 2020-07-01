@@ -25,6 +25,8 @@ namespace Vale.Geographic.Application.Dto
 
         public long? PhoneNumber { get; set; }
 
+        public bool Answered { get; set; }
+
         [Required]
         public Guid LocalityId { get; set; }
 

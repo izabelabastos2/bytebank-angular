@@ -89,7 +89,7 @@ namespace Vale.Geographic.Api.Controllers
         [ProducesResponseType(typeof(NotificationAnswerDto), 204)]
         [ProducesResponseType(typeof(Error), 400)]
         [ProducesResponseType(typeof(Error), 500)]
-        public async Task<IActionResult> AnswerNotification(string applicationId, long notificationId)
+        public async Task<IActionResult> AnswerNotification(string applicationId, Guid notificationId)
         {
             var ret =  this._notificationAppService.UpdateNotificationAnswer(applicationId, notificationId);
             return Ok(ret);

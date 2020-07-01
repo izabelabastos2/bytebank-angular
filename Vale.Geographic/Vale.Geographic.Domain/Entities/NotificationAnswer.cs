@@ -9,7 +9,7 @@ namespace Vale.Geographic.Domain.Entities
     public class NotificationAnswer : Entity
     {
         public Guid FocalPointId { get; set; }        
-        public long NotificationId { get; set; }
+        public Guid NotificationId { get; set; }
         public bool Answered { get; set; }
     }
 }

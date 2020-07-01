@@ -47,16 +47,18 @@ namespace Vale.Geographic.Application.Core.Services
 
         public async Task<NotificationAddDto> RegisterNotification(string applicationId, NotificationAddDto notificationAddDto)
         {
-            
-                var ret = await _repository.RegisterNotification(applicationId, Mapper.Map<NotificationAdd>(notificationAddDto));
-                string matricula = notificationAddDto.Categories.Select(o => o.Tag).ToArray().FirstOrDefault();
 
-                SaveNotificationAnswer(ret.Id, matricula, ret.CreatedBy);
-                return Mapper.Map<NotificationAddDto>(ret);                
+            var notification = Mapper.Map<NotificationAdd>(notificationAddDto);
+            notification.NotId = Guid.NewGuid();
+            var ret = await _repository.RegisterNotification(applicationId, notification);
+            string matricula = notificationAddDto.Categories.Select(o => o.Tag).ToArray().FirstOrDefault();
+
+            SaveNotificationAnswer(notification.NotId, matricula, ret.CreatedBy);
+            return Mapper.Map<NotificationAddDto>(ret);                
             
         }
 
-        private NotificationAnswerDto SaveNotificationAnswer(long notificationId, string matricula, string createdBy)
+        private NotificationAnswerDto SaveNotificationAnswer(Guid notificationId, string matricula, string createdBy)
         {
             try
             {
@@ -82,7 +84,7 @@ namespace Vale.Geographic.Application.Core.Services
 
         }
 
-        public NotificationAnswerDto UpdateNotificationAnswer(string applicationId, long notificationId)
+        public NotificationAnswerDto UpdateNotificationAnswer(string applicationId, Guid notificationId)
         {
             try
             {
