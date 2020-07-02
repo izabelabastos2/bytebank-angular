@@ -17,7 +17,7 @@ namespace Vale.Geographic.Infra.Data.Repositories
         {
         }
 
-        public NotificationAnswer GetLastByFocalPointId(string focalPointId)
+        public NotificationAnswer GetLastByFocalPointId(Guid focalPointId)
         {
             var param = new DynamicParameters();
             StringBuilder sqlQuery = new StringBuilder();

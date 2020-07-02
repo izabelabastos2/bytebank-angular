@@ -34,11 +34,6 @@ namespace Vale.Geographic.Infra.Data.Repositories
 		                                 FP.[PhoneNumber],
 		                                 FP.[LocalityId],
 		                                 FP.[PointOfInterestId],
-                                         (SELECT top 1 NA.[Answered]
-                                            FROM [dbo].[NotificationAnswers] NA
-                                           WHERE NA.[FocalPointId] = FP.[Id]
-                                             AND CAST(NA.[CreatedAt] AS Date) =  CAST(@Date AS Date)
-                                        ORDER BY NA.[CreatedAt] DESC) AS Answered,
 		                                 POINT.[Id],
 		                                 POINT.[CreatedAt],
 		                                 POINT.[LastUpdatedAt],

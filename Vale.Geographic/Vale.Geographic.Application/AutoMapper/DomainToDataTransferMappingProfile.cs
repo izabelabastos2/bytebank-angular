@@ -23,7 +23,8 @@ namespace Vale.Geographic.Application.AutoMapper
 
 
             CreateMap<FocalPoint, FocalPointDto>()
-                .ForMember(dest => dest.Locality, opt => opt.Ignore());
+                .ForMember(dest => dest.Locality, opt => opt.Ignore())
+                .ForMember(dest => dest.Answered, opt => opt.Ignore());
 
             CreateMap<Area, AreaDto>()
               .ForMember(dest => dest.Geojson, opt => opt.MapFrom(x => x.Location))

@@ -18,15 +18,19 @@ namespace Vale.Geographic.Application.Core.Services
     public class FocalPointAppService : AppService, IFocalPointAppService
     {
         private readonly IFocalPointRepository focalPointRepository;
+        private readonly INotificationAnswerRepository notificationAnswerRepository;
+
         public IFocalPointService focalPointService { get; set; }
 
         public FocalPointAppService(IUnitOfWork uoW,
                                     IMapper mapper,
                                     IFocalPointService focalPointService,
-                                    IFocalPointRepository focalPointRepository) : base(uoW, mapper)
+                                    IFocalPointRepository focalPointRepository,
+                                    INotificationAnswerRepository notificationAnswerRepository) : base(uoW, mapper)
         {
             this.focalPointService = focalPointService;
             this.focalPointRepository = focalPointRepository;
+            this.notificationAnswerRepository = notificationAnswerRepository;
         }
 
         public void Delete(Guid id, string lastUpdatedBy)
@@ -129,8 +133,13 @@ namespace Vale.Geographic.Application.Core.Services
         public IEnumerable<FocalPointDto> Get(bool? active, Guid? localityId, Guid? pointOfInterestId, string matricula, IFilterParameters parameters, out int total)
         {
             IEnumerable<FocalPoint> focalPoints = focalPointRepository.Get(out total, active, matricula, localityId, pointOfInterestId, parameters);
-
-            return Mapper.Map<IEnumerable<FocalPointDto>>(focalPoints);
+            var focalPointsDto = Mapper.Map<IEnumerable<FocalPointDto>>(focalPoints);
+            foreach (var focalPoint in focalPointsDto)
+            {
+                var notificationAnswer = notificationAnswerRepository.GetLastByFocalPointId(focalPoint.Id.Value);
+                focalPoint.Answered = notificationAnswer == null ? false: notificationAnswer.Answered;
+            }
+            return focalPointsDto;
         }
 
     }
