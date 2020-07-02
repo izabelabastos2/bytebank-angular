@@ -85,7 +85,7 @@ namespace Vale.Geographic.Api.Controllers
         /// <param name="applicationId"></param>
         /// <param name="notificationId"></param>
         /// <returns></returns>
-        [HttpPut("{applicationId}/Notifications/{notificationId:long}")]
+        [HttpPut("{applicationId}/Notifications/{notificationId:Guid}")]
         [ProducesResponseType(typeof(NotificationAnswerDto), 204)]
         [ProducesResponseType(typeof(Error), 400)]
         [ProducesResponseType(typeof(Error), 500)]

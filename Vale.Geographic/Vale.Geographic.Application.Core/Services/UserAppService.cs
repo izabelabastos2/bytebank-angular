@@ -74,7 +74,7 @@ namespace Vale.Geographic.Application.Core.Services
                 User user = Mapper.Map<User>(obj);
                 user.LastUpdatedBy = user.CreatedBy;
                 user.Matricula = user.Matricula.ToLower();
-                //user.Email = user.Email;
+                user.Email = user.Email.ToLower();
 
                 user = userService.Insert(user);
                 UoW.Commit();

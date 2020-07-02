@@ -20,7 +20,7 @@ namespace Vale.Geographic.Domain.Entities
         public virtual Area Locality { get; set; }
 
         [Write(false)]
-        public bool Answered { get; set; }
+        public bool? Answered { get; set; }
 
         [Required]
         public virtual Guid PointOfInterestId { get; set; }
