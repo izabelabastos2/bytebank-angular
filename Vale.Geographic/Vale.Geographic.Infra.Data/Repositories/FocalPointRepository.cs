@@ -137,7 +137,8 @@ namespace Vale.Geographic.Infra.Data.Repositories
 		                                 FP.[LocalityId],
 		                                 FP.[PointOfInterestId]
                                         FROM [dbo].[FocalPoints] FP
-	                                WHERE FP.[Matricula] = @Matricula");
+	                                WHERE FP.[Matricula] = @Matricula
+                                        AND FP.[Status] = 1 ");
 
             param.Add("Matricula", matricula);
 
