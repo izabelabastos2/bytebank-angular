@@ -8,6 +8,6 @@ namespace Vale.Geographic.Domain.Repositories.Interfaces
 {
     public interface INotificationAnswerRepository : IRepository<NotificationAnswer>
     {
-        NotificationAnswer GetLastByFocalPointId(string focalPointId);
+        NotificationAnswer GetLastByFocalPointId(Guid focalPointId);
     }
 }

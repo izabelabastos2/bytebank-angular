@@ -108,7 +108,7 @@ namespace Vale.Geographic.Application.Core.Services
 
             }
 
-        public NotificationAnswerDto GetLastNotification(string applicationId, string focalPointId)
+        public NotificationAnswerDto GetLastNotification(string applicationId, Guid focalPointId)
         {
             return Mapper.Map<NotificationAnswerDto>(notificationAnswerRepository.GetLastByFocalPointId(focalPointId));
         }
