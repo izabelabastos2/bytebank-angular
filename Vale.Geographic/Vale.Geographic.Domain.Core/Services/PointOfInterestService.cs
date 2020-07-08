@@ -56,12 +56,12 @@ namespace Vale.Geographic.Domain.Core.Services
 
         public void InsertAuditory(PointOfInterest newObj, PointOfInterest oldObj)
         {
-            var Audit = new Auditory();
-            Audit.PointOfInterestId = newObj.Id;
-            Audit.TypeEntitie = Enumerable.TypeEntitieEnum.PointOfInterest;
-            Audit.CreatedBy = newObj.LastUpdatedBy;
-            Audit.LastUpdatedBy = newObj.LastUpdatedBy;
-            Audit.Status = true;
+            var audit = new Auditory();
+            audit.PointOfInterestId = newObj.Id;
+            audit.TypeEntitie = Enumerable.TypeEntitieEnum.PointOfInterest;
+            audit.CreatedBy = newObj.LastUpdatedBy;
+            audit.LastUpdatedBy = newObj.LastUpdatedBy;
+            audit.Status = true;
 
            
             if (!newObj.Equals(oldObj))
@@ -70,14 +70,14 @@ namespace Vale.Geographic.Domain.Core.Services
                 var sw = new System.IO.StringWriter();
 
                 json.Serialize(sw, newObj);
-                Audit.NewValue = sw.ToString();
+                audit.NewValue = sw.ToString();
 
                 sw = new System.IO.StringWriter();
                 json.Serialize(sw, oldObj);
 
-                Audit.OldValue = sw.ToString();
+                audit.OldValue = sw.ToString();
 
-                auditoryService.Insert(Audit);
+                auditoryService.Insert(audit);
             }        
         }
     }

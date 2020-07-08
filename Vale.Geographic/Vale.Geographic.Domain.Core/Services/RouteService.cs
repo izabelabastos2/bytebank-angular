@@ -47,11 +47,11 @@ namespace Vale.Geographic.Domain.Core.Services
 
         public void InsertAuditory(Route newObj, Route oldObj)
         {
-            var Audit = new Auditory();
-            Audit.TypeEntitie = Enumerable.TypeEntitieEnum.Route;
-            Audit.CreatedBy = newObj.LastUpdatedBy;
-            Audit.LastUpdatedBy = newObj.LastUpdatedBy;
-            Audit.Status = true;
+            var audit = new Auditory();
+            audit.TypeEntitie = Enumerable.TypeEntitieEnum.Route;
+            audit.CreatedBy = newObj.LastUpdatedBy;
+            audit.LastUpdatedBy = newObj.LastUpdatedBy;
+            audit.Status = true;
 
             if (!newObj.Equals(oldObj))
             {
@@ -59,14 +59,14 @@ namespace Vale.Geographic.Domain.Core.Services
                 var sw = new System.IO.StringWriter();
 
                 json.Serialize(sw, newObj);
-                Audit.NewValue = sw.ToString();
+                audit.NewValue = sw.ToString();
 
                 sw = new System.IO.StringWriter();
                 json.Serialize(sw, oldObj);
 
-                Audit.OldValue = sw.ToString();
+                audit.OldValue = sw.ToString();
 
-                auditoryService.Insert(Audit);
+                auditoryService.Insert(audit);
             }
         }
     }

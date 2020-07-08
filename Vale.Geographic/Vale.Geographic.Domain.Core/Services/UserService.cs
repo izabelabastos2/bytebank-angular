@@ -8,6 +8,7 @@ using Vale.Geographic.Domain.Services;
 using NetTopologySuite.IO;
 using FluentValidation;
 using System;
+using Newtonsoft.Json;
 
 namespace Vale.Geographic.Domain.Core.Services
 {
@@ -56,16 +57,9 @@ namespace Vale.Geographic.Domain.Core.Services
 
             if (!newObj.Equals(oldObj))
             {
-                var json = GeoJsonSerializer.Create();
-                var sw = new System.IO.StringWriter();
-
-                json.Serialize(sw, newObj);
-                audit.NewValue = sw.ToString();
-
-                sw = new System.IO.StringWriter();
-
-                json.Serialize(sw, oldObj);
-                audit.OldValue = sw.ToString();
+                audit.NewValue = JsonConvert.SerializeObject(newObj).ToString();
+                
+                audit.OldValue = JsonConvert.SerializeObject(oldObj).ToString();
 
                 auditoryService.Insert(audit);
             }

@@ -23,7 +23,7 @@ namespace Vale.Geographic.Application.Dto
         [Required]
         public string Matricula { get; set; }
 
-        public long? PhoneNumber { get; set; }
+        public string PhoneNumber { get; set; }
 
         public bool Answered { get; set; }
 

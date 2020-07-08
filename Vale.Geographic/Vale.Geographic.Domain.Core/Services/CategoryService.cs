@@ -7,6 +7,7 @@ using Vale.Geographic.Domain.Services;
 using NetTopologySuite.IO;
 using FluentValidation;
 using System;
+using Newtonsoft.Json;
 
 namespace Vale.Geographic.Domain.Core.Services
 {
@@ -46,28 +47,21 @@ namespace Vale.Geographic.Domain.Core.Services
 
         public void InsertAuditory(Category newObj, Category oldObj)
         {
-            var Audit = new Auditory();
-            Audit.CategoryId = newObj.Id;
-            Audit.TypeEntitie = Enumerable.TypeEntitieEnum.Category;
-            Audit.CreatedBy = newObj.LastUpdatedBy;
-            Audit.LastUpdatedBy = newObj.LastUpdatedBy;
-            Audit.Status = true;
+            var audit = new Auditory();
+            audit.CategoryId = newObj.Id;
+            audit.TypeEntitie = Enumerable.TypeEntitieEnum.Category;
+            audit.CreatedBy = newObj.LastUpdatedBy;
+            audit.LastUpdatedBy = newObj.LastUpdatedBy;
+            audit.Status = true;
 
 
             if (!newObj.Equals(oldObj))
             {
-                var json = GeoJsonSerializer.Create();
-                var sw = new System.IO.StringWriter();
+                audit.NewValue = JsonConvert.SerializeObject(newObj).ToString();
 
-                json.Serialize(sw, newObj);
-                Audit.NewValue = sw.ToString();
+                audit.OldValue = JsonConvert.SerializeObject(oldObj).ToString();
 
-                sw = new System.IO.StringWriter();
-
-                json.Serialize(sw, oldObj);
-                Audit.OldValue = sw.ToString();
-
-                auditoryService.Insert(Audit);
+                auditoryService.Insert(audit);
             }
         }
     }   

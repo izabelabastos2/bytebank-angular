@@ -89,6 +89,7 @@ namespace Vale.Geographic.Api.Controllers
         [ProducesResponseType(typeof(NotificationAnswerDto), 204)]
         [ProducesResponseType(typeof(Error), 400)]
         [ProducesResponseType(typeof(Error), 500)]
+        [AllowAnonymous]
         public async Task<IActionResult> AnswerNotification(string applicationId, Guid notificationId)
         {
             var ret =  this._notificationAppService.UpdateNotificationAnswer(applicationId, notificationId);
@@ -105,6 +106,7 @@ namespace Vale.Geographic.Api.Controllers
         [ProducesResponseType(typeof(NotificationAnswerDto), 200)]
         [ProducesResponseType(typeof(Error), 400)]
         [ProducesResponseType(typeof(Error), 500)]
+        [AllowAnonymous]
         public async Task<IActionResult> GetLastNotification(string applicationId, Guid focalPointId)
         {
             var ret = this._notificationAppService.GetLastNotification(applicationId, focalPointId);

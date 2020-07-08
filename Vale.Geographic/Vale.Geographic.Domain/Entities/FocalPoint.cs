@@ -12,7 +12,7 @@ namespace Vale.Geographic.Domain.Entities
         public string Name { get; set; }
         [Required]
         public string Matricula { get; set; }
-        public long? PhoneNumber { get; set; }
+        public string PhoneNumber { get; set; }
         [Required]
         public virtual Guid LocalityId { get; set; }
 

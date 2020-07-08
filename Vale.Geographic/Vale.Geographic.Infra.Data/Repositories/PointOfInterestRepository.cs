@@ -102,12 +102,12 @@ namespace Vale.Geographic.Infra.Data.Repositories
 
             if (areaId.HasValue && !areaId.Equals(Guid.Empty))
             {
-                sqlQuery.AppendLine(@" AND (POINT.AreaId = @AreaId) 
+                sqlQuery.AppendLine(@" AND ((POINT.AreaId = @AreaId) 
                                         OR ( 1 = ( SELECT 1
 		                                            FROM [dbo].[Area] AREA2
 		                                           WHERE AREA2.Id = @AreaId
                                                      AND AREA2.[Status] = 1
-		                                             AND AREA2.[Location].STContains(POINT.[Location]) = 1))");
+		                                             AND AREA2.[Location].STContains(POINT.[Location]) = 1)))");
                 param.Add("AreaId", areaId);
             }
 
