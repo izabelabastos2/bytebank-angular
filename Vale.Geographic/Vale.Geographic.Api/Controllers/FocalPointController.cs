@@ -63,6 +63,20 @@ namespace Vale.Geographic.Api.Controllers
         }
 
         /// <summary>
+        /// Get FocalPoint by Matricula Active
+        /// </summary>
+        /// <param name="matricula"></param>
+        /// <returns></returns>
+        [HttpGet("{matricula}")]
+        [ProducesResponseType(typeof(FocalPointDto), 200)]
+        [ProducesResponseType(typeof(Error), 400)]
+        [ProducesResponseType(typeof(Error), 500)]
+        public IActionResult GetByMatricula(string matricula)
+        {
+            var response = this.FocalPointAppService.GetByMatricula(matricula);
+            return Ok(response);
+        }
+        /// <summary>
         ///     Filter FocalPoint
         /// </summary>
         /// <remarks>

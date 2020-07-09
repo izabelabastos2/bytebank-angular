@@ -25,6 +25,7 @@ namespace Vale.Geographic.Domain.Core.Validations
             ValidateMatricula();
             ValidatePointOfInterestId();
             ValidateLocalityId();
+            ValidadeDuplicity();
 
             RuleSet("Insert", () =>
             {
@@ -37,7 +38,7 @@ namespace Vale.Geographic.Domain.Core.Validations
                 ValidatePointOfInterestId();
                 ValidateLocalityId();
                 ValidateMatricula();
-
+                ValidadeDuplicity();
             });
 
             RuleSet("Update", () =>
@@ -119,6 +120,17 @@ namespace Vale.Geographic.Domain.Core.Validations
                 .WithMessage(Resources.Validations.PointOfInterestNotFound);
         }
 
+        private void ValidadeDuplicity()
+        {
+            RuleFor(o => o.Matricula)
+                .Must(ExistingFocalPoint).When(x => x.Matricula != null)
+                .WithMessage(Resources.Validations.FocalPointAlreadyExists);
+        }
+
+        private bool ExistingFocalPoint(string matricula)
+        {
+            return focalPointRepository.GetByMatricula(matricula) != null ? false :true;
+        }
         private bool ExistingPointOfInterest(Guid pointOfInterestId)
         {
             return  pointOfInterestRepository.GetById(pointOfInterestId) != null ? true : false;

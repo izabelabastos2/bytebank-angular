@@ -67,6 +67,10 @@ namespace Vale.Geographic.Application.Core.Services
         {
             return Mapper.Map<FocalPointDto>(focalPointService.GetById(id));
         }
+        public FocalPointDto GetByMatricula(string matricula)
+        {
+            return Mapper.Map<FocalPointDto>(focalPointRepository.GetByMatricula(matricula.ToLower()));
+        }
 
         public FocalPointDto Insert(FocalPointDto request)
         {

@@ -13,6 +13,7 @@ namespace Vale.Geographic.Application.Services
 
         void Delete(Guid id, string lastUpdatedBy);
         FocalPointDto GetById(Guid id);
+        FocalPointDto GetByMatricula(string matricula);
         FocalPointDto Insert(FocalPointDto obj);
         FocalPointDto Update(Guid id, FocalPointDto obj);
         IEnumerable<FocalPointDto> GetAll(IFilterParameters parameters, out int total);

@@ -453,4 +453,7 @@
   <data name="NotificationAnswerNotificationIdRequired" xml:space="preserve">
     <value>Please inform the notification id</value>
   </data>
+  <data name="FocalPointAlreadyExists" xml:space="preserve">
+    <value>Focal point already registered</value>
+  </data>
 </root>

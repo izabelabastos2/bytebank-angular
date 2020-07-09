@@ -367,6 +367,15 @@ namespace Vale.Geographic.Domain.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Ponto focal já cadastrado..
+        /// </summary>
+        public static string FocalPointAlreadyExists {
+            get {
+                return ResourceManager.GetString("FocalPointAlreadyExists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Por favor, informe a data de criação do ponto focal..
         /// </summary>
         public static string FocalPointCreatedAtRequired {
