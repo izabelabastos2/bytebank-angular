@@ -42,6 +42,17 @@ namespace Vale.Geographic.Application.AutoMapper
               .ForMember(x => x.CreatedAt, opt => opt.Ignore())
               .ForMember(x => x.LastUpdatedAt, opt => opt.Ignore());
 
+            CreateMap<PerimeterDto, Area>()
+              .ForMember(x => x.Location, opt => opt.Ignore())
+              .ForMember(x => x.CreatedAt, opt => opt.Ignore())
+              .ForMember(x => x.ParentId, opt => opt.Ignore())
+              .ForMember(x => x.Color, opt => opt.Ignore())
+              .ForMember(x => x.Description, opt => opt.Ignore())
+              .ForMember(x => x.CategoryId, opt => opt.Ignore())
+              .ForMember(x => x.Category, opt => opt.Ignore())
+              .ForMember(x => x.Parent, opt => opt.Ignore())
+              .ForMember(x => x.LastUpdatedAt, opt => opt.Ignore());
+
 
             CreateMap<Feature, PointOfInterest>()
                .ForMember(dest => dest.Name, opt => opt.MapFrom(
