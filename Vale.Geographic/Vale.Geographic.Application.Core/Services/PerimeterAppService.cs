@@ -25,6 +25,7 @@ namespace Vale.Geographic.Application.Core.Services
     {
         private readonly IAreaRepository areaRepository;
         private readonly ICategoryRepository categoryRepository;
+        private readonly ISitesPerimetersRepository sitesPerimetersRepository;
         public IAreaService areaService { get; set; }
 
 
@@ -32,11 +33,13 @@ namespace Vale.Geographic.Application.Core.Services
                               IMapper mapper,
                               IAreaService areaService,
                               IAreaRepository areaRepository,
-                              ICategoryRepository categoryRepository) : base(uoW, mapper)
+                              ICategoryRepository categoryRepository,
+                              ISitesPerimetersRepository sitesPerimetersRepository) : base(uoW, mapper)
         {
             this.areaService = areaService;
             this.areaRepository = areaRepository;
             this.categoryRepository = categoryRepository;
+            this.sitesPerimetersRepository = sitesPerimetersRepository;
         }
 
 
@@ -76,20 +79,35 @@ namespace Vale.Geographic.Application.Core.Services
             {
                 UoW.BeginTransaction();
 
-                Area area = Mapper.Map<Area>(obj);
+                Area perimeter = Mapper.Map<Area>(obj);
 
-                area.CategoryId = GetOficialPerimeterCategoryId();
+                perimeter.CategoryId = GetOficialPerimeterCategoryId();
+                perimeter.LastUpdatedBy = perimeter.CreatedBy;
 
                 var json = JsonConvert.SerializeObject(obj.Geojson.Geometry);
                 var geometryFactory = NtsGeometryServices.Instance.CreateGeometryFactory(srid: 4326);
-                area.Location = (Geometry)geometryFactory.CreateGeometry(new GeoJsonReader().Read<Geometry>(json)).Normalized().Reverse();
-                area.LastUpdatedBy = area.CreatedBy;
+                perimeter.Location = (Geometry)geometryFactory.CreateGeometry(new GeoJsonReader().Read<Geometry>(json)).Normalized().Reverse();
 
-                area = areaService.Insert(area);
+                perimeter = areaService.Insert(perimeter);
+
+                obj.Sites.ForEach(site =>
+                {
+                    sitesPerimetersRepository.Insert(new SitesPerimeters
+                    {
+                        Id = Guid.NewGuid(),
+                        AreaId = perimeter.Id,
+                        SiteId = site,
+                        CreatedAt = obj.CreatedAt,
+                        CreatedBy = obj.CreatedBy,
+                        LastUpdatedAt = obj.LastUpdatedAt,
+                        LastUpdatedBy = obj.LastUpdatedBy,
+                        Status = obj.Status
+                    });
+                });
 
                 UoW.Commit();
 
-                return Mapper.Map<PerimeterDto>(area);
+                return Mapper.Map<PerimeterDto>(perimeter);
             }
             catch (Exception ex)
             {

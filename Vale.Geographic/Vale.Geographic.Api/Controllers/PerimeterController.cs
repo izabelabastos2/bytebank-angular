@@ -6,6 +6,7 @@ using Vale.Geographic.Api.Filters;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using Vale.Geographic.Api.Models.Perimeters;
 
 namespace Vale.Geographic.Api.Controllers
 {
@@ -75,14 +76,22 @@ namespace Vale.Geographic.Api.Controllers
         [ProducesResponseType(typeof(PerimeterDto), 201)]
         [ProducesResponseType(typeof(Error), 400)]
         [ProducesResponseType(typeof(Error), 500)]
-        public IActionResult Post([FromBody] PerimeterDto value)
+        public IActionResult Post([FromBody] PostRequestModel model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            value.CreatedBy = this.HttpContext.User.Identity.Name;
-
-            var response = PerimeterAppService.Insert(value);
+            var response = PerimeterAppService.Insert(new PerimeterDto
+            {
+                CreatedAt = DateTime.Now,
+                LastUpdatedAt = DateTime.Now,
+                CreatedBy = this.HttpContext.User.Identity.Name,
+                LastUpdatedBy = this.HttpContext.User.Identity.Name,
+                Geojson = model.Geojson,
+                Name = model.Name,
+                Status = model.Status,
+                Sites = model.Sites
+            });
             return Created("", response);
         }
     }

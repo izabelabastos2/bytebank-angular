@@ -30,7 +30,7 @@ namespace Vale.Geographic.Domain.Core.Services
             obj.CreatedAt = DateTime.UtcNow;
             obj.LastUpdatedAt = DateTime.UtcNow;
             obj.Status = true;
-
+             
             if(obj.CategoryId.HasValue)
                  obj.Category = categoryRepository.GetById(obj.CategoryId.Value);
 

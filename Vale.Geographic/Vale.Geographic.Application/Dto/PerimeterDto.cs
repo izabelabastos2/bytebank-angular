@@ -2,6 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using GeoJSON.Net.Feature;
 using System;
 using GeoJSON.Net.Geometry;
+using System.Collections.Generic;
 
 namespace Vale.Geographic.Application.Dto
 {
@@ -9,9 +10,9 @@ namespace Vale.Geographic.Application.Dto
     {
         public Guid? Id { get; set; }
 
-        public DateTime? CreatedAt { get; set; }
+        public DateTime CreatedAt { get; set; }
 
-        public DateTime? LastUpdatedAt { get; set; }
+        public DateTime LastUpdatedAt { get; set; }
 
         public string CreatedBy { get; set; }
 
@@ -23,6 +24,8 @@ namespace Vale.Geographic.Application.Dto
         public bool Status { get; set; }
 
         public Feature Geojson { get; set; }
+
+        public List<Guid> Sites { get; set; }
     }
 }
 
