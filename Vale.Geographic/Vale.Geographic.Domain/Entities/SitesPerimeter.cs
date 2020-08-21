@@ -7,13 +7,21 @@ using System;
 
 namespace Vale.Geographic.Domain.Entities
 {
-    public class SitesPerimeters : Entity, ICloneable
+    public class SitesPerimeter : Entity, ICloneable
     {
         [Required]
-        public Guid SiteId { get; set; }
+        public virtual Guid SiteId { get; set; }
 
         [Required]
-        public Guid AreaId { get; set; }
+        public virtual Guid AreaId { get; set; }
+
+        [Write(false)]
+        [JsonIgnore]
+        public virtual Area Area { get; set; }
+
+        [Write(false)]
+        [JsonIgnore]
+        public virtual Site Site { get; set; }
 
         public virtual object Clone()
         {

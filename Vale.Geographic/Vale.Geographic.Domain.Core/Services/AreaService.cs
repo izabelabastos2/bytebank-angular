@@ -53,7 +53,7 @@ namespace Vale.Geographic.Domain.Core.Services
             return Repository.Update(obj);
         }
 
-        public void InsertAuditory(Area newObj, Area oldObj )
+        public void InsertAuditory(Area newObj, Area oldObj)
         {
             var audit = new Auditory();
             audit.AreaId = newObj.Id;

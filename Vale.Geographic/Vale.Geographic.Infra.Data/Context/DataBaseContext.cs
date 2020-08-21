@@ -25,6 +25,8 @@ namespace Vale.Geographic.Infra.Data.Context
             modelBuilder.ApplyConfiguration(new FocalPointMap());
             modelBuilder.ApplyConfiguration(new UserMap());
             modelBuilder.ApplyConfiguration(new NotificationAnswerMap());
+            modelBuilder.ApplyConfiguration(new SitesMap());
+            modelBuilder.ApplyConfiguration(new SitesPerimetersMap());
 
             base.OnModelCreating(modelBuilder);
         }

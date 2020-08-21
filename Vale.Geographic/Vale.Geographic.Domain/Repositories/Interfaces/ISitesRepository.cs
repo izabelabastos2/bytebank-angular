@@ -3,7 +3,7 @@ using Vale.Geographic.Domain.Entities;
 
 namespace Vale.Geographic.Domain.Repositories.Interfaces
 {
-    public interface ISitesPerimetersRepository : IRepository<SitesPerimeter>
+    public interface ISitesRepository : IRepository<Site>
     {
     }
 }

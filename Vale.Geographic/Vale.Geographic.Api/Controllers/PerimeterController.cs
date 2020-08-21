@@ -67,7 +67,7 @@ namespace Vale.Geographic.Api.Controllers
         /// <summary>
         ///     Create a new Oficial Vale Perimeter
         /// </summary>
-        /// <param name="value">Perimeter data</param>
+        /// <param name="model">Perimeter data</param>
         /// <returns>Perimeter who has been created</returns>
         /// <response code="201">Perimeter created!</response>
         /// <response code="400">Perimeter has missing/invalid values</response>
@@ -83,8 +83,8 @@ namespace Vale.Geographic.Api.Controllers
 
             var response = PerimeterAppService.Insert(new PerimeterDto
             {
-                CreatedAt = DateTime.Now,
-                LastUpdatedAt = DateTime.Now,
+                CreatedAt = DateTime.UtcNow,
+                LastUpdatedAt = DateTime.UtcNow,
                 CreatedBy = this.HttpContext.User.Identity.Name,
                 LastUpdatedBy = this.HttpContext.User.Identity.Name,
                 Geojson = model.Geojson,
