@@ -139,7 +139,8 @@ namespace Vale.Geographic.Domain.Core.Validations
         private void ValidateCategory()
         {
             RuleFor(o => o.Category)
-                .Must(x => x.TypeEntitie.Equals(TypeEntitieEnum.Area)).When(x => x.Category != null).WithMessage(Resources.Validations.AreaCategoryInvalid); 
+                .Must(x => x.TypeEntitie.Equals(TypeEntitieEnum.Area) || x.TypeEntitie.Equals(TypeEntitieEnum.OficialPerimeter))
+                .When(x => x.Category != null).WithMessage(Resources.Validations.AreaCategoryInvalid); 
         }
 
         private void ValidateParent()
