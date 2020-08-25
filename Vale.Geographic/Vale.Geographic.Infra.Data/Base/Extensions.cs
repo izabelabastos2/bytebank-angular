@@ -81,6 +81,11 @@ namespace Vale.Geographic.Infra.Data.Base
         {
             total = source.Count();
 
+            /*
+             * TODO 
+             * o if inferior não faz sentido, pois existe um cenário em que vc pede uma página que era para retornar
+             * vazio e se o if for true, vc retornará os dados do banco. (está em validação de mudança com o Balarini)
+             */
             if (total > parameters.per_page)
             {
                 var skip = parameters.per_page * (parameters.page - 1);

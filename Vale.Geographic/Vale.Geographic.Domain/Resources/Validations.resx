@@ -165,6 +165,9 @@
   <data name="CategoryTypeRequired" xml:space="preserve">
     <value>Por favor, informe o tipo de categoria.</value>
   </data>
+  <data name="CannotUpdateOficialPerimeterCategory" xml:space="preserve">
+    <value>Não é possível atualizar a categoria de perímetro oficial.</value>
+  </data>
   <data name="AreaDescriptionLength" xml:space="preserve">
     <value>A descrição da area não pode ter mais do que 255 caracteres.</value>
   </data>
