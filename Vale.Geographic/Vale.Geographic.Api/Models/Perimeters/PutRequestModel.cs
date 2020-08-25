@@ -6,9 +6,11 @@ using System.Threading.Tasks;
 
 namespace Vale.Geographic.Api.Models.Perimeters
 {
-    public class PostRequestModel
+    public class PutRequestModel
     {
         public string Name { get; set; }
+
+        public bool Status { get; set; }
 
         public Feature Geojson { get; set; }
 

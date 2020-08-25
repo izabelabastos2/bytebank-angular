@@ -126,6 +126,53 @@ namespace Vale.Geographic.Application.Core.Services
             }
         }
 
+        public PerimeterDto Update(PerimeterDto perimeterToUpdate)
+        {
+            try
+            {
+                Guid categoryId = GetOficialPerimeterCategoryId();
+                Area alreadyCreatedPerimeter = areaRepository.GetById(perimeterToUpdate.Id.Value);
+
+                UoW.Context.Entry(alreadyCreatedPerimeter).State = EntityState.Detached;
+
+                if (alreadyCreatedPerimeter == null || alreadyCreatedPerimeter.CategoryId != categoryId)
+                    return null;
+
+                UoW.BeginTransaction();
+
+                var json = JsonConvert.SerializeObject(perimeterToUpdate.Geojson.Geometry);
+                var geometryFactory = NtsGeometryServices.Instance.CreateGeometryFactory(srid: 4326);
+
+                Area areaToUpdate = new Area
+                {
+                    Id = perimeterToUpdate.Id.Value,
+                    CategoryId = categoryId,
+                    CreatedAt = alreadyCreatedPerimeter.CreatedAt,
+                    CreatedBy = alreadyCreatedPerimeter.CreatedBy,
+                    LastUpdatedAt = perimeterToUpdate.LastUpdatedAt,
+                    LastUpdatedBy = perimeterToUpdate.LastUpdatedBy,
+                    Name = perimeterToUpdate.Name,
+                    Status = perimeterToUpdate.Status,
+                    Location = (Geometry)geometryFactory.CreateGeometry(new GeoJsonReader().Read<Geometry>(json)).Normalized().Reverse(),
+                };
+
+                areaService.Update(areaToUpdate);
+
+                InsertAuditory(areaToUpdate, alreadyCreatedPerimeter);
+
+                //TODO fluxo para atualizar os sites
+
+                UoW.Commit();
+
+                return Mapper.Map<PerimeterDto>(perimeterToUpdate);
+            }
+            catch (Exception ex)
+            {
+                UoW.Rollback();
+                throw ex;
+            }
+        }
+
         private Guid GetOficialPerimeterCategoryId()
         {
             var oficialPerimeterCategory = categoryRepository
@@ -136,6 +183,34 @@ namespace Vale.Geographic.Application.Core.Services
                 return oficialPerimeterCategory.Id;
             else
                 return new Guid();
+        }
+
+        private void InsertAuditory(Area newPerimeter, Area oldPerimeter)
+        {
+            var audit = new Auditory();
+            audit.AreaId = newPerimeter.Id;
+            audit.TypeEntitie = TypeEntitieEnum.OficialPerimeter;
+            audit.CreatedBy = newPerimeter.LastUpdatedBy;
+            audit.LastUpdatedBy = newPerimeter.LastUpdatedBy;
+            audit.Status = true;
+
+
+            if (!newPerimeter.Equals(oldPerimeter))
+            {
+                var json = GeoJsonSerializer.Create();
+                var sw = new System.IO.StringWriter();
+
+                json.Serialize(sw, newPerimeter);
+                audit.NewValue = sw.ToString();
+
+                sw = new System.IO.StringWriter();
+                json.Serialize(sw, oldPerimeter);
+
+                audit.OldValue = sw.ToString();
+
+                auditoryService.Insert(audit);
+            }
+
         }
     }
 }

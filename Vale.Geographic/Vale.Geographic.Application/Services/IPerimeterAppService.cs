@@ -11,5 +11,6 @@ namespace Vale.Geographic.Application.Services
         IEnumerable<PerimeterDto> GetAll(IFilterParameters defaultParameters, Guid? filterBySiteId, out int total);
         PerimeterDto GetById(Guid id);
         PerimeterDto Insert(PerimeterDto obj);
+        PerimeterDto Update(PerimeterDto obj);
     }
 }
