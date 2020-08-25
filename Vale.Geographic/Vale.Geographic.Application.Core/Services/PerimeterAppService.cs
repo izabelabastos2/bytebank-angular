@@ -49,34 +49,39 @@ namespace Vale.Geographic.Application.Core.Services
         }
 
 
-        public IEnumerable<PerimeterDto> GetAll(IFilterParameters parameters, out int total)
+        public IEnumerable<PerimeterDto> GetAll(IFilterParameters parameters, Guid? filterBySiteId, out int total)
         {
-            IEnumerable<Area> query = areaRepository
-                .GetAll(x => true, parameters,
-                    new string[] { "CategoryId", "Status", "ParentId" })
+            List<Guid> associatedPerimetersIds = new List<Guid>();
+            Guid categoryId = GetOficialPerimeterCategoryId();
+
+            if (filterBySiteId != null)
+                associatedPerimetersIds = sitesPerimetersRepository
+                    .GetAll(x => x.SiteId == filterBySiteId)
+                    .Select(s => s.AreaId)
+                    .ToList();
+
+            IEnumerable<Area> perimeters = areaRepository
+                .GetAll(
+                    x => (associatedPerimetersIds.Count > 0 ? associatedPerimetersIds.Contains(x.Id) : true) && x.CategoryId == categoryId, 
+                    parameters,
+                    new string[] { "CategoryId", "Status" }
+                )
                 .ApplyPagination(parameters, out total)
                 .ToList();
 
-            return Mapper.Map<IEnumerable<PerimeterDto>>(query);
+            return Mapper.Map<IEnumerable<PerimeterDto>>(perimeters);
 
         }
 
-        public IEnumerable<AreaDto> Get(bool? active, Guid? id, Guid? categoryId, Guid? parentId, double? longitude, double? latitude, double? altitude, int? radiusDistance, DateTime? lastUpdatedAt, IFilterParameters request, out int total)
+        public PerimeterDto GetById(Guid id)
         {
-            IGeometry point = null;
+            Guid categoryId = GetOficialPerimeterCategoryId();
+            Area perimeter = areaRepository.GetById(id);
 
-            if (longitude.HasValue && latitude.HasValue)
-            {
-                var coordenate = new GeoJSON.Net.Geometry.Point(new Position(latitude.Value, longitude.Value, altitude));
-                var json = JsonConvert.SerializeObject(coordenate);
-                var geometryFactory = NtsGeometryServices.Instance.CreateGeometryFactory(srid: 4326);
+            if (perimeter != null && perimeter.CategoryId != categoryId)
+                return null;
 
-                point = (Geometry)geometryFactory.CreateGeometry(new GeoJsonReader().Read<Geometry>(json)).Normalized().Reverse();
-            }
-
-            IEnumerable<Area> areas = areaRepository.Get(out total, id, null, point, active, categoryId, parentId, radiusDistance, lastUpdatedAt, request);
-
-            return Mapper.Map<IEnumerable<AreaDto>>(areas);
+            return Mapper.Map<PerimeterDto>(perimeter);
         }
 
         public PerimeterDto Insert(PerimeterDto obj)

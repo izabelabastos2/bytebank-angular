@@ -8,8 +8,8 @@ namespace Vale.Geographic.Application.Services
 {
     public interface IPerimeterAppService
     {
-        IEnumerable<PerimeterDto> GetAll(IFilterParameters parameters, out int total);
-        IEnumerable<AreaDto> Get(bool? active, Guid? id, Guid? categoryId, Guid? parentId, double? longitude, double? latitude, double? altitude, int? radiusDistance, DateTime? lastUpdatedAt, IFilterParameters request, out int total);
+        IEnumerable<PerimeterDto> GetAll(IFilterParameters defaultParameters, Guid? filterBySiteId, out int total);
+        PerimeterDto GetById(Guid id);
         PerimeterDto Insert(PerimeterDto obj);
     }
 }
