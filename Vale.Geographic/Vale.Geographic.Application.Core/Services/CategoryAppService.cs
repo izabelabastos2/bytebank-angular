@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
 using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace Vale.Geographic.Application.Core.Services
 {
@@ -97,8 +98,11 @@ namespace Vale.Geographic.Application.Core.Services
             {
                 UoW.BeginTransaction();
 
-                var categoryOriginal = categoryRepository.GetById(id);
+                Category categoryOriginal = categoryRepository.GetById(id);
                 UoW.Context.Entry(categoryOriginal).State = EntityState.Detached;
+
+                if (categoryOriginal.TypeEntitie == TypeEntitieEnum.OficialPerimeter)
+                    throw new ValidationException(Domain.Resources.Validations.CannotUpdateOficialPerimeterCategory);
 
                 if (categoryOriginal == null)
                     throw new ArgumentNullException();

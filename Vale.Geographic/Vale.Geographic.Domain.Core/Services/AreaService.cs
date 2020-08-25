@@ -30,7 +30,7 @@ namespace Vale.Geographic.Domain.Core.Services
             obj.CreatedAt = DateTime.UtcNow;
             obj.LastUpdatedAt = DateTime.UtcNow;
             obj.Status = true;
-
+             
             if(obj.CategoryId.HasValue)
                  obj.Category = categoryRepository.GetById(obj.CategoryId.Value);
 
@@ -53,7 +53,7 @@ namespace Vale.Geographic.Domain.Core.Services
             return Repository.Update(obj);
         }
 
-        public void InsertAuditory(Area newObj, Area oldObj )
+        public void InsertAuditory(Area newObj, Area oldObj)
         {
             var audit = new Auditory();
             audit.AreaId = newObj.Id;

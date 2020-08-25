@@ -14,7 +14,6 @@ namespace Vale.Geographic.Domain.Core.Validations
 
             ValidateId();
             ValidateOldValue();
-            ValidateOldValue();
             ValidateType();
             ValidateCreatedAt();
             ValidateLastUpdatedAt();
@@ -24,7 +23,6 @@ namespace Vale.Geographic.Domain.Core.Validations
 
             RuleSet("Insert", () =>
             {
-                ValidateOldValue();
                 ValidateOldValue();
                 ValidateType();
                 ValidateCreatedAt();
@@ -38,7 +36,6 @@ namespace Vale.Geographic.Domain.Core.Validations
             RuleSet("Update", () =>
             {
                 ValidateId();
-                ValidateOldValue();
                 ValidateOldValue();
                 ValidateType();
                 ValidateCreatedAt();
