@@ -18,6 +18,8 @@ namespace Vale.Geographic.Domain.Enumerable
 
         [Description("User")] User = 7,
 
-        [Description("Oficial Perimeter")] OficialPerimeter = 8
+        [Description("Oficial Perimeter")] OficialPerimeter = 8,
+
+        [Description("Site X OficialPerimeter")] SiteXOficialPerimeter = 9
     }
 }

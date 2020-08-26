@@ -51,26 +51,42 @@ namespace Vale.Geographic.Application.Core.Services
 
         public IEnumerable<PerimeterDto> GetAll(IFilterParameters parameters, Guid? filterBySiteId, out int total)
         {
-            List<Guid> associatedPerimetersIds = new List<Guid>();
+            List<Guid> perimetersAssociatedToTheFilteredSite = new List<Guid>();
             Guid categoryId = GetOficialPerimeterCategoryId();
+            IEnumerable<Area> perimeters;
 
             if (filterBySiteId != null)
-                associatedPerimetersIds = sitesPerimetersRepository
-                    .GetAll(x => x.SiteId == filterBySiteId)
-                    .Select(s => s.AreaId)
-                    .ToList();
+            {
+                try
+                {
+                    perimetersAssociatedToTheFilteredSite = sitesPerimetersRepository
+                        .GetAll(x => x.SiteId == filterBySiteId && x.Status == true)
+                        .Select(s => s.AreaId)
+                        .ToList();
+                } catch
+                {
+                    perimetersAssociatedToTheFilteredSite = new List<Guid>();
+                }
 
-            IEnumerable<Area> perimeters = areaRepository
-                .GetAll(
-                    x => (associatedPerimetersIds.Count > 0 ? associatedPerimetersIds.Contains(x.Id) : true) && x.CategoryId == categoryId, 
-                    parameters,
-                    new string[] { "CategoryId", "Status" }
-                )
-                .ApplyPagination(parameters, out total)
-                .ToList();
+                perimeters = areaRepository
+                   .GetAll(
+                       x => (perimetersAssociatedToTheFilteredSite.Count > 0 ? perimetersAssociatedToTheFilteredSite.Contains(x.Id) : false) && x.CategoryId == categoryId && x.Status == true,
+                       parameters,
+                       new string[] { "CategoryId", "Status" }
+                   )
+                   .ApplyPagination(parameters, out total);
+            } else
+            {
+                perimeters = areaRepository
+                    .GetAll(
+                        x => x.CategoryId == categoryId && x.Status == true,
+                        parameters,
+                        new string[] { "CategoryId", "Status" }
+                    )
+                    .ApplyPagination(parameters, out total);
+            }
 
             return Mapper.Map<IEnumerable<PerimeterDto>>(perimeters);
-
         }
 
         public PerimeterDto GetById(Guid id)
@@ -78,40 +94,56 @@ namespace Vale.Geographic.Application.Core.Services
             Guid categoryId = GetOficialPerimeterCategoryId();
             Area perimeter = areaRepository.GetById(id);
 
+            List<Guid> sites;
+
+            try
+            {
+                sites = sitesPerimetersRepository
+                    .GetAll(x => x.AreaId == id && x.Status == true)
+                    .Select(s => s.SiteId)
+                    .ToList();
+            } catch
+            {
+                sites = new List<Guid>();
+            }
+
             if (perimeter != null && perimeter.CategoryId != categoryId)
                 return null;
 
-            return Mapper.Map<PerimeterDto>(perimeter);
+            PerimeterDto perimeterDto = Mapper.Map<PerimeterDto>(perimeter);
+            perimeterDto.Sites = sites;
+
+            return perimeterDto;
         }
 
-        public PerimeterDto Insert(PerimeterDto obj)
+        public PerimeterDto Insert(PerimeterDto perimeterToCreate)
         {
             try
             {
                 UoW.BeginTransaction();
 
-                Area perimeter = Mapper.Map<Area>(obj);
+                Area perimeter = Mapper.Map<Area>(perimeterToCreate);
 
                 perimeter.CategoryId = GetOficialPerimeterCategoryId();
                 perimeter.LastUpdatedBy = perimeter.CreatedBy;
 
-                var json = JsonConvert.SerializeObject(obj.Geojson.Geometry);
+                var json = JsonConvert.SerializeObject(perimeterToCreate.Geojson.Geometry);
                 var geometryFactory = NtsGeometryServices.Instance.CreateGeometryFactory(srid: 4326);
                 perimeter.Location = (Geometry)geometryFactory.CreateGeometry(new GeoJsonReader().Read<Geometry>(json)).Normalized().Reverse();
 
                 Area createdPerimeter = areaService.Insert(perimeter);
 
-                obj.Sites.ForEach(site =>
+                perimeterToCreate.Sites.ForEach(site =>
                 {
                     sitesPerimetersRepository.Insert(new SitesPerimeter
                     {
                         AreaId = createdPerimeter.Id,
                         SiteId = site,
-                        CreatedAt = obj.CreatedAt,
-                        CreatedBy = obj.CreatedBy,
-                        LastUpdatedAt = obj.LastUpdatedAt,
-                        LastUpdatedBy = obj.LastUpdatedBy,
-                        Status = obj.Status,
+                        CreatedAt = perimeterToCreate.CreatedAt,
+                        CreatedBy = perimeterToCreate.CreatedBy,
+                        LastUpdatedAt = perimeterToCreate.LastUpdatedAt,
+                        LastUpdatedBy = perimeterToCreate.LastUpdatedBy,
+                        Status = true,
                     });
                 });
 
@@ -132,7 +164,20 @@ namespace Vale.Geographic.Application.Core.Services
             {
                 Guid categoryId = GetOficialPerimeterCategoryId();
                 Area alreadyCreatedPerimeter = areaRepository.GetById(perimeterToUpdate.Id.Value);
+                List<SitesPerimeter> sitesAlreadyLinkedToPerimeter;
 
+                try
+                {
+                    sitesAlreadyLinkedToPerimeter = sitesPerimetersRepository
+                        .GetAll(x => x.AreaId == perimeterToUpdate.Id.Value)
+                        .ToList();
+                    
+                    if (sitesAlreadyLinkedToPerimeter == null) sitesAlreadyLinkedToPerimeter = new List<SitesPerimeter>();
+                } catch
+                {
+                    sitesAlreadyLinkedToPerimeter = new List<SitesPerimeter>();
+                }
+                    
                 UoW.Context.Entry(alreadyCreatedPerimeter).State = EntityState.Detached;
 
                 if (alreadyCreatedPerimeter == null || alreadyCreatedPerimeter.CategoryId != categoryId)
@@ -160,7 +205,7 @@ namespace Vale.Geographic.Application.Core.Services
 
                 InsertAuditory(areaToUpdate, alreadyCreatedPerimeter);
 
-                //TODO fluxo para atualizar os sites
+                UpdateSitesLinkedToPerimeter(areaToUpdate, sitesAlreadyLinkedToPerimeter, perimeterToUpdate.Sites);
 
                 UoW.Commit();
 
@@ -211,6 +256,109 @@ namespace Vale.Geographic.Application.Core.Services
                 auditoryService.Insert(audit);
             }
 
+        }
+
+        private void UpdateSitesLinkedToPerimeter(Area updatedPerimeter, List<SitesPerimeter> sitesPerimetersAlreadyInDB, List<Guid> sitesIds)
+        {
+            List<SitesPerimeter> sitesPerimetersToUpdate = new List<SitesPerimeter>();
+            List<SitesPerimeter> sitesPerimetersToCreate = new List<SitesPerimeter>();
+            List<SitesPerimeter> sitesPerimetersToFile = new List<SitesPerimeter>();
+
+            foreach (var siteId in sitesIds)
+            {
+                if (sitesPerimetersAlreadyInDB.Any(a => a.SiteId == siteId && a.AreaId == updatedPerimeter.Id))
+                {
+                    var sitePerimeterAlreadyCreated = sitesPerimetersAlreadyInDB
+                        .Where(w => w.SiteId == siteId && w.AreaId == updatedPerimeter.Id)
+                        .FirstOrDefault();
+                    sitesPerimetersToUpdate.Add(sitePerimeterAlreadyCreated);
+                }
+                else
+                {
+                    sitesPerimetersToCreate.Add(new SitesPerimeter
+                    {
+                        Id = Guid.NewGuid(),
+                        AreaId = updatedPerimeter.Id,
+                        SiteId = siteId,
+                        Status = true,
+                        CreatedAt = DateTime.UtcNow,
+                        LastUpdatedAt = DateTime.UtcNow,
+                        CreatedBy = updatedPerimeter.LastUpdatedBy,
+                        LastUpdatedBy = updatedPerimeter.LastUpdatedBy,
+                    });
+                }
+            }
+
+            foreach(var sitePerimeterAlreadyInDB in sitesPerimetersAlreadyInDB)
+                if (!sitesPerimetersToUpdate.Any(a => a.Id == sitePerimeterAlreadyInDB.Id))
+                    sitesPerimetersToFile.Add(sitePerimeterAlreadyInDB);
+
+            foreach(var sitePerimeterToCreate in sitesPerimetersToCreate)
+                sitesPerimetersRepository.Insert(sitePerimeterToCreate);
+
+            foreach (var sitePerimeterToUpdate in sitesPerimetersToUpdate)
+            {
+                UoW.Context.Entry(sitePerimeterToUpdate).State = EntityState.Detached;
+
+                var updatedSitePerimeter = new SitesPerimeter
+                {
+                    Id = sitePerimeterToUpdate.Id,
+                    AreaId = sitePerimeterToUpdate.AreaId,
+                    SiteId = sitePerimeterToUpdate.SiteId,
+                    CreatedAt = sitePerimeterToUpdate.CreatedAt,
+                    CreatedBy = sitePerimeterToUpdate.CreatedBy,
+                    LastUpdatedAt = DateTime.UtcNow,
+                    LastUpdatedBy = updatedPerimeter.LastUpdatedBy,
+                    Status = true
+                };
+
+                sitesPerimetersRepository.Update(updatedSitePerimeter);
+
+                auditoryService.Insert(new Auditory
+                {
+                    Id = Guid.NewGuid(),
+                    CreatedAt = DateTime.UtcNow,
+                    LastUpdatedAt = DateTime.UtcNow,
+                    CreatedBy = updatedPerimeter.LastUpdatedBy,
+                    LastUpdatedBy = updatedPerimeter.LastUpdatedBy,
+                    Status = true,
+                    TypeEntitie = TypeEntitieEnum.SiteXOficialPerimeter,
+                    OldValue = JsonConvert.SerializeObject(sitePerimeterToUpdate).ToString(),
+                    NewValue = JsonConvert.SerializeObject(updatedSitePerimeter).ToString()
+                });
+            }
+
+            foreach (var sitePerimeterToFile in sitesPerimetersToFile)
+            {
+                UoW.Context.Entry(sitePerimeterToFile).State = EntityState.Detached;
+
+                var updatedSitePerimeterToFile = new SitesPerimeter
+                {
+                    Id = sitePerimeterToFile.Id,
+                    AreaId = sitePerimeterToFile.AreaId,
+                    SiteId = sitePerimeterToFile.SiteId,
+                    CreatedAt = sitePerimeterToFile.CreatedAt,
+                    CreatedBy = sitePerimeterToFile.CreatedBy,
+                    LastUpdatedAt = DateTime.UtcNow,
+                    LastUpdatedBy = updatedPerimeter.LastUpdatedBy,
+                    Status = false
+                };
+
+                sitesPerimetersRepository.Update(updatedSitePerimeterToFile);
+
+                auditoryService.Insert(new Auditory
+                {
+                    Id = Guid.NewGuid(),
+                    CreatedAt = DateTime.UtcNow,
+                    LastUpdatedAt = DateTime.UtcNow,
+                    CreatedBy = updatedPerimeter.LastUpdatedBy,
+                    LastUpdatedBy = updatedPerimeter.LastUpdatedBy,
+                    Status = true,
+                    TypeEntitie = TypeEntitieEnum.SiteXOficialPerimeter,
+                    OldValue = JsonConvert.SerializeObject(sitePerimeterToFile).ToString(),
+                    NewValue = JsonConvert.SerializeObject(updatedSitePerimeterToFile).ToString()
+                });
+            }
         }
     }
 }
