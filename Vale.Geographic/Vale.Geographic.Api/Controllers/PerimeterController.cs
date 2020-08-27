@@ -111,10 +111,78 @@ namespace Vale.Geographic.Api.Controllers
                 LastUpdatedBy = this.HttpContext.User.Identity.Name,
                 Geojson = model.Geojson,
                 Name = model.Name,
-                Status = model.Status,
+                Status = true,
                 Sites = model.Sites
             });
             return Created("", response);
+        }
+
+        /// <summary>
+        ///     Update an Oficial Vale Perimeter
+        /// </summary>
+        /// <param name="id"> Oficial Vale Perimeter Id</param>
+        /// <param name="model"> Oficial Vale Perimeter data</param>
+        /// <returns> Oficial Vale Perimeter who has been updated</returns>
+        /// <response code="200"> Oficial Vale Perimeter updated!</response>
+        /// <response code="400"> Oficial Vale Perimeter has missing/invalid values</response>
+        /// <response code="500">Oops! Can't list your area right now</response>
+        [HttpPut("{id:GUID}")]
+        [ProducesResponseType(typeof(AreaDto), 200)]
+        [ProducesResponseType(typeof(Error), 400)]
+        [ProducesResponseType(typeof(Error), 500)]
+        public IActionResult Put(Guid id, [FromBody] PutRequestModel model)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            PerimeterDto perimeterUpdated = PerimeterAppService.Update(new PerimeterDto
+            {
+                Id = id,
+                CreatedAt = DateTime.UtcNow,
+                LastUpdatedAt = DateTime.UtcNow,
+                CreatedBy = this.HttpContext.User.Identity.Name,
+                LastUpdatedBy = this.HttpContext.User.Identity.Name,
+                Geojson = model.Geojson,
+                Name = model.Name,
+                Status = model.Status,
+                Sites = model.Sites
+            });
+
+            if (perimeterUpdated == null)
+                return NotFound("Perimeter " + id);
+
+            return Ok();
+        }
+
+        /// <summary>
+        ///     File an Oficial Vale Perimeter (delete virtually)
+        /// </summary>
+        /// <param name="id"> Oficial Vale Perimeter Id</param>
+        /// <returns> Oficial Vale Perimeter who has been updated</returns>
+        /// <response code="204"> Oficial Vale Perimeter filed!</response>
+        /// <response code="405"> Oficial Vale Perimeter cannot be delete right now</response>
+        /// <response code="500">Oops! Internal error</response>
+        [HttpDelete("{id:GUID}")]
+        [ProducesResponseType(typeof(void), 204)]
+        [ProducesResponseType(typeof(Error), 405)]
+        [ProducesResponseType(typeof(Error), 500)]
+        public IActionResult Delete(Guid id)
+        {
+            try
+            {
+                bool deleted = PerimeterAppService.Delete(id, this.HttpContext.User.Identity.Name);
+
+                if (deleted)
+                    return NoContent();
+                else
+                    return StatusCode(405);
+            } catch (ArgumentException e)
+            {
+                return BadRequest(e);
+            } catch (Exception e)
+            {
+                return StatusCode(500, e);
+            }
         }
     }
 }
