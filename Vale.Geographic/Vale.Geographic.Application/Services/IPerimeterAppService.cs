@@ -12,5 +12,6 @@ namespace Vale.Geographic.Application.Services
         PerimeterDto GetById(Guid id);
         PerimeterDto Insert(PerimeterDto obj);
         PerimeterDto Update(PerimeterDto obj);
+        bool Delete(Guid id, string updatedBy);
     }
 }

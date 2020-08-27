@@ -218,6 +218,64 @@ namespace Vale.Geographic.Application.Core.Services
             }
         }
 
+        public bool Delete(Guid id, string updatedBy)
+        {
+            try
+            {
+                Guid categoryId = GetOficialPerimeterCategoryId();
+                Area alreadyCreatedPerimeter = areaRepository.GetById(id);
+                List<SitesPerimeter> sitesAlreadyLinkedToPerimeter;
+
+                try
+                {
+                    sitesAlreadyLinkedToPerimeter = sitesPerimetersRepository
+                        .GetAll(x => x.AreaId == id)
+                        .ToList();
+
+                    if (sitesAlreadyLinkedToPerimeter == null) sitesAlreadyLinkedToPerimeter = new List<SitesPerimeter>();
+                }
+                catch
+                {
+                    sitesAlreadyLinkedToPerimeter = new List<SitesPerimeter>();
+                }
+
+                UoW.Context.Entry(alreadyCreatedPerimeter).State = EntityState.Detached;
+
+                if (alreadyCreatedPerimeter.CategoryId != categoryId)
+                    throw new ArgumentException("Trying to delete a non oficial perimeter");
+
+                UoW.BeginTransaction();
+
+                Area areaToUpdate = new Area
+                {
+                    Id = alreadyCreatedPerimeter.Id,
+                    CategoryId = categoryId,
+                    CreatedAt = alreadyCreatedPerimeter.CreatedAt,
+                    CreatedBy = alreadyCreatedPerimeter.CreatedBy,
+                    Location = alreadyCreatedPerimeter.Location,
+                    Name = alreadyCreatedPerimeter.Name,
+                    LastUpdatedAt = DateTime.UtcNow,
+                    LastUpdatedBy = updatedBy,
+                    Status = false,
+                };
+
+                areaService.Update(areaToUpdate);
+
+                InsertAuditory(areaToUpdate, alreadyCreatedPerimeter);
+
+                UpdateSitesLinkedToPerimeter(areaToUpdate, sitesAlreadyLinkedToPerimeter, new List<Guid>());
+
+                UoW.Commit();
+
+                return true;
+            }
+            catch (Exception)
+            {
+                UoW.Rollback();
+                return false;
+            }
+        }
+
         private Guid GetOficialPerimeterCategoryId()
         {
             var oficialPerimeterCategory = categoryRepository
@@ -258,6 +316,9 @@ namespace Vale.Geographic.Application.Core.Services
 
         }
 
+        /// <summary>
+        /// Update in SitesPerimeters the sitePerimeter and the status. Also fills the auditory. For inactivate all, just pass an empty sitesIds list
+        /// </summary>
         private void UpdateSitesLinkedToPerimeter(Area updatedPerimeter, List<SitesPerimeter> sitesPerimetersAlreadyInDB, List<Guid> sitesIds)
         {
             List<SitesPerimeter> sitesPerimetersToUpdate = new List<SitesPerimeter>();
