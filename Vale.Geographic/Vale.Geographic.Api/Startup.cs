@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Mvc.Cors.Internal;
 using Microsoft.AspNetCore.Mvc.Formatters;
+using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -30,7 +31,7 @@ namespace Vale.Geographic.Api
 {
     public class Startup
     {
-        public static readonly List<string> AuthenticatedEnvironments = new List<string>() { "production", "qa" };
+        public static readonly List<string> AuthenticatedEnvironments = new List<string>() { "production", "qa", "local", "development" };
 
         private readonly SimpleInjectorBootStrapper Injector = new SimpleInjectorBootStrapper();
 
@@ -77,6 +78,7 @@ namespace Vale.Geographic.Api
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("v1/swagger.json", "Vale.Geographic API V1 - " + env.EnvironmentName);
+                c.SwaggerEndpoint("v2/swagger.json", "Vale.Geographic API V2 - " + env.EnvironmentName);
             });
         }
 
@@ -84,6 +86,25 @@ namespace Vale.Geographic.Api
         public void ConfigureServices(IServiceCollection services)
         {
             var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")?.ToLower();
+
+            services.AddApiVersioning(options =>
+            {
+                options.UseApiBehavior = false;
+                options.ReportApiVersions = true;
+                options.AssumeDefaultVersionWhenUnspecified = true;
+                options.DefaultApiVersion = new ApiVersion(1, 0);
+                options.ApiVersionReader = ApiVersionReader.Combine(
+                    new HeaderApiVersionReader("x-api-version"),
+                    new QueryStringApiVersionReader(),
+                    new UrlSegmentApiVersionReader());
+            });
+
+            services.AddVersionedApiExplorer(
+              options =>
+              {
+                  options.GroupNameFormat = "'v'VVV";
+                  options.SubstituteApiVersionInUrl = true;
+              });
 
             services.Configure<GzipCompressionProviderOptions>(options =>
             {
@@ -143,6 +164,20 @@ namespace Vale.Geographic.Api
                             Email = "C0497842@vale.com"
                         }
                     });
+
+                c.SwaggerDoc("v2",
+                   new Info
+                   {
+                       Title = $"Vale.Geographic API ({environment}) - v2.0",
+                       Description = "List of microservice to manage the entities",
+                       Version = "v2",
+
+                       Contact = new Contact
+                       {
+                           Name = "Digital Solutions",
+                           Email = "C0497842@vale.com"
+                       }
+                   });
 
                 c.AddSecurityDefinition("Bearer",
                     new ApiKeyScheme
