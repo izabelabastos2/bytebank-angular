@@ -7,6 +7,8 @@ using Vale.Geographic.Api.Filters;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using Vale.Geographic.Api.Provider;
+using Microsoft.AspNetCore.Http;
 
 namespace Vale.Geographic.Api.Controllers.v2
 {
@@ -14,7 +16,7 @@ namespace Vale.Geographic.Api.Controllers.v2
     /// Controller to Category
     /// </summary>
     [Route("api/Category")]
-    [Authorize]
+    [IAMAuthorize]
     [ApiVersion("2")]
     public class CategoryController : Controller
     {
@@ -114,7 +116,7 @@ namespace Vale.Geographic.Api.Controllers.v2
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            value.CreatedBy = this.HttpContext.User.Identity.Name;
+            value.CreatedBy = HttpContext.Session.GetString("USER_INFO_IAM_ID");
 
             var response = this.CategoryAppService.Insert(value);
             return Created("", response);
@@ -136,7 +138,7 @@ namespace Vale.Geographic.Api.Controllers.v2
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            value.LastUpdatedBy = this.HttpContext.User.Identity.Name;
+            value.LastUpdatedBy = HttpContext.Session.GetString("USER_INFO_IAM_ID");
 
             try
             {
@@ -165,7 +167,7 @@ namespace Vale.Geographic.Api.Controllers.v2
         [ProducesResponseType(typeof(Error), 500)]
         public IActionResult Delete(Guid id)
         {
-            var lastUpdatedBy = this.HttpContext.User.Identity.Name;
+            var lastUpdatedBy = HttpContext.Session.GetString("USER_INFO_IAM_ID");
 
             try
             {

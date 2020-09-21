@@ -9,6 +9,7 @@ using Vale.Geographic.Api.Models.Sites;
 using Vale.Geographic.Domain.Entities;
 using System.Linq;
 using Vale.Geographic.Api.Provider;
+using Microsoft.AspNetCore.Http;
 
 namespace Vale.Geographic.Api.Controllers.v2
 {

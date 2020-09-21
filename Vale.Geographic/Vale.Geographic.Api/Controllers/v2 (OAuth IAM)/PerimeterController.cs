@@ -9,6 +9,7 @@ using System;
 using Vale.Geographic.Api.Models.Perimeters;
 using System.Linq;
 using Vale.Geographic.Domain.Entities;
+using Microsoft.AspNetCore.Http;
 
 namespace Vale.Geographic.Api.Controllers.v2
 {
@@ -108,9 +109,9 @@ namespace Vale.Geographic.Api.Controllers.v2
             {
                 CreatedAt = DateTime.UtcNow,
                 LastUpdatedAt = DateTime.UtcNow,
-                CreatedBy = this.HttpContext.User.Identity.Name,
-                LastUpdatedBy = this.HttpContext.User.Identity.Name,
-                Geojson = model.Geojson,
+                CreatedBy = HttpContext.Session.GetString("USER_INFO_IAM_ID"),
+                LastUpdatedBy = HttpContext.Session.GetString("USER_INFO_IAM_ID"),
+            Geojson = model.Geojson,
                 Name = model.Name,
                 Status = true,
                 Sites = model.Sites
@@ -141,8 +142,8 @@ namespace Vale.Geographic.Api.Controllers.v2
                 Id = id,
                 CreatedAt = DateTime.UtcNow,
                 LastUpdatedAt = DateTime.UtcNow,
-                CreatedBy = this.HttpContext.User.Identity.Name,
-                LastUpdatedBy = this.HttpContext.User.Identity.Name,
+                CreatedBy = HttpContext.Session.GetString("USER_INFO_IAM_ID"),
+                LastUpdatedBy = HttpContext.Session.GetString("USER_INFO_IAM_ID"),
                 Geojson = model.Geojson,
                 Name = model.Name,
                 Status = model.Status,
@@ -171,7 +172,7 @@ namespace Vale.Geographic.Api.Controllers.v2
         {
             try
             {
-                bool deleted = PerimeterAppService.Delete(id, this.HttpContext.User.Identity.Name);
+                bool deleted = PerimeterAppService.Delete(id, HttpContext.Session.GetString("USER_INFO_IAM_ID"));
 
                 if (deleted)
                     return NoContent();

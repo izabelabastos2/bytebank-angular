@@ -73,6 +73,7 @@ namespace Vale.Geographic.Api
             app.UseCors("ValePolicy");
             app.UseMiddleware(typeof(InterceptorHandlingMiddleware));
             app.UseResponseCompression();
+            app.UseSession();
             app.UseMvc();
             app.UseSwagger();
             app.UseSwaggerUI(c =>
@@ -86,6 +87,8 @@ namespace Vale.Geographic.Api
         public void ConfigureServices(IServiceCollection services)
         {
             var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")?.ToLower();
+
+            services.AddSession();
 
             services.AddApiVersioning(options =>
             {

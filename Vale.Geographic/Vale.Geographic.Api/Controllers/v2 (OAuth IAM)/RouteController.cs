@@ -6,6 +6,7 @@ using Vale.Geographic.Api.Filters;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using Microsoft.AspNetCore.Http;
 
 namespace Vale.Geographic.Api.Controllers.v2
 {
@@ -42,7 +43,7 @@ namespace Vale.Geographic.Api.Controllers.v2
         [ProducesResponseType(typeof(Error), 500)]
         public IActionResult Delete(Guid id)
         {
-            var lastUpdatedBy = this.HttpContext.User.Identity.Name;
+            var lastUpdatedBy = HttpContext.Session.GetString("USER_INFO_IAM_ID");
 
             try
             {
@@ -151,7 +152,7 @@ namespace Vale.Geographic.Api.Controllers.v2
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            value.CreatedBy = this.HttpContext.User.Identity.Name;
+            value.CreatedBy = HttpContext.Session.GetString("USER_INFO_IAM_ID");
 
             var response = RouteAppService.Insert(value);
             return Created("", response);
@@ -176,7 +177,7 @@ namespace Vale.Geographic.Api.Controllers.v2
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-             value.LastUpdatedBy = this.HttpContext.User.Identity.Name;
+             value.LastUpdatedBy = HttpContext.Session.GetString("USER_INFO_IAM_ID");
 
             try
             {
