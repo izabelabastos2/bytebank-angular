@@ -31,7 +31,7 @@ namespace Vale.Geographic.Api
 {
     public class Startup
     {
-        public static readonly List<string> AuthenticatedEnvironments = new List<string>() { "production", "qa", "local", "development" };
+        public static readonly List<string> AuthenticatedEnvironments = new List<string>() { "production", "qa" };
 
         private readonly SimpleInjectorBootStrapper Injector = new SimpleInjectorBootStrapper();
 
