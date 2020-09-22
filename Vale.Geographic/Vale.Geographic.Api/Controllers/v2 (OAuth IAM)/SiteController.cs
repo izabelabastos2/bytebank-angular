@@ -63,8 +63,8 @@ namespace Vale.Geographic.Api.Controllers.v2
             return Ok(result);
         }
 
-        [HttpGet("/TESTE")]
-        public IActionResult a()
+        [HttpGet("env")]
+        public IActionResult env()
         {
             return Ok(Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")?.ToLower());
         }
