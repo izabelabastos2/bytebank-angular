@@ -10,6 +10,7 @@ using Vale.Geographic.Api.Models.Perimeters;
 using System.Linq;
 using Vale.Geographic.Domain.Entities;
 using Microsoft.AspNetCore.Http;
+using Vale.Geographic.Api.Provider;
 
 namespace Vale.Geographic.Api.Controllers.v2
 {
@@ -17,7 +18,7 @@ namespace Vale.Geographic.Api.Controllers.v2
     /// Controller to Vale Oficial Perimeter
     /// </summary>
     [Route("api/Perimeter")]
-    [Authorize]
+    [IAMAuthorize]
     [ApiVersion("2")]
     public class PerimeterController : Controller
     {

@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using Microsoft.AspNetCore.Http;
+using Vale.Geographic.Api.Provider;
 
 namespace Vale.Geographic.Api.Controllers.v2
 {
@@ -14,7 +15,7 @@ namespace Vale.Geographic.Api.Controllers.v2
     /// Controller to PointOfInterest
     /// </summary>
     [Route("api/PointOfInterest")]
-    [Authorize]
+    [IAMAuthorize]
     [ApiVersion("2")]
     public class PointOfInterestController : Controller
     {

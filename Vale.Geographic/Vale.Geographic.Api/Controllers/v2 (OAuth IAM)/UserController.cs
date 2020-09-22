@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Vale.Geographic.Api.Filters;
+using Vale.Geographic.Api.Provider;
 using Vale.Geographic.Application.Dto.Authorization;
 using Vale.Geographic.Application.Services;
 
@@ -12,7 +13,7 @@ namespace Vale.Geographic.Api.Controllers.v2
     /// Controller to User
     /// </summary>
     [Route("api/User")]
-    [Authorize]
+    [IAMAuthorize]
     [ApiVersion("2")]
     public class UserController : Controller
     {

@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Vale.Geographic.Api.Filters;
+using Vale.Geographic.Api.Provider;
 using Vale.Geographic.Application.Dto;
 using Vale.Geographic.Application.Dto.Notification;
 using Vale.Geographic.Application.Services;
@@ -13,7 +14,7 @@ namespace Vale.Geographic.Api.Controllers.v2
     /// Controller to Notification
     /// </summary>
     [Route("api/Applications")]
-    [Authorize]
+    [IAMAuthorize]
     [ApiVersion("2")]
     public class NotificationController : Controller
     {
