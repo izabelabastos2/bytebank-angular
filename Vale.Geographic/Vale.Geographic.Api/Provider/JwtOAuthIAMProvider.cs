@@ -48,6 +48,7 @@ namespace Vale.Geographic.Api.Provider
                         userInfo = GetUserInfo(IDS_QA, access_token).Result;
                         break;
                     case "development":
+                    case "dev":
                     case "local":
                         userInfo = GetUserInfo(IDS_DEV, access_token).Result;
                         break;
