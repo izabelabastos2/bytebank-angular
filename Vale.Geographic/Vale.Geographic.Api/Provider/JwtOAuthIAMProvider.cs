@@ -69,6 +69,7 @@ namespace Vale.Geographic.Api.Provider
             catch (Exception e)
             {
                 context.Result = new UnauthorizedResult();
+                throw e;
             }
         }
 
