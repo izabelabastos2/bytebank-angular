@@ -17,6 +17,7 @@ namespace Vale.Geographic.Api.Controllers.v2
     /// Controller to Sites
     /// </summary>
     [Route("api/Site")]
+    [ApiVersion("2")]
     public class SiteController : Controller
     {
         readonly ISiteAppService siteAppService;
