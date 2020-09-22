@@ -22,7 +22,7 @@ namespace Vale.Geographic.Api.Provider
 
     public class IAMAuthorizeFilter : IAuthorizationFilter
     {
-        private readonly string IDS_DEV = "https://ids-dev.valeglobal.net/nidp/oauth/nam/userinfo";
+        private readonly string IDS_DEV = "https://ids-qa.valeglobal.net/nidp/oauth/nam/userinfo";
         private readonly string IDS_QA = "https://ids-qa.valeglobal.net/nidp/oauth/nam/userinfo";
         private readonly string IDS_PRD = "https://ids-prd.valeglobal.net/nidp/oauth/nam/userinfo";
 
@@ -48,6 +48,7 @@ namespace Vale.Geographic.Api.Provider
                         userInfo = GetUserInfo(IDS_QA, access_token).Result;
                         break;
                     case "development":
+                    case "dev":
                     case "local":
                         userInfo = GetUserInfo(IDS_DEV, access_token).Result;
                         break;
