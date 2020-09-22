@@ -12,14 +12,11 @@ namespace Vale.Geographic.Domain.Entities
         [Required]
         public string Name { get; set; }
 
-        [Required]
-        public float Latitude { get; set; }
+        public float? Latitude { get; set; }
 
-        [Required]
-        public float Longitude { get; set; }
+        public float? Longitude { get; set; }
 
-        [Required]
-        public int Zoom { get; set; }
+        public int? Zoom { get; set; }
 
         public int Radius { get; set; }
 

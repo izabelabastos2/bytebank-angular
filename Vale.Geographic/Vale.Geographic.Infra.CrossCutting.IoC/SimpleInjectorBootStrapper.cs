@@ -71,6 +71,7 @@ namespace Vale.Geographic.Infra.CrossCutting.IoC
             container.Register<IUnitOfWork, UnitOfWork>(Lifestyle.Scoped);
 
             container.Register<ISitesRepository, SitesRepository>(Lifestyle.Scoped);
+            container.Register<ISiteAppService, SiteAppService>(Lifestyle.Scoped);
 
             container.Register<IPerimeterAppService, PerimeterAppService>(Lifestyle.Scoped);
             container.Register<ISitesPerimetersRepository, SitesPerimetersRepository>(Lifestyle.Scoped);
