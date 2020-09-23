@@ -34,7 +34,10 @@ namespace Vale.Geographic.Api.Provider
         {
             try
             {
-                var access_token = context.HttpContext.Request.Headers["Authorization"].FirstOrDefault().Replace("bearer ", "");
+                var access_token = context.HttpContext.Request.Headers["Authorization"]
+                    .FirstOrDefault()
+                    .Replace("bearer ", "")
+                    .Replace("Bearer ", "");
 
                 var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")?.ToLower();
                 UserInfo userInfo;

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Threading.Tasks;
 
 namespace Vale.Geographic.Api.Models.Auth
@@ -16,10 +17,10 @@ namespace Vale.Geographic.Api.Models.Auth
         public string ValeCSPID { get; set; }
         public string city { get; set; }
         public string cn { get; set; }
-        public string groupMembership { get; set; }
         public string locationCountry { get; set; }
         public string mail { get; set; }
         public string sn { get; set; }
         public string sub { get; set; }
+        public object groupMembership { get; set; }
     }
 }
