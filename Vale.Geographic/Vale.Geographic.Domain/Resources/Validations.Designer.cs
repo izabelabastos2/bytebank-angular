@@ -277,6 +277,15 @@ namespace Vale.Geographic.Domain.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Não é possível atualizar a categoria de perímetro oficial..
+        /// </summary>
+        public static string CannotUpdateOficialPerimeterCategory {
+            get {
+                return ResourceManager.GetString("CannotUpdateOficialPerimeterCategory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Por favor, informe a data de criação da categoria..
         /// </summary>
         public static string CategoryCreatedAtRequired {
@@ -365,7 +374,7 @@ namespace Vale.Geographic.Domain.Resources {
                 return ResourceManager.GetString("CategoryTypeRequired", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Ponto focal já cadastrado..
         /// </summary>

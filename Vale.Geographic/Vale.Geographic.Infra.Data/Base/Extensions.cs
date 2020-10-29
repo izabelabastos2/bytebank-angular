@@ -81,13 +81,8 @@ namespace Vale.Geographic.Infra.Data.Base
         {
             total = source.Count();
 
-            if (total > parameters.per_page)
-            {
-                var skip = parameters.per_page * (parameters.page - 1);
-                return source.Skip(skip).Take(parameters.per_page);
-            }
-
-            return source;
+            var skip = parameters.per_page * (parameters.page - 1);
+            return source.Skip(skip).Take(parameters.per_page);
         }
     }
 }

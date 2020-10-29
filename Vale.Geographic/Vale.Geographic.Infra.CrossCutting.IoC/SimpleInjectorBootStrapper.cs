@@ -70,6 +70,12 @@ namespace Vale.Geographic.Infra.CrossCutting.IoC
             container.Register<DbContext, DatabaseContext>(Lifestyle.Scoped);
             container.Register<IUnitOfWork, UnitOfWork>(Lifestyle.Scoped);
 
+            container.Register<ISitesRepository, SitesRepository>(Lifestyle.Scoped);
+            container.Register<ISiteAppService, SiteAppService>(Lifestyle.Scoped);
+
+            container.Register<IPerimeterAppService, PerimeterAppService>(Lifestyle.Scoped);
+            container.Register<ISitesPerimetersRepository, SitesPerimetersRepository>(Lifestyle.Scoped);
+
             container.Register<IAreaAppService, AreaAppService>(Lifestyle.Scoped);
             container.Register<IAreaService, AreaService>(Lifestyle.Scoped);
             container.Register<IAreaRepository, AreaRepository>(Lifestyle.Scoped);

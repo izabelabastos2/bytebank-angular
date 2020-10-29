@@ -16,7 +16,10 @@ namespace Vale.Geographic.Domain.Enumerable
 
         [Description("FocalPoint")] FocalPoint = 6,
 
-        [Description("User")] User = 7
+        [Description("User")] User = 7,
 
+        [Description("Oficial Perimeter")] OficialPerimeter = 8,
+
+        [Description("Site X OficialPerimeter")] SiteXOficialPerimeter = 9
     }
 }
