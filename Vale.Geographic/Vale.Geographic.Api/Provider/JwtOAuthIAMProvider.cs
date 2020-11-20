@@ -42,7 +42,7 @@ namespace Vale.Geographic.Api.Provider
                 var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")?.ToLower();
                 UserInfo userInfo;
 
-                switch (environment)
+                switch (environment.ToLower())
                 {
                     case "production":
                         userInfo = GetUserInfo(IDS_PRD, access_token).Result;
