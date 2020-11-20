@@ -11,6 +11,7 @@ using Vale.Geographic.Domain.Services;
 using Vale.Geographic.Domain.Entities;
 using System;
 using Vale.Geographic.Application.Dto;
+using System.Collections.Generic;
 
 namespace Vale.Geographic.Application.Core.Services
 {
@@ -34,27 +35,45 @@ namespace Vale.Geographic.Application.Core.Services
             this.focalPointRepository = focalPointRepository;
         }
 
-        public async Task<DeviceAddDto> RegisterDevice(string applicationId, DeviceAddDto device)
+        public async Task<IEnumerable<DeviceAddDto>> RegisterDevice(string applicationId, DeviceAddDto device)
         {
-            var ret = await _repository.RegisterDevice(applicationId, Mapper.Map<DeviceAdd>(device));
-            return Mapper.Map<DeviceAddDto>(ret);
+            List<DeviceAdd> ret = new List<DeviceAdd>();
+
+            var applicationIds = applicationId.Split(",");
+            foreach (var id in applicationIds)
+            {
+                ret.Add(await _repository.RegisterDevice(id, Mapper.Map<DeviceAdd>(device)));
+            }
+
+            return Mapper.Map<IEnumerable<DeviceAddDto>>(ret);
         }
 
         public async Task InstalationDevice(string applicationId, string installationId, DeviceUpdateDto deviceUpdate)
         {
-            await _repository.InstalationDevice(applicationId, installationId, Mapper.Map<DeviceUpdate>(deviceUpdate));
+            var applicationIds = applicationId.Split(",");
+            foreach (var id in applicationIds)
+            {
+                await _repository.InstalationDevice(id, installationId, Mapper.Map<DeviceUpdate>(deviceUpdate));
+            }
         }
 
-        public async Task<NotificationAddDto> RegisterNotification(string applicationId, NotificationAddDto notificationAddDto)
+        public async Task<IEnumerable<NotificationAddDto>> RegisterNotification(string applicationId, NotificationAddDto notificationAddDto)
         {
 
             var notification = Mapper.Map<NotificationAdd>(notificationAddDto);
             notification.NotId = Guid.NewGuid();
-            var ret = await _repository.RegisterNotification(applicationId, notification);
+
+            List<NotificationAdd> ret = new List<NotificationAdd>();
+            var applicationIds = applicationId.Split(",");
+            foreach (var id in applicationIds)
+            {
+                ret.Add( await _repository.RegisterNotification(id, notification));
+            }
+
             string matricula = notificationAddDto.Categories.Select(o => o.Tag).ToArray().FirstOrDefault();
 
-            SaveNotificationAnswer(notification.NotId, matricula, ret.CreatedBy);
-            return Mapper.Map<NotificationAddDto>(ret);                
+            SaveNotificationAnswer(notification.NotId, matricula, ret.FirstOrDefault().CreatedBy);
+            return Mapper.Map<IEnumerable<NotificationAddDto>>(ret);                
             
         }
 
