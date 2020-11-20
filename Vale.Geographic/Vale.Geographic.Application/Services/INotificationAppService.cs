@@ -13,8 +13,8 @@ namespace Vale.Geographic.Application.Services
         INotificationAnswerService notificationAnswerService { get; set; }
 
         Task InstalationDevice(string applicationId, string installationId, DeviceUpdateDto deviceUpdate);
-        Task<DeviceAddDto> RegisterDevice(string applicationId, DeviceAddDto device);
-        Task<NotificationAddDto> RegisterNotification(string applicationId, NotificationAddDto notificationAddDto);
+        Task<IEnumerable<DeviceAddDto>> RegisterDevice(string applicationId, DeviceAddDto device);
+        Task<IEnumerable<NotificationAddDto>> RegisterNotification(string applicationId, NotificationAddDto notificationAddDto);
         NotificationAnswerDto UpdateNotificationAnswer(string applicationId, Guid notification);
         NotificationAnswerDto GetLastNotification(string applicationId, Guid focalPointId);
     }
