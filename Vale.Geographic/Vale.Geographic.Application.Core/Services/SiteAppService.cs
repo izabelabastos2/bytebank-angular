@@ -44,7 +44,7 @@ namespace Vale.Geographic.Application.Core.Services
 
         public SiteAsCountryDto GetByCode(string codeSite)
         {
-            var sites = sitesRepository.GetAll().Where(w => w.Status = true);
+            var sites = sitesRepository.GetAll().Where(w => w.Status = true && w.Code == codeSite);
 
             IEnumerable<SiteAsCountryDto> countries = MapSitesToSitesTree(sites, null, null);
 
@@ -100,7 +100,7 @@ namespace Vale.Geographic.Application.Core.Services
                                     Code = site.Code,
                                     Radius = site.Radius,
                                     Status = site.Status,
-                                    Zoom = site.Zoom,
+                                    Zoom = site.Zoom
                                 })
                         })
                 });

@@ -8,5 +8,6 @@ namespace Vale.Geographic.Application.Services
     {
         IEnumerable<SiteAsCountryDto> GetAll(string unitNameFilter);
         SiteAsCountryDto GetById(Guid id);
+        SiteAsCountryDto GetByCode(string codeSite);
     }
 }
