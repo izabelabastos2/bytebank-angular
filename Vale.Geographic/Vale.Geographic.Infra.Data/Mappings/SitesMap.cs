@@ -20,6 +20,7 @@ namespace Vale.Geographic.Infra.Data.Mappings
             builder.Property(p => p.Longitude).HasColumnType("float");
             builder.Property(p => p.Zoom).HasColumnType("int");
             builder.Property(p => p.Radius).HasColumnType("int");
+            builder.Property(p => p.Code).HasColumnType("varchar(4)").HasMaxLength(4);
 
             builder.HasOne<Site>(p => p.Parent)
                 .WithMany()
