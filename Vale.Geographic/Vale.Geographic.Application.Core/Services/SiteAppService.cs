@@ -13,7 +13,7 @@ namespace Vale.Geographic.Application.Core.Services
 {
     public class SiteAppService : AppService, ISiteAppService
     {
-        private readonly ISitesRepository sitesRepository;
+        private readonly ISitesRepository  sitesRepository;
 
 
         public SiteAppService(IUnitOfWork uoW,
@@ -28,7 +28,7 @@ namespace Vale.Geographic.Application.Core.Services
         {
             var sites = sitesRepository.GetAll().Where(w => w.Status = true);
 
-            IEnumerable<SiteAsCountryDto> countries = MapSitesToSitesTree(sites, unitNameFilter, null);
+            IEnumerable<SiteAsCountryDto> countries = MapSitesToSitesTree(sites, unitNameFilter, null, null);
 
             return countries;
         }
@@ -37,22 +37,23 @@ namespace Vale.Geographic.Application.Core.Services
         {
             var sites = sitesRepository.GetAll().Where(w => w.Status = true);
 
-            IEnumerable<SiteAsCountryDto> countries = MapSitesToSitesTree(sites, null, id);
+            IEnumerable<SiteAsCountryDto> countries = MapSitesToSitesTree(sites, null, id, null);
 
             return countries.FirstOrDefault();
         }
 
         public SiteAsCountryDto GetByCode(string codeSite)
         {
-            var sites = sitesRepository.GetAll().Where(w => w.Status = true && w.Code == codeSite);
+            var sites = sitesRepository.GetAll().Where(w => w.Status = true);
 
-            IEnumerable<SiteAsCountryDto> countries = MapSitesToSitesTree(sites, null, null);
+            IEnumerable<SiteAsCountryDto> countries = MapSitesToSitesTree(sites, null, null, codeSite);
 
             return countries.FirstOrDefault();
         }
 
-        private IEnumerable<SiteAsCountryDto> MapSitesToSitesTree (IEnumerable<Site> sites, string unitNameFilter, Guid? unitIdFilter)
+        private IEnumerable<SiteAsCountryDto> MapSitesToSitesTree (IEnumerable<Site> sites, string unitNameFilter, Guid? unitIdFilter, string codeSite)
         {
+            const bool V = true;
             var sitesAsTree = sites
                 .Where(w => w.ParentId == null)
                 .Select(country => new SiteAsCountryDto
@@ -86,7 +87,8 @@ namespace Vale.Geographic.Application.Core.Services
                             Units = sites
                                 .Where(w => w.ParentId == state.Id && 
                                     (unitNameFilter == null ? true : w.Name.ToUpper().Contains(unitNameFilter.ToUpper())) &&
-                                    (unitIdFilter == null ? true : w.Id == unitIdFilter))
+                                    (unitIdFilter == null ? true : w.Id == unitIdFilter) &&
+                                    (codeSite == null ? true : w.Code == codeSite))
                                 .Select(site => new SiteDto
                                 {
                                     CreatedAt = site.CreatedAt,
@@ -105,8 +107,7 @@ namespace Vale.Geographic.Application.Core.Services
                         })
                 });
 
-            return sitesAsTree
-                .Select(country =>
+                return sitesAsTree.Select(country =>
                 {
                     country.States = country.States.Where(w => w.Units.Count() > 0);
 
@@ -114,5 +115,7 @@ namespace Vale.Geographic.Application.Core.Services
                 })
                 .Where(w => w.States.Count() > 0);
         }
+
+        
     }
 }
