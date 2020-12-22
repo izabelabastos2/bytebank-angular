@@ -59,5 +59,20 @@ namespace Vale.Geographic.Api.Controllers
 
             return Ok(result);
         }
+
+        /// <summary>
+        ///     Get Site by Code
+        /// </summary>
+        /// <param name="codeSite">Site Code</param>
+        [HttpGet]
+        [ProducesResponseType(typeof(SiteAsCountryDto), 200)]
+        [ProducesResponseType(typeof(Error), 400)]
+        [ProducesResponseType(typeof(Error), 500)]
+        public IActionResult GetByCode(string codeSite)
+        {
+            var result = siteAppService.GetByCode(codeSite);
+
+            return Ok(result);
+        }
     }
 }

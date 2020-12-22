@@ -16,6 +16,7 @@ namespace Vale.Geographic.Application.Dto
     public class SiteDto
     {
         public string Name { get; set; }
+        public string Code { get; set; }
         public float? Latitude { get; set; }
         public float? Longitude { get; set; }
         public int? Zoom { get; set; }
