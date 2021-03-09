@@ -26,6 +26,8 @@ namespace Vale.Geographic.Application.Dto
         public Feature Geojson { get; set; }
 
         public List<Guid> Sites { get; set; }
+
+        public virtual Guid AreaId { get; set; }
     }
 }
 

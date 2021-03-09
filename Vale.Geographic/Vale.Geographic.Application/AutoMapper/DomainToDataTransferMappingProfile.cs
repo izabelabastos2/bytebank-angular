@@ -14,7 +14,7 @@ namespace Vale.Geographic.Application.AutoMapper
         public DomainToViewModelMappingProfile()
         {
             CreateMap<IGeometry, Feature>().ConvertUsing(x => new Feature(WktConvert.GeoJSONGeometry(x.ToString(), 4326), null, null));
-            
+
             CreateMap<Auditory, AuditoryDto>();
 
             CreateMap<Category, CategoryDto>();
@@ -32,11 +32,12 @@ namespace Vale.Geographic.Application.AutoMapper
 
             CreateMap<Area, PerimeterDto>()
                 .ForMember(dest => dest.Sites, opt => opt.Ignore())
-                .ForMember(dest => dest.Geojson, opt => opt.MapFrom(x => x.Location));
+                .ForMember(dest => dest.Geojson, opt => opt.MapFrom(x => x.Location))
+                .ForMember(dest => dest.AreaId, opt => opt.MapFrom(x => x.Id));
 
             CreateMap<PointOfInterest, PointOfInterestDto>()
                 .ForMember(dest => dest.Geojson, opt => opt.MapFrom(x => x.Location))
-                .ForMember(dest => dest.Area, opt => opt.Ignore());            
+                .ForMember(dest => dest.Area, opt => opt.Ignore());
 
             CreateMap<Route, RouteDto>()
                 .ForMember(dest => dest.Geojson, opt => opt.MapFrom(x => x.Location));
