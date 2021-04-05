@@ -73,6 +73,7 @@ namespace Vale.Geographic.Application.Core.Services
                         .Where(w => w.ParentId == country.Id)
                         .Select(state => new SiteAsStateDto
                         {
+                            Code = state.Code,
                             CreatedAt = state.CreatedAt,
                             CreatedBy = state.CreatedBy,
                             Id = state.Id,
