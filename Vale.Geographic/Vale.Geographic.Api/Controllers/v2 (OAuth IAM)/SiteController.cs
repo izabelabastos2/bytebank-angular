@@ -83,7 +83,7 @@ namespace Vale.Geographic.Api.Controllers.v2
         /// </summary>
         /// <param name="code"></param>
         /// <returns></returns>
-        [HttpGet]
+        [HttpGet("SiteId")]
         [ProducesResponseType(typeof(string), 200)]
         [ProducesResponseType(typeof(Error), 400)]
         [ProducesResponseType(typeof(Error), 500)]
