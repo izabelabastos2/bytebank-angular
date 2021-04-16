@@ -5,5 +5,6 @@ namespace Vale.Geographic.Domain.Repositories.Interfaces
 {
     public interface ISitesRepository : IRepository<Site>
     {
+        string GetSiteIdByCode(string code);
     }
 }

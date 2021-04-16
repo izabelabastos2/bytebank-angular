@@ -20,6 +20,26 @@ namespace Vale.Geographic.Infra.Data.Repositories
         {
         }
 
+        public string GetSiteIdByCode(string code)
+        {
+            if (String.IsNullOrEmpty(code)){
+
+                return null;
+            } else {
+                
+                if (code.Length == 1)
+                    code =  "000"+code;
+                else if (code.Length == 2)
+                    code =  "00"+code;
+                else if (code.Length == 3)
+                    code =  "0"+code;                
+            }
+
+            var sql = $@"SELECT Id FROM Sites WHERE Code = @Code";
+
+            return Connection.QuerySingleOrDefault<string>(sql, new { Code = code }, this.Uow.Transaction);
+        }
+
        
     }
 }

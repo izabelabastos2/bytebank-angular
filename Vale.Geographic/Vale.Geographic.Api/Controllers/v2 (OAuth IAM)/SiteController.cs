@@ -78,6 +78,21 @@ namespace Vale.Geographic.Api.Controllers.v2
             return Ok(result);
         }
 
+        /// <summary>
+        /// Get SiteId by Code
+        /// </summary>
+        /// <param name="code"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [ProducesResponseType(typeof(string), 200)]
+        [ProducesResponseType(typeof(Error), 400)]
+        [ProducesResponseType(typeof(Error), 500)]
+        public IActionResult GetSiteIdByCode(string code)
+        {
+            var response = this.siteAppService.GetSiteIdByCode(code);
+            return Ok(response);
+        }
+
         [HttpGet("env")]
         public IActionResult env()
         {
