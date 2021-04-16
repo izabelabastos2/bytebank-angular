@@ -37,7 +37,12 @@ namespace Vale.Geographic.Infra.Data.Repositories
 
             var sql = $@"SELECT Id FROM Sites WHERE Code = @Code";
 
-            return Connection.QuerySingleOrDefault<string>(sql, new { Code = code }, this.Uow.Transaction);
+            var result = Connection.QuerySingleOrDefault<Guid>(sql, new { Code = code }, this.Uow.Transaction);
+
+            if (result != null)
+                return result.ToString();
+
+            return null;
         }
 
        
