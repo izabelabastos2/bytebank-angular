@@ -15,7 +15,6 @@ namespace Vale.Geographic.Api.Controllers
     /// Controller to Sites
     /// </summary>
     [Route("api/Site")]
-    [Authorize]
     public class SiteController : Controller
     {
         readonly ISiteAppService siteAppService;
