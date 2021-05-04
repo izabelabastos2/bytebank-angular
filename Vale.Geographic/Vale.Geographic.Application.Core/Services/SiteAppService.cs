@@ -117,6 +117,14 @@ namespace Vale.Geographic.Application.Core.Services
                 .Where(w => w.States.Count() > 0);
         }
 
+        public string GetSiteIdByCode(string codeSite)
+        {
+            if (String.IsNullOrEmpty(codeSite ) || String.IsNullOrWhiteSpace(codeSite) || codeSite.Length > 4) 
+                return null;   
+
+            var siteId = sitesRepository.GetSiteIdByCode(codeSite);
+            return siteId;
+        }
         
     }
 }
